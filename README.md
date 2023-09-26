@@ -1,4 +1,24 @@
 # Projet-de-visualisation-M1
-Dash
+
+## Getting started
 
 Bienvenue sur notre projet de visualisation analytique
+
+Activer l'environement virtuel:
+```bash
+venv\Scripts\activate
+```
+
+Si il y a une erreur après avoir executer la commande précédente, essayez ceci:
+```bash
+Set-ExecutionPolicy Unrestricted -Scope Process
+```
+
+## Data
+
+link:
+
+Ici ajouter une decription generale des données
+
+
+
