@@ -14,6 +14,10 @@ Si il y a une erreur après avoir executer la commande précédente, essayez cec
 Set-ExecutionPolicy Unrestricted -Scope Process
 ```
 
+Lancer l'app localement
+```bash
+python app.py
+```
 ## Data
 
 link:
