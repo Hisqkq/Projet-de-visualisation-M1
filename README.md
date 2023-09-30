@@ -29,6 +29,12 @@ Lancer l'app localement
 ```bash
 python app.py
 ```
+
+Quitter l'environement virtuel:
+```bash
+deactivate
+```
+
 ## Data
 
 link:
