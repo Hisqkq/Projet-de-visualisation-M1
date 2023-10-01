@@ -1,31 +1,35 @@
 from dash import Dash, html, dcc
+from dash.dash_table import DataTable
 import plotly.express as px
 import pandas as pd
+from data import api_service
 
 app = Dash(__name__)
 
-# assume you have a "long-form" data frame
-# see https://plotly.com/python/px-arguments/ for more options
-df = pd.DataFrame({
-    "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
-    "Amount": [4, 1, 2, 2, 4, 5],
-    "City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"]
-})
+df_import_export = api_service.fetch_data_to_dataframe()
+df_consommation_quotidienne_brute = api_service.fetch_data_consommation_quotidienne_brute()
 
-fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
+table_import_export = DataTable(
+    id='table_import_export',
+    columns=[{"name": i, "id": i} for i in df_import_export.columns],
+    data=df_import_export.to_dict('records'),
+)
+
+table_consommation_quotidienne_brute = DataTable(
+    id='table_eco2mix',
+    columns=[{"name": i, "id": i} for i in df_consommation_quotidienne_brute.columns],
+    data=df_consommation_quotidienne_brute.to_dict('records'),
+)
 
 app.layout = html.Div(children=[
-    html.H1(children='Lpb des graphes'),
-
+    html.H1(children='Tables des Données'),
     html.Div(children='''
         Dash: A web application framework for your data.
     '''),
-
-    dcc.Graph(
-        id='example-graph',
-        figure=fig
-    )
+    html.H3(children='Table Import Export'),
+    table_import_export,
+    html.H3(children='Table consommation quotidienne brute par région'),
+    table_consommation_quotidienne_brute
 ])
-
 if __name__ == '__main__':
     app.run(debug=True)
