@@ -21,6 +21,8 @@ table_consommation_quotidienne_brute = DataTable(
     data=df_consommation_quotidienne_brute.to_dict('records'),
 )
 
+fig = px.bar(df_consommation_quotidienne_brute, x='region', y='somme_consommation_elec', color='region')
+
 app.layout = html.Div(children=[
     html.H1(children='Tables des Données'),
     html.Div(children='''
@@ -29,7 +31,8 @@ app.layout = html.Div(children=[
     html.H3(children='Table Import Export'),
     table_import_export,
     html.H3(children='Table consommation quotidienne brute par région'),
-    table_consommation_quotidienne_brute
+    table_consommation_quotidienne_brute,
+    dcc.Graph(figure=fig)
 ])
 if __name__ == '__main__':
     app.run(debug=True)

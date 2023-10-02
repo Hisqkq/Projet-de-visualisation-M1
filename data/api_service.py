@@ -41,6 +41,7 @@ def fetch_data_consommation_quotidienne_brute():
         
         # Conversion des résultats en DataFrame
         dataframe = pd.DataFrame(results)
+        print(dataframe)
         return dataframe
     else:
         print(f"Échec de la requête: {response.status_code}")
