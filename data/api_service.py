@@ -1,10 +1,10 @@
 import requests
 import pandas as pd
 
-def fetch_data_to_dataframe():
+def fetch_data_to_dataframe(datasetID, sort = "", rows = 10000):
     url_base = "https://odre.opendatasoft.com/api/records/1.0/search/"
     params = {
-        "dataset": "imports-exports-commerciaux",
+        "dataset": datasetID,
         "rows": 10000,  # Pour récupérer plus de données, augmentez la valeur de 'rows'
         "sort": "export_france",
     }

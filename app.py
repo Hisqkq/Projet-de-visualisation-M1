@@ -6,7 +6,7 @@ from data import api_service
 
 app = Dash(__name__)
 
-df_import_export = api_service.fetch_data_to_dataframe()
+df_import_export = api_service.fetch_data_to_dataframe("imports-exports-commerciaux")
 df_consommation_quotidienne_brute = api_service.fetch_data_consommation_quotidienne_brute()
 
 table_import_export = DataTable(
