@@ -48,3 +48,20 @@ def fetch_data_consommation_quotidienne_brute():
         print(response.text)
         return pd.DataFrame()
     
+def json_data_consommation_quotidienne_brute():
+    url = "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/consommation-quotidienne-brute-regionale/records"
+    params = {
+        "select": "sum(consommation_brute_electricite_rte) as somme_consommation_elec, region",
+        "group_by": "region"
+    }
+
+    response = requests.get(url, params=params)
+    data=[{}]
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print(f"Échec de la requête: {response.status_code}")
+        print(response.text)
+        return data
+    
