@@ -11,7 +11,7 @@ def fetch_data_to_dataframe(datasetID, sort = "", rows = 10000):
     
     response = requests.get(url_base, params=params)
     
-    if response.status_code == 200:
+    if response.status_code == requests.codes.ok:
         data = response.json()
         records = data.get('records', [])
         
@@ -24,6 +24,7 @@ def fetch_data_to_dataframe(datasetID, sort = "", rows = 10000):
         print(f"Échec de la requête: {response.status_code}")
         print(response.text)
         return pd.DataFrame()  
+
 
 
 def fetch_data_consommation_quotidienne_brute():

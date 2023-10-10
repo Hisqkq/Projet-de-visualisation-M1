@@ -1,13 +1,13 @@
 from dash import Dash, html, dcc
 from dash.dash_table import DataTable
 import plotly.express as px
-import pandas as pd
 from data import api_service
+from data.db_manager import data_to_df
 
 app = Dash(__name__)
 
 df_import_export = api_service.fetch_data_to_dataframe("eco2mix-regional-tr")
-df_consommation_quotidienne_brute = api_service.fetch_data_consommation_quotidienne_brute()
+df_consommation_quotidienne_brute = data_to_df("sum_cons_par_regions")
 
 table_import_export = DataTable(
     id='table_import_export',
@@ -33,6 +33,6 @@ app.layout = html.Div(children=[
     html.H3(children='Table consommation quotidienne brute par région'),
     table_consommation_quotidienne_brute,
     dcc.Graph(figure=fig)
-])
+    ])
 if __name__ == '__main__':
     app.run(debug=True)

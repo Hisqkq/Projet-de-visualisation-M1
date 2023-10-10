@@ -1,5 +1,6 @@
+### Permet la connexion avec la base de données
 from pymongo import MongoClient
-import api_service
+
 def get_database():
  
    # Provide the mongodb atlas url to connect python to mongodb using pymongo
@@ -16,7 +17,4 @@ if __name__ == "__main__":
   
    # Get the database
    dbname = get_database()
-   if(not ("sum_cons_par_regions" in dbname.list_collection_names())):
-      dbname.create_collection("sum_cons_par_regions")
-   
-   dbname.get_collection("sum_cons_par_regions").insert_one(api_service.json_data_consommation_quotidienne_brute())
+ 
