@@ -15,7 +15,7 @@ def create_collection(name:str):
     if(not (name in dbname.list_collection_names())):
         dbname.create_collection(name)
 
-#test
+# TODO: 
 #create_collection("sum_cons_par_regions")
    
 
@@ -29,7 +29,7 @@ def insert_in_coll(table_name:str, data:dict):
     """
     dbname.get_collection(table_name).insert_one(data)
 
-#test
+# TODO: 
 #insert_in_coll("sum_cons_par_regions", api_service.json_data_consommation_quotidienne_brute())
 
 
@@ -77,6 +77,6 @@ def data_to_df(table_name:str):
         return None
 
     
-#test   
+# TODO:   
 #print(data_to_df("sum_cons_par_regions"))
 
