@@ -1,5 +1,6 @@
 ### Permet la connexion avec la base de données
 from pymongo import MongoClient
+import certifi
 
 def get_database():
  
@@ -7,7 +8,7 @@ def get_database():
    CONNECTION_STRING = "mongodb+srv://Hamad:CMIISIprojetvisualisation@cmiprojetm1.ojtjyuu.mongodb.net/"
 
    # Create a connection using MongoClient. You can import MongoClient or use pymongo.MongoClient
-   client = MongoClient(CONNECTION_STRING)
+   client = MongoClient(CONNECTION_STRING, tlsCAFile=certifi.where())
  
    # Create the database for our example (we will use the same database throughout the tutorial
    return client['ProjetM1']
