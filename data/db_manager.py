@@ -1,38 +1,22 @@
-### Permet de gérer la base de données directement avec des get, insert, create collection (table) etc...
- 
 import data.mongodb as mongodb
 import pandas as pd
 
-## CONNECT TO DB
-dbname = mongodb.get_database()
+db = mongodb.get_database()
 
-def create_collection(name:str):
-    """Permet de créer une nouvelle table dans la database
+def create_collection(db, name):
+    if(not (name in db.list_collection_names())):
+        db.create_collection(name)
 
-    Args:
-        name (str): nom de la base de données
-    """
-    if(not (name in dbname.list_collection_names())):
-        dbname.create_collection(name)
+def drop_collection(db, name):
+    if(name in db.list_collection_names()):
+        db.drop_collection(name)
 
-# TODO: 
-#create_collection("sum_cons_par_regions")
-   
+def insert_in_coll(db, table_name:str, data:dict):
+    db.get_collection(table_name).insert_one(data)
 
-## ADD DATA (Json) IN A TABLE
-def insert_in_coll(table_name:str, data:dict):
-    """Ajoute des données à une table existante
-
-    Args:
-        table_name (str): nom de la table visée
-        data (dict): données à injecter
-    """
-    dbname.get_collection(table_name).insert_one(data)
-
-# TODO: 
-#insert_in_coll("sum_cons_par_regions", api_service.json_data_consommation_quotidienne_brute())
-
-
+def insert_many_in_coll(db, table_name:str, data:list):
+    db.get_collection(table_name).insert_many(data)
+    
 def get_data(table_name:str):
     """Permet de récupérer les données d'une table
 
