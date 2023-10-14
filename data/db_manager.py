@@ -3,32 +3,6 @@ import pandas as pd
 
 db = mongodb.get_database()
 
-def create_collection(db, name):
-    if(not (name in db.list_collection_names())):
-        db.create_collection(name)
-
-def drop_collection(db, name):
-    if(name in db.list_collection_names()):
-        db.drop_collection(name)
-
-def insert_in_coll(db, table_name:str, data:dict):
-    db.get_collection(table_name).insert_one(data)
-
-def insert_many_in_coll(db, table_name:str, data:list):
-    db.get_collection(table_name).insert_many(data)
-    
-def get_data(table_name:str):
-    """Permet de récupérer les données d'une table
-
-    Args:
-        table_name (str): nom de la table visée
-
-    Returns:
-        list: données de la table
-    """
-    return list(dbname[table_name].find())
-
-
 def data_to_df(table_name:str):
     """return the dataframe of a table from the database
 
@@ -59,8 +33,3 @@ def data_to_df(table_name:str):
     except Exception as e:
         print("Une erreur inattendue s'est produite :", str(e))
         return None
-
-    
-# TODO:   
-#print(data_to_df("sum_cons_par_regions"))
-
