@@ -12,7 +12,7 @@ def data_to_df(table_name:str):
     Returns:
         Dataframe: pandas dataframe
     """
-    data = get_data(table_name)
+    data = mongodb.get_data(table_name)
     
     if not data:
         print("Aucune donnée trouvée.")
