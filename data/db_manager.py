@@ -86,7 +86,7 @@ def data_to_df(table_name:str):
 
 
 def insert_data(collection_name:str, start_date:str, end_date:datetime):
-    """Permet de remplir une base de donnée jourr par jourr 100 lignes par 100 ligne
+    """Permet de remplir une base de donnée jours par jours 100 lignes par 100 ligne
 
     Args:
         collection_name (str): nom de la collection 
@@ -94,12 +94,12 @@ def insert_data(collection_name:str, start_date:str, end_date:datetime):
         end_date (datetime): dernière date dans le dataframe
     """
     step = 100
-    lines_per_date = 1056 
     
     current_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
     end_date = end_date
     
     while current_date <= end_date:
+        lines_per_date = api_service.get_length_per_date('eco2mix-regional-tr', str(current_date))
         formatted_date = current_date.strftime('%Y-%m-%d') 
         print(formatted_date)
         

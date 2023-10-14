@@ -99,6 +99,14 @@ def get_dataset_lenght(dataset:str):
         return 0
     
 def get_first_date(dataset:str):
+    """get the minimum date in a dataset
+
+    Args:
+        dataset (str): _description_
+
+    Returns:
+        _type_: _description_
+    """
     url = f"https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/{dataset}/records"
     params = {
         "select": "date",
@@ -116,5 +124,30 @@ def get_first_date(dataset:str):
         return
     
     
-   
+def get_length_per_date(dataset:str, date:str):
+    """get the minimum date in a dataset
+
+    Args:
+        dataset (str): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    url = f"https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/{dataset}/records"
+    params = {
+        "select": "date",
+        "rows": 1,
+        "where": f"date='{date}'"
+    }
+    response = requests.get(url, params=params)
+    data=[{}]
+    if response.status_code == 200:
+        data = response.json()
+        return data.get('total_count')[0]
+    else:
+        print(f"Échec de la requête: {response.status_code}")
+        print(response.text)
+        return
+    
+
 print(get_first_date("eco2mix-regional-tr") )
