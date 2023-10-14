@@ -66,3 +66,55 @@ def json_data_consommation_quotidienne_brute():
         print(response.text)
         return data
     
+def fetch_eco2mix(start, rows, date):
+    url = "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-regional-tr/records"
+    params = {
+        "offset" : start,
+        "rows": rows,
+        "where": f"date='{date}'"
+    }
+    response = requests.get(url, params=params)
+    data=[{}]
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print(f"Échec de la requête: {response.status_code}")
+        print(response.text)
+        return 
+    
+def get_dataset_lenght(dataset:str):
+    url = "https://odre.opendatasoft.com/api/records/1.0/search/"
+    params = {
+        "dataset": dataset,
+        "rows": 1
+    }
+    response = requests.get(url, params=params)  
+    if response.status_code == 200:
+        data = response.json()
+        return int(data.get('nhits', []))
+    else:
+        print(f"Échec de la requête: {response.status_code}")
+        print(response.text)
+        return 0
+    
+def get_first_date(dataset:str):
+    url = f"https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/{dataset}/records"
+    params = {
+        "select": "date",
+        "rows": 1,
+        "order_by": "date",
+    }
+    response = requests.get(url, params=params)
+    data=[{}]
+    if response.status_code == 200:
+        data = response.json()
+        return data.get('results')[0]['date']
+    else:
+        print(f"Échec de la requête: {response.status_code}")
+        print(response.text)
+        return
+    
+    
+   
+print(get_first_date("eco2mix-regional-tr") )
