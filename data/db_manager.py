@@ -1,10 +1,7 @@
 ### Permet de gérer la base de données directement avec des get, insert, create collection (table) etc...
  
-import mongodb as mongodb
+import data.mongodb as mongodb
 import pandas as pd
-import api_service as api_service
-import time
-import datetime
 
 ## CONNECT TO DB
 dbname = mongodb.get_database()
@@ -24,7 +21,7 @@ def create_collection(name:str):
    
 
 ## ADD DATA (Json) IN A TABLE
-def insert_in_coll(table_name:str, data:dict):
+def insert_one_in_coll(table_name:str, data:dict):
     """Ajoute des données à une table existante
 
     Args:
@@ -32,6 +29,15 @@ def insert_in_coll(table_name:str, data:dict):
         data (dict): données à injecter
     """
     dbname.get_collection(table_name).insert_one(data)
+    
+def insert_many_in_coll(table_name:str, data:list):
+    """Ajoute des données à une table existante
+
+    Args:
+        table_name (str): nom de la table visée
+        data (dict): données à injecter
+    """
+    dbname.get_collection(table_name).insert_many(data)
 
 #test
 #insert_in_coll("sum_cons_par_regions", api_service.json_data_consommation_quotidienne_brute())
@@ -48,6 +54,56 @@ def get_data(table_name:str):
     """
     return list(dbname[table_name].find())
 
+#print(get_data("eco2mix")[0])
+
+def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], order: int):
+    """
+    Parameters:
+    - collection (str): Le nom de la collection MongoDB à interroger.
+    - group_field (str): Le champ selon lequel grouper les données.
+    - sum_fields (list of str): Les champs pour lesquels calculer la somme.
+    - order (int): 1 pour un tri ascendant et -1 pour un tri descendant sur le champ de groupement.
+    
+    Returns:
+    - list: Les résultats de l'agrégation.
+    """
+    pipeline = [
+        {"$unwind": "$results"},
+        {
+            "$group": {
+                "_id": f"$results.{group_field}",
+                **{field: {"$sum": f"$results.{field}"} for field in sum_fields}
+            }
+        },
+        {"$sort": {"_id": order}}
+    ]
+    
+    return list(dbname[collection].aggregate(pipeline))
+
+
+
+#print(get_data_group_by_sum("eco2mix", "date", ["consommation", "ech_physiques", "eolien", "hydraulique", "nucleaire"]))
+
+def transform_to_df(data:list):
+    if not data:
+        print("Aucune donnée trouvée.")
+        return None
+
+    results = data
+
+    if not results:
+        print("Pas de résultats dans les données.")
+        return None
+    
+    try:
+        dataframe = pd.DataFrame(results)
+        return dataframe
+    except pd.errors.EmptyDataError:
+        print("Aucune donnée à charger dans le DataFrame.")
+        return None
+    except Exception as e:
+        print("Une erreur inattendue s'est produite :", str(e))
+        return None
 
 def data_to_df(table_name:str):
     """return the dataframe of a table from the database
@@ -84,54 +140,3 @@ def data_to_df(table_name:str):
 #test   
 #print(data_to_df("sum_cons_par_regions"))
 
-
-def insert_data(collection_name:str, start_date:str, end_date:datetime):
-    """Permet de remplir une base de donnée jours par jours 100 lignes par 100 ligne
-
-    Args:
-        collection_name (str): nom de la collection 
-        start_date (str): date de départ (api_service.get_first_date(collection_name))
-        end_date (datetime): dernière date dans le dataframe
-    """
-    step = 100
-    
-    current_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
-    end_date = end_date
-    
-    while current_date <= end_date:
-        lines_per_date = api_service.get_length_per_date('eco2mix-regional-tr', str(current_date))
-        formatted_date = current_date.strftime('%Y-%m-%d') 
-        print(formatted_date)
-        
-        for i in range(0, lines_per_date, step):
-            rows = min(step, lines_per_date - i)
-            try:
-                data = api_service.fetch_eco2mix(i, rows, str(formatted_date))
-                
-                if isinstance(data, list):
-                    dbname.get_collection(collection_name).insert_many(data)
-                else:
-                    dbname.get_collection(collection_name).insert_one(data)
-                    
-            except Exception as e:
-                print(f"Erreur lors de l'insertion des données pour la date {formatted_date}, offset {i}: {e}")
-                print("Réessai dans 5 secondes...")
-                time.sleep(5)  
-                i -= step  
-                continue
-                
-        current_date += datetime.timedelta(days=1)
-
-
-        
-insert_data("eco2mix", api_service.get_first_date("eco2mix-regional-tr"), datetime.datetime.now())
-
-"""
-data = {
-    "step": 100,
-    "offset": 0
-}
-
-
-insert_in_coll("config", data)
-"""

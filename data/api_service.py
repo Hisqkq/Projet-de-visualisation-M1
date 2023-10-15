@@ -5,7 +5,7 @@ def fetch_data_to_dataframe(datasetID, sort = "", rows = 10000):
     url_base = "https://odre.opendatasoft.com/api/records/1.0/search/"
     params = {
         "dataset": datasetID,
-        "rows": rows,  # Pour récupérer plus de données, augmentez la valeur de 'rows'
+        "rows": rows, 
         "sort": sort,
     }
     
