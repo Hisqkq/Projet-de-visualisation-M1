@@ -83,6 +83,23 @@ def fetch_eco2mix(start, rows, date):
         print(response.text)
         return 
     
+def fetch_data_by_date(data, start, rows, date):
+    url = f"https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/{data}/records"
+    params = {
+        "offset" : start,
+        "rows": rows,
+        "where": f"date='{date}'"
+    }
+    response = requests.get(url, params=params)
+    data=[{}]
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print(f"Échec de la requête: {response.status_code}")
+        print(response.text)
+        return 
+    
 def get_dataset_lenght(dataset:str):
     url = "https://odre.opendatasoft.com/api/records/1.0/search/"
     params = {
@@ -123,6 +140,31 @@ def get_first_date(dataset:str):
         print(response.text)
         return
     
+def get_last_date(dataset:str):
+    """get the maximum date in a dataset
+
+    Args:
+        dataset (str): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    url = f"https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/{dataset}/records"
+    params = {
+        "select": "date",
+        "rows": 1,
+        "order_by": "-date",
+    }
+    response = requests.get(url, params=params)
+    data=[{}]
+    if response.status_code == 200:
+        data = response.json()
+        return data.get('results')[0]['date']
+    else:
+        print(f"Échec de la requête: {response.status_code}")
+        print(response.text)
+        return
+    
     
 def get_length_per_date(dataset:str, date:str):
     """get the minimum date in a dataset
@@ -143,11 +185,11 @@ def get_length_per_date(dataset:str, date:str):
     data=[{}]
     if response.status_code == 200:
         data = response.json()
-        return data.get('total_count')[0]
+        return data.get('total_count')
     else:
         print(f"Échec de la requête: {response.status_code}")
         print(response.text)
         return
     
 
-print(get_first_date("eco2mix-regional-tr") )
+# print(get_first_date("eco2mix-regional-tr"))

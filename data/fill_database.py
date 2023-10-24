@@ -7,7 +7,7 @@ import datetime
 import time
 
 
-def insert_data(collection_name:str, start_date:str, end_date:datetime):
+def insert_data(from_data:str, collection_name:str, start_date:str, end_date:datetime):
     """Permet de remplir une base de donnée jours par jours 100 lignes par 100 ligne
 
     Args:
@@ -18,17 +18,17 @@ def insert_data(collection_name:str, start_date:str, end_date:datetime):
     step = 100
     
     current_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
-    end_date = end_date
+    end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
     
     while current_date <= end_date:
-        lines_per_date = api_service.get_length_per_date('eco2mix-regional-tr', str(current_date))
-        formatted_date = current_date.strftime('%Y-%m-%d') 
+        formatted_date = str(current_date.strftime('%Y-%m-%d'))
+        lines_per_date = api_service.get_length_per_date(from_data, str(formatted_date))
         print(formatted_date)
         
         for i in range(0, lines_per_date, step):
             rows = min(step, lines_per_date - i)
             try:
-                data = api_service.fetch_eco2mix(i, rows, str(formatted_date))
+                data = api_service.fetch_data_by_date(from_data, i, rows, str(formatted_date))
                 
                 if isinstance(data, list):
                     db_manager.insert_many_in_coll(collection_name, data)
@@ -45,5 +45,9 @@ def insert_data(collection_name:str, start_date:str, end_date:datetime):
         current_date += datetime.timedelta(days=1)
         
         
-db_manager.create_collection("eco2mix")
-insert_data("eco2mix", api_service.get_first_date("eco2mix-regional-tr"), datetime.datetime.now())
+# db_manager.create_collection("eco2mix")
+# insert_data("eco2mix", api_service.get_first_date("eco2mix-regional-tr"), datetime.datetime.now())
+#5915
+
+db_manager.create_collection("eco2mix_def")
+insert_data("eco2mix-regional-cons-def", "eco2mix_def", api_service.get_first_date("eco2mix-regional-cons-def"), api_service.get_last_date("eco2mix-regional-cons-def"))

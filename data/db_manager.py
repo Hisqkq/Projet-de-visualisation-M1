@@ -1,6 +1,6 @@
 ### Permet de gérer la base de données directement avec des get, insert, create collection (table) etc...
  
-import data.mongodb as mongodb
+import mongodb as mongodb
 import pandas as pd
 
 ## CONNECT TO DB
