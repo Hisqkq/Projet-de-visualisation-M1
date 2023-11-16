@@ -137,6 +137,12 @@ def data_to_df(table_name:str):
         return None
 
     
+def get_last_date(collection):
+    latest_document = collection.find().sort("date", -1).limit(1)
+    return latest_document[0]['date'] if latest_document.count() > 0 else None
+
+
+
 #test   
 #print(data_to_df("sum_cons_par_regions"))
 

@@ -51,3 +51,14 @@ def insert_data(from_data:str, collection_name:str, start_date:str, end_date:dat
 
 db_manager.create_collection("eco2mix_def")
 insert_data("eco2mix-regional-cons-def", "eco2mix_def", api_service.get_first_date("eco2mix-regional-cons-def"), api_service.get_last_date("eco2mix-regional-cons-def"))
+
+
+def update_data(from_data:str, collection_name:str):
+    """Update the data of a collection by looking at the latest date of this collection and 
+
+    Args:
+        collection_name (str): collection name
+    """
+    insert_data(from_data, collection_name, db_manager.get_last_date(collection_name), api_service.get_last_date(collection_name))
+
+
