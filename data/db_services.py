@@ -1,46 +1,8 @@
-### Permet de gérer la base de données directement avec des get, insert, create collection (table) etc...
- 
 import mongodb as mongodb
 import pandas as pd
 
 ## CONNECT TO DB
 dbname = mongodb.get_database()
-
-def create_collection(name:str):
-    """Permet de créer une nouvelle collection dans la database
-
-    Args:
-        name (str): nom de la base de données
-    """
-    if(not (name in dbname.list_collection_names())):
-        dbname.create_collection(name)
-
-#test
-#create_collection("eco2mix")
-#dbname.drop_collection("eco2mix")
-   
-
-## ADD DATA (Json) IN A TABLE
-def insert_one_in_coll(table_name:str, data:dict):
-    """Ajoute des données à une table existante
-
-    Args:
-        table_name (str): nom de la table visée
-        data (dict): données à injecter
-    """
-    dbname.get_collection(table_name).insert_one(data)
-    
-def insert_many_in_coll(table_name:str, data:list):
-    """Ajoute des données à une table existante
-
-    Args:
-        table_name (str): nom de la table visée
-        data (dict): données à injecter
-    """
-    dbname.get_collection(table_name).insert_many(data)
-
-#test
-#insert_in_coll("sum_cons_par_regions", api_service.json_data_consommation_quotidienne_brute())
 
 
 def get_data(table_name:str):
@@ -138,11 +100,12 @@ def data_to_df(table_name:str):
 
     
 def get_last_date(collection):
-    latest_document = collection.find().sort("date", -1).limit(1)
-    return latest_document[0]['date'] if latest_document.count() > 0 else None
-
-
-
-#test   
-#print(data_to_df("sum_cons_par_regions"))
-
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$sort": {"results.date": 1}},
+        {"$limit": 1},
+        {"$project": {"_id": 0, "date": "$results.date"}}
+    ]
+    result = list(dbname.get_collection(collection).aggregate(pipeline))
+    print(result)
+    return result[0]['date'] if result else None
