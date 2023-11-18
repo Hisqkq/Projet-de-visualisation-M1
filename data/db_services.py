@@ -1,22 +1,21 @@
-import mongodb as mongodb
+import data.mongodb as mongodb
 import pandas as pd
 
 ## CONNECT TO DB
 dbname = mongodb.get_database()
 
 
-def get_data(table_name:str):
-    """Permet de récupérer les données d'une table
-
+def get_data(collection:str):
+    """Enable User to get the raw data of a collection from the database
+    
     Args:
-        table_name (str): nom de la table visée
+        collection (str): collection name
 
     Returns:
         list: données de la table
     """
-    return list(dbname[table_name].find())
+    return list(dbname[collection].find())
 
-#print(get_data("eco2mix")[0])
 
 def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], order: int):
     """
@@ -99,13 +98,3 @@ def data_to_df(table_name:str):
         return None
 
     
-def get_last_date(collection):
-    pipeline = [
-        {"$unwind": "$results"},
-        {"$sort": {"results.date": 1}},
-        {"$limit": 1},
-        {"$project": {"_id": 0, "date": "$results.date"}}
-    ]
-    result = list(dbname.get_collection(collection).aggregate(pipeline))
-    print(result)
-    return result[0]['date'] if result else None

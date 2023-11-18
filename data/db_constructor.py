@@ -3,6 +3,7 @@ import mongodb
 import datetime
 import time
 
+## CONNECT TO DB
 dbname = mongodb.get_database()
     
 ###### API ######     
@@ -116,7 +117,7 @@ def get_length_per_date(dataset:str, date:str):
     
     
     
-##### construction #####     
+###### Construction ######     
     
 def create_collection(name:str):
     """Permet de créer une nouvelle collection dans la database
@@ -145,6 +146,17 @@ def insert_many_in_coll(table_name:str, data:list):
     """
     dbname.get_collection(table_name).insert_many(data)
     
+def get_last_date_db(collection):
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$sort": {"results.date": -1}},
+        {"$limit": 1},
+        {"$project": {"_id": 0, "date": "$results.date"}}
+    ]
+    result = list(dbname.get_collection(collection).aggregate(pipeline))
+    print(result)
+    return result[0]['date'] if result else None
+    
     
 def insert_data(from_data:str, collection_name:str, start_date:str, end_date:datetime):
     """Permet de remplir une base de donnée jours par jours 100 lignes par 100 ligne
@@ -155,7 +167,7 @@ def insert_data(from_data:str, collection_name:str, start_date:str, end_date:dat
         end_date (datetime): dernière date dans le dataframe
     """
     step = 100
-    
+    print(start_date)
     current_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
     end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
     
@@ -182,25 +194,17 @@ def insert_data(from_data:str, collection_name:str, start_date:str, end_date:dat
                 continue
                 
         current_date += datetime.timedelta(days=1)
-        
-        
-# db_manager.create_collection("eco2mix")
-# insert_data("eco2mix", api_service.get_first_date("eco2mix-regional-tr"), datetime.datetime.now())
-#5915
-
-#db_manager.create_collection("eco2mix_def")
-#insert_data("eco2mix-regional-cons-def", "eco2mix_def", api_service.get_first_date("eco2mix-regional-cons-def"), api_service.get_last_date("eco2mix-regional-cons-def"))
-
 
 def update_data(from_data:str, collection_name:str):
-    """Update the data of a collection by looking at the latest date of this collection and 
+    """Update the data of a collection by looking at the latest date of this collection
 
     Args:
         collection_name (str): collection name
     """
-    insert_data(from_data, collection_name, get_last_date(collection_name), get_last_date(collection_name))
+    insert_data(from_data, collection_name, get_last_date_db(collection_name), get_last_date(from_data))
 
 
-update_data("eco2mix-regional-tr", "eco2mix")
+# Run to update date from eco2mix-regional-tr
+#update_data("eco2mix-regional-tr", "eco2mix")
 
     
