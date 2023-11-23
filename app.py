@@ -1,5 +1,4 @@
 from dash import Dash, html
-
 from view import main_view
 
 app = Dash(__name__)
