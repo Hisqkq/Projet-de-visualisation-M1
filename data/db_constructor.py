@@ -40,45 +40,24 @@ def get_dataset_lenght(dataset:str):
         print(response.text)
         return 0
     
-def get_first_date(dataset:str):
+def get_date(dataset:str, first:bool=True):
     """get the minimum date in a dataset
 
     Args:
         dataset (str): _description_
-
+        first (bool): True to get first date, False to get last date
     Returns:
         _type_: _description_
     """
+
+    if first: date = "date"
+    else: date = "-date"
+
     url = f"https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/{dataset}/records"
     params = {
         "select": "date",
         "rows": 1,
-        "order_by": "date",
-    }
-    response = requests.get(url, params=params)
-    data=[{}]
-    if response.status_code == 200:
-        data = response.json()
-        return data.get('results')[0]['date']
-    else:
-        print(f"Échec de la requête: {response.status_code}")
-        print(response.text)
-        return
-    
-def get_last_date(dataset:str):
-    """get the maximum date in a dataset
-
-    Args:
-        dataset (str): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    url = f"https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/{dataset}/records"
-    params = {
-        "select": "date",
-        "rows": 1,
-        "order_by": "-date",
+        "order_by": date,
     }
     response = requests.get(url, params=params)
     data=[{}]
@@ -128,23 +107,17 @@ def create_collection(name:str):
     if(not (name in dbname.list_collection_names())):
         dbname.create_collection(name)    
     
-def insert_one_in_coll(table_name:str, data:dict):
+def insert_in_coll(table_name:str, data:dict):
     """Ajoute des données à une table existante
 
     Args:
         table_name (str): nom de la table visée
         data (dict): données à injecter
     """
-    dbname.get_collection(table_name).insert_one(data)
-    
-def insert_many_in_coll(table_name:str, data:list):
-    """Ajoute des données à une table existante
-
-    Args:
-        table_name (str): nom de la table visée
-        data (dict): données à injecter
-    """
-    dbname.get_collection(table_name).insert_many(data)
+    if isinstance(data, list): 
+        dbname.get_collection(table_name).insert_many(data)
+        return
+    else: dbname.get_collection(table_name).insert_one(data)
     
 def get_last_date_db(collection):
     pipeline = [
@@ -154,20 +127,23 @@ def get_last_date_db(collection):
         {"$project": {"_id": 0, "date": "$results.date"}}
     ]
     result = list(dbname.get_collection(collection).aggregate(pipeline))
-    print(result)
     return result[0]['date'] if result else None
     
     
-def insert_data(from_data:str, collection_name:str, start_date:str, end_date:datetime):
+def update_data(from_data:str, collection_name:str):
     """Permet de remplir une base de donnée jours par jours 100 lignes par 100 ligne
 
     Args:
+        from_data (str): nom de la dataset API
         collection_name (str): nom de la collection 
-        start_date (str): date de départ (api_service.get_first_date(collection_name))
-        end_date (datetime): dernière date dans le dataframe
     """
     step = 100
-    print(start_date)
+
+    if not list(dbname[collection_name].find()):
+        start_date = get_date(from_data)
+    else: start_date = get_last_date_db(collection_name)
+
+    end_date = get_date(from_data, first = False)
     current_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
     end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
     
@@ -180,11 +156,7 @@ def insert_data(from_data:str, collection_name:str, start_date:str, end_date:dat
             rows = min(step, lines_per_date - i)
             try:
                 data = fetch_data_by_date(from_data, i, rows, str(formatted_date))
-                
-                if isinstance(data, list):
-                    insert_many_in_coll(collection_name, data)
-                else:
-                    insert_one_in_coll(collection_name, data)
+                insert_in_coll(collection_name, data)
                     
             except Exception as e:
                 print(f"Erreur lors de l'insertion des données pour la date {formatted_date}, offset {i}: {e}")
@@ -194,14 +166,6 @@ def insert_data(from_data:str, collection_name:str, start_date:str, end_date:dat
                 continue
                 
         current_date += datetime.timedelta(days=1)
-
-def update_data(from_data:str, collection_name:str):
-    """Update the data of a collection by looking at the latest date of this collection
-
-    Args:
-        collection_name (str): collection name
-    """
-    insert_data(from_data, collection_name, get_last_date_db(collection_name), get_last_date(from_data))
 
 
 # Run to update date from eco2mix-regional-tr
