@@ -56,8 +56,7 @@ def get_data_from_one_date_and_one_region(collection: str, date: str, region: st
     """ Enable User to get the data from a collection for a specific date and a specific region"""
     pipeline = [
         {"$unwind": "$results"},
-        {"$match": {"results.date": date}},
-        {"$match": {"results.libelle_region": region}},
+        {"$match": {"results.date": date, "results.libelle_region": region}},
         {"$project": {"_id": 0, "date": "$results.date", "data": "$results.data"}},
         {"$sort": {"results.date_heure": 1}}
     ]
