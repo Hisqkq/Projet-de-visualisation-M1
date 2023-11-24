@@ -7,9 +7,11 @@ import time
 dbname = mongodb.get_database()
     
 ###### API ######     
-    
+
+URL = "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/"
+
 def fetch_data_by_date(data, start, rows, date):
-    url = f"https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/{data}/records"
+    url = f"{URL}{data}" + "/records"
     params = {
         "offset" : start,
         "rows": rows,
@@ -40,7 +42,7 @@ def get_dataset_lenght(dataset:str):
         print(response.text)
         return 0
     
-def get_date(dataset:str, first:bool=True):
+def get_date(data:str, first:bool=True):
     """get the minimum date in a dataset
 
     Args:
@@ -53,7 +55,7 @@ def get_date(dataset:str, first:bool=True):
     if first: date = "date"
     else: date = "-date"
 
-    url = f"https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/{dataset}/records"
+    url = f"{URL}{data}" + "/records"
     params = {
         "select": "date",
         "rows": 1,
@@ -69,7 +71,7 @@ def get_date(dataset:str, first:bool=True):
         print(response.text)
         return
     
-def get_length_per_date(dataset:str, date:str):
+def get_length_per_date(data:str, date:str):
     """get the minimum date in a dataset
 
     Args:
@@ -78,7 +80,7 @@ def get_length_per_date(dataset:str, date:str):
     Returns:
         _type_: _description_
     """
-    url = f"https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/{dataset}/records"
+    url = f"{URL}{data}" + "/records"
     params = {
         "select": "date",
         "rows": 1,
