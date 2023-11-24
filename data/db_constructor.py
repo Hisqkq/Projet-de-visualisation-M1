@@ -12,6 +12,7 @@ URL = "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/"
 
 def fetch_data_by_date(data, start, rows, date):
     url = f"{URL}{data}" + "/records"
+    url = f"{URL}{data}" + "/records"
     params = {
         "offset" : start,
         "rows": rows,
@@ -43,6 +44,7 @@ def get_dataset_lenght(data:str):
         return 0
     
 def get_date(data:str, first:bool=True):
+def get_date(data:str, first:bool=True):
     """get the minimum date in a dataset
 
     Args:
@@ -54,6 +56,7 @@ def get_date(data:str, first:bool=True):
 
     date = "date" if first else "-date"
 
+    url = f"{URL}{data}" + "/records"
     url = f"{URL}{data}" + "/records"
     params = {
         "select": "date",
@@ -71,6 +74,7 @@ def get_date(data:str, first:bool=True):
         return
     
 def get_length_per_date(data:str, date:str):
+def get_length_per_date(data:str, date:str):
     """get the minimum date in a dataset
 
     Args:
@@ -79,6 +83,7 @@ def get_length_per_date(data:str, date:str):
     Returns:
         _type_: _description_
     """
+    url = f"{URL}{data}" + "/records"
     url = f"{URL}{data}" + "/records"
     params = {
         "select": "date",

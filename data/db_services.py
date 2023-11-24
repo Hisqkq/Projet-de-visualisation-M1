@@ -18,15 +18,15 @@ def get_data(collection:str):
 
 
 def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], order: int):
-    """
+    """ Enable User to get the sum of a field from a collection grouped by a field
     Parameters:
-    - collection (str): Le nom de la collection MongoDB à interroger.
-    - group_field (str): Le champ selon lequel grouper les données.
-    - sum_fields (list of str): Les champs pour lesquels calculer la somme.
-    - order (int): 1 pour un tri ascendant et -1 pour un tri descendant sur le champ de groupement.
+    - collection (str): Name of the collection.
+    - group_field (str): Field used by the group by operator.
+    - sum_fields (list of str): Summed fields.
+    - order (int): 1 for ascendant sorting and -1 for descendant sorting.
     
     Returns:
-    - list: Les résultats de l'agrégation.
+    - list: List of documents.
     """
     pipeline = [
         {"$unwind": "$results"},
@@ -41,7 +41,28 @@ def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], 
     
     return list(dbname[collection].aggregate(pipeline))
 
+def get_data_from_one_date(collection: str, date: str):
+    """ Enable User to get the data from a collection for a specific date"""
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$match": {"results.date": date}},
+        {"$replaceRoot": {"newRoot": "$results"}},
+        {"$sort": {"date_heure": 1}}
+    ]
+    
+    return list(dbname[collection].aggregate(pipeline))
 
+def get_data_from_one_date_and_one_region(collection: str, date: str, region: str):
+    """ Enable User to get the data from a collection for a specific date and a specific region"""
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$match": {"results.date": date}},
+        {"$match": {"results.libelle_region": region}},
+        {"$project": {"_id": 0, "date": "$results.date", "data": "$results.data"}},
+        {"$sort": {"results.date_heure": 1}}
+    ]
+    
+    return list(dbname[collection].aggregate(pipeline))
 
 #print(get_data_group_by_sum("eco2mix", "date", ["consommation", "ech_physiques", "eolien", "hydraulique", "nucleaire"]))
 
