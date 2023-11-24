@@ -83,7 +83,6 @@ def create_region_map(data: dict, region_code: str) -> px.choropleth:
 
     return fig
 
-
 def show_map(fig: px.choropleth):
     """Show the map.
     :param fig: Figure to show.
