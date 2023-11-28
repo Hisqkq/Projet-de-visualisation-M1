@@ -1,21 +1,15 @@
-from dash import Dash, html, dcc
-from dash.dash_table import DataTable
-import plotly.express as px
-import data.db_services as dbs
+from dash import Dash, html, dcc, page_container
+from dash.dependencies import Input, Output
 
-app = Dash(__name__)
+import view.map
+import view.GUI
 
-df_consommation_quotidienne_brute = dbs.get_data_group_by_sum("eco2mix", "date", ["consommation", "ech_physiques", "eolien", "hydraulique", "nucleaire"], 1)
+app = Dash(__name__, use_pages=True, suppress_callback_exceptions=True)
 
-fig = px.line(df_consommation_quotidienne_brute, x="_id", y="nucleaire")
+app.layout = html.Div([
+    dcc.Location(id="url"),
+    page_container
+])
 
-
-app.layout = html.Div(children=[
-    html.Div(children='''
-        Energie en France
-    '''),
-    html.H3(children="prodiction d'energie nucléaire"),
-    dcc.Graph(figure=fig)
-    ])
 if __name__ == '__main__':
     app.run(debug=True)
