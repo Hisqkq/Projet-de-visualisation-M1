@@ -1,4 +1,4 @@
-from dash import Dash, html
+from dash import Dash, html, callback
 from view import main_view
 
 app = Dash(__name__)
