@@ -7,7 +7,12 @@ import view.GUI
 register_page(__name__)
 
 layout = html.Div([
-    dcc.Graph(id='choropleth-map', figure=view.GUI.build_map())
+    dcc.Link(html.Button('Home'), href='/'),
+    dcc.Graph(
+        id='choropleth-map',
+        figure=view.GUI.build_map(),
+        style={'height': '80vh'} 
+    )
 ])
 
 
