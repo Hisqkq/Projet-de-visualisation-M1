@@ -2,9 +2,9 @@ import plotly.express as px
 import json
 import pandas as pd
 
-JSON = './data/regions.geojson'
+JSON = './assets/regions.geojson'
 
-def load_json(path: str = JSON) -> dict:
+def get_json(path: str = JSON) -> dict:
     """Load a JSON file.
     :param path: Path to the JSON file.
     :return: Dictionary containing the JSON file.
@@ -21,7 +21,7 @@ def filter_metropolitan_regions(data: dict) -> dict:
     data['features'] = [f for f in data['features'] if f['properties']['code'] not in codes_out]
     return data
 
-def create_metropolitan_map(data: dict) -> px.choropleth:
+def build_metropolitan_map(data: dict) -> px.choropleth:
     """Create a metropolitan map.
     :param data: Dictionary containing the data.
     :return: Figure containing the map.
@@ -51,7 +51,7 @@ def create_metropolitan_map(data: dict) -> px.choropleth:
 
     return fig
 
-def create_region_map(data: dict, region_code: str) -> px.choropleth:
+def build_region_map(data: dict, region: str) -> px.choropleth:
     """Create a map for a specific region.
     :param data: Dictionary containing the data.
     :param region: Region to display.
@@ -61,7 +61,7 @@ def create_region_map(data: dict, region_code: str) -> px.choropleth:
     tab = {'code': [], 'nom': [], 'geometry': []}
 
     for feature in features:
-        if feature['properties']['code'] == region_code:
+        if feature['properties']['nom'] == region:
             tab['code'].append(feature['properties']['code'])
             tab['nom'].append(feature['properties']['nom'])
             tab['geometry'].append(feature['geometry'])
@@ -82,7 +82,6 @@ def create_region_map(data: dict, region_code: str) -> px.choropleth:
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0}) # Remove margins
 
     return fig
-
 
 def show_map(fig: px.choropleth):
     """Show the map.
