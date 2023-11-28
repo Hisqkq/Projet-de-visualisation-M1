@@ -10,5 +10,5 @@ données_1mars2023 = dbs.get_data_from_one_date("DonneesRegionales", "2022-09-12
 
 #### graphs ####
 
-fig = px.line(prodution_nucleaire, x="_id", y="nucleaire")
-fig2 = px.area(données_1mars2023, x="date_heure", y="nucleaire", color="libelle_region")
+line_chart = px.line(prodution_nucleaire, x="_id", y="nucleaire")
+stacked_area_chart = px.area(données_1mars2023, x="date_heure", y="nucleaire", color="libelle_region")

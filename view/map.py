@@ -89,4 +89,4 @@ def show_map(fig: px.choropleth):
     :param fig: Figure to show.
     """
     # Show the map
-    fig.show()
+    return fig
