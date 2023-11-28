@@ -44,7 +44,6 @@ def get_dataset_lenght(data:str):
         return 0
     
 def get_date(data:str, first:bool=True):
-def get_date(data:str, first:bool=True):
     """get the minimum date in a dataset
 
     Args:
@@ -73,7 +72,6 @@ def get_date(data:str, first:bool=True):
         print(response.text)
         return
     
-def get_length_per_date(data:str, date:str):
 def get_length_per_date(data:str, date:str):
     """get the minimum date in a dataset
 
