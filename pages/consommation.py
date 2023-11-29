@@ -1,5 +1,7 @@
 from dash import register_page, html, dcc, callback
 from dash.dependencies import Input, Output
+import view.figures as figures
+import view.map as map
 
 import view.map
 import view.GUI
@@ -12,5 +14,6 @@ layout = html.Div([
         id='choropleth-map',
         figure=view.GUI.build_map(),
         style={'height': '80vh'} 
-    )
+    ),
+    dcc.Graph(figure=figures.line_chart_cons)
 ])

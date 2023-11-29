@@ -16,12 +16,16 @@ line_chart = px.line(prodution, x="_id", y="solaire", labels={
                      "_id": "Date",
                      "solaire": "Production solaire",
                  },
-                title="Manually Specified Labels")
+                title="Production d'enérgie solaire en France")
+
+line_chart_cons = px.bar(données_echanges, x="date_heure", y="consommation")
 
 def build_stacked_area_chart(argument):
     return px.area(données_1mars2023, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}")
 
 stacked_area_chart_echanges = px.bar(données_echanges, x="date_heure", y=["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])
+
+
 
 @callback(
     Output(component_id='graph_production', component_property='figure'),
