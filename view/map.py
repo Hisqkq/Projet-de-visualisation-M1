@@ -2,7 +2,7 @@ import plotly.express as px
 import json
 import pandas as pd
 
-JSON = './assets/regions.geojson'
+JSON = './data/regions.geojson'
 
 def get_json(path: str = JSON) -> dict:
     """Load a JSON file.
