@@ -63,8 +63,9 @@ def get_data_from_one_date_and_one_region(collection: str, date: str, region: st
     
     return list(dbname[collection].aggregate(pipeline))
 
-#print(get_data_group_by_sum("eco2mix", "date", ["consommation", "ech_physiques", "eolien", "hydraulique", "nucleaire"]))
 
+
+### WE ARE NOT USING THOSE FUNCTIONS ANYMORE
 def transform_to_df(data:list):
     if not data:
         print("Aucune donnée trouvée.")

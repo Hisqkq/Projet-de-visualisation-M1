@@ -110,7 +110,7 @@ def create_collection(name:str):
         dbname.create_collection(name)    
     
 def insert_in_coll(table_name:str, data:dict):
-    """Ajoute des données à une table existante
+    """Add data (JSON) to a collection
 
     Args:
         table_name (str): nom de la table visée
@@ -122,6 +122,13 @@ def insert_in_coll(table_name:str, data:dict):
     else: dbname.get_collection(table_name).insert_one(data)
     
 def get_last_date_db(collection):
+    """Get the last date in a collection
+    
+    Args:
+        collection (str): name of the collection
+    Returns:
+        str : date
+    """
     pipeline = [
         {"$unwind": "$results"},
         {"$sort": {"results.date": -1}},
@@ -131,9 +138,17 @@ def get_last_date_db(collection):
     result = list(dbname.get_collection(collection).aggregate(pipeline))
     return result[0]['date'] if result else None
     
+def delete_data_last_date(collection):
+    """Delete data from the last date in a collection
+    
+    Args:
+        collection (str): name of the collection
+    """
+    last_date = get_last_date_db(collection)
+    dbname.get_collection(collection).delete_many({"results.date": last_date})
     
 def update_data(from_data:str, collection_name:str):
-    """Permet de remplir une base de donnée jours par jours 100 lignes par 100 ligne
+    """Allows to update a collection with new data 100 rows by 100
 
     Args:
         from_data (str): nom de la dataset API
@@ -143,7 +158,9 @@ def update_data(from_data:str, collection_name:str):
 
     if not list(dbname[collection_name].find()):
         start_date = get_date(from_data)
-    else: start_date = get_last_date_db(collection_name)
+    else: 
+        start_date = get_last_date_db(collection_name)
+        delete_data_last_date(collection_name) # delete data from last date in collection to avoid duplicates when updating data
 
     end_date = get_date(from_data, first = False)
     current_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')

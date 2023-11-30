@@ -5,7 +5,7 @@ from dash import Dash, html, dcc, Input, Output, callback
 
 #### data used by graphs ####
 
-prodution = dbs.get_data_group_by_sum("DonneesRegionales", "date", ["consommation", "ech_physiques", "eolien", "hydraulique", "nucleaire", "solaire"], 1)
+prodution = dbs.get_data_group_by_sum("DonneesRegionales", "date_heure", ["consommation", "ech_physiques", "eolien", "hydraulique", "nucleaire", "solaire"], 1)
 données_1mars2023 = dbs.get_data_from_one_date("DonneesRegionales", "2022-09-12")
 données_echanges = dbs.get_data_from_one_date("DonneesNationales", "2013-08-18")
 
@@ -13,7 +13,7 @@ données_echanges = dbs.get_data_from_one_date("DonneesNationales", "2013-08-18"
 #### graphs ####
 
 line_chart = px.line(prodution, x="_id", y="solaire", labels={
-                     "_id": "Date",
+                     "_id": "date_heure",
                      "solaire": "Production solaire",
                  },
                 title="Production d'enérgie solaire en France")
