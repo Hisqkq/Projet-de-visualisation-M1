@@ -1,9 +1,6 @@
 from dash import register_page, html, dcc, callback
 from dash.dependencies import Input, Output
 import view.figures as figures
-import view.map as map
-
-import view.map
 import view.GUI
 
 register_page(__name__)

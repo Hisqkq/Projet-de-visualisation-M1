@@ -1,8 +1,4 @@
 from dash import Dash, html, dcc, page_container
-from dash.dependencies import Input, Output
-
-import view.map
-import view.GUI
 
 app = Dash(__name__, use_pages=True, suppress_callback_exceptions=True)
 
