@@ -6,8 +6,8 @@ from dash import Dash, html, dcc, Input, Output, callback
 #### data used by graphs ####
 
 prodution = dbs.get_data_group_by_sum("DonneesRegionales", "date_heure", ["consommation", "ech_physiques", "eolien", "hydraulique", "nucleaire", "solaire"], 1)
-données_1mars2023 = dbs.get_data_from_one_date("DonneesRegionales", "2022-06-12")
-données_echanges = dbs.get_data_from_one_date("DonneesNationales", "2022-07-02")
+données_1mars2023 = dbs.get_data_from_one_date("DonneesRegionales", "2013-01-12")
+données_echanges = dbs.get_data_from_one_date("DonneesNationales", "2012-07-02")
 
 
 #### graphs ####
