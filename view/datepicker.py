@@ -3,14 +3,10 @@ from dash import dcc, html, callback
 from dash.dependencies import Input, Output
 
 datepicker = html.Div([
-    html.H1('Date Picker'),
-
-    html.Label('Select Date(s):'),
     dcc.DatePickerRange(
         id='date-picker',
         start_date=None,
-        end_date_placeholder_text='Select end date',
-        calendar_orientation='vertical'
+        end_date_placeholder_text='End Date'
     ),
 
     html.Button('Clear', id='clear-button', n_clicks=0, style={'margin-top': '10px'}),
