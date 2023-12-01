@@ -1,4 +1,3 @@
-import dash
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output
 
