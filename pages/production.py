@@ -2,12 +2,13 @@ from dash import register_page, html, dcc, callback
 from dash.dependencies import Input, Output
 import view.figures as figures
 import view.GUI
+from view import datepicker
 
 register_page(__name__)
 
 layout = html.Div([
     dcc.Link(html.Button('Home'), href='/'),
-    dcc.DatePickerRange(),
+    datepicker.datepicker,
     dcc.Graph(
         id='choropleth-map',
         figure=view.GUI.build_map(),
