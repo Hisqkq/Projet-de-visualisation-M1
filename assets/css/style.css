@@ -1,0 +1,10 @@
+#home {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#home div {
+    background-color: #475ba3;
+}

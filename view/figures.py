@@ -2,6 +2,8 @@ import plotly.express as px
 import data.db_services as dbs
 from dash import Dash, html, dcc, Input, Output, callback
 
+import view.map
+
 
 #### data used by graphs ####
 
@@ -33,3 +35,13 @@ stacked_area_chart_echanges = px.bar(données_echanges, x="date_heure", y=["ech_
 )
 def update_graph(value):
     return build_stacked_area_chart(value)
+
+
+def build_map(scope: str = 'France') -> px.choropleth:
+    data = view.map.get_json()
+    data = view.map.filter_metropolitan_regions(data)
+    if scope != 'France':
+        fig = view.map.build_region_map(data, scope)
+    else:
+        fig = view.map.build_metropolitan_map(data)
+    return fig

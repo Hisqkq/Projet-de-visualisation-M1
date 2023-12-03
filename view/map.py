@@ -82,10 +82,3 @@ def build_region_map(data: dict, region: str) -> px.choropleth:
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0}) # Remove margins
 
     return fig
-
-def show_map(fig: px.choropleth):
-    """Show the map.
-    :param fig: Figure to show.
-    """
-    # Show the map
-    return fig
