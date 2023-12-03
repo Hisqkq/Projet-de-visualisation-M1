@@ -39,7 +39,7 @@ def update_graph(value):
 
 def build_map(scope: str = 'France') -> px.choropleth:
     data = view.map.get_json()
-    data = view.map.filter_metropolitan_regions(data)
+    data = view.map.exclude_overseas_and_corsica(data)
     if scope != 'France':
         fig = view.map.build_region_map(data, scope)
     else:

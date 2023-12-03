@@ -12,7 +12,7 @@ def get_json(path: str = JSON) -> dict:
     with open(path) as JSON_file:
         return json.load(JSON_file)
 
-def filter_metropolitan_regions(data: dict) -> dict:
+def exclude_overseas_and_corsica(data: dict) -> dict:
     """Filter the metropolitan regions from the data.
     :param data: Dictionary containing the data.
     :return: Dictionary containing the metropolitan regions.
@@ -57,14 +57,8 @@ def build_region_map(data: dict, region: str) -> px.choropleth:
     :param region: Region to display.
     :return: Figure containing the map.
     """
-    features = data['features']
-    tab = {'code': [], 'nom': [], 'geometry': []}
-
-    for feature in features:
-        if feature['properties']['nom'] == region:
-            tab['code'].append(feature['properties']['code'])
-            tab['nom'].append(feature['properties']['nom'])
-            tab['geometry'].append(feature['geometry'])
+    data = [f for f in data['features'] if f['properties']['nom'] == region][0]
+    tab = {'code': data['properties']['code'], 'nom': data['properties']['nom'], 'geometry': data['geometry']}
 
     df = pd.DataFrame(tab) # Create a DataFrame with the map data
 
