@@ -14,9 +14,9 @@ layout = html.Div([
         figure=view.GUI.build_map(),
         style={'height': '80vh'} 
     ),
-    dcc.Graph(figure=figures.line_chart),
+ #   dcc.Graph(figure=figures.line_chart),
     dcc.Dropdown(["eolien", "hydraulique", "nucleaire", "solaire"], 'solaire', id="dropdown"),
-    dcc.Graph(figure=figures.build_stacked_area_chart("solaire"), id="graph_production")
+    dcc.Graph(figure=figures.build_stacked_area_chart(figures.test_data_one_date, "solaire"), id="graph_production_stacked_area")
 ])
 
 
@@ -32,3 +32,10 @@ def update_map(selected_data):
     new_fig = view.map.build_region_map(view.map.filter_metropolitan_regions(view.map.get_json()), selected_data['points'][0]['location'])
 
     return new_fig
+
+@callback(
+    Output(component_id='graph_production_stacked_area', component_property='figure'),
+    [Input(component_id='dropdown', component_property='value')]
+)
+def update_graph_production_stacked_area(value):
+    return figures.build_stacked_area_chart(figures.test_data_one_date, value)

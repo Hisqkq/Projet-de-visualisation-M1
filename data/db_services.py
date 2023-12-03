@@ -38,8 +38,8 @@ def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], 
         },
         {"$sort": {"_id": order}}
     ]
-    
     return list(dbname[collection].aggregate(pipeline))
+
 
 def get_data_from_one_date(collection: str, date: str):
     """ Enable User to get the data from a collection for a specific date"""
@@ -49,8 +49,8 @@ def get_data_from_one_date(collection: str, date: str):
         {"$replaceRoot": {"newRoot": "$results"}},
         {"$sort": {"date_heure": 1}}
     ]
-    
     return list(dbname[collection].aggregate(pipeline))
+
 
 def get_data_from_one_date_and_one_region(collection: str, date: str, region: str):
     """ Enable User to get the data from a collection for a specific date and a specific region"""
@@ -60,62 +60,38 @@ def get_data_from_one_date_and_one_region(collection: str, date: str, region: st
         {"$project": {"_id": 0, "date": "$results.date", "data": "$results.data"}},
         {"$sort": {"results.date_heure": 1}}
     ]
-    
     return list(dbname[collection].aggregate(pipeline))
 
 
+def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: str):
+    """ Enable User to get the data from a collection for a specific date range"""
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$match": {"results.date": {"$gte": date1, "$lte": date2}}},
+        {"$replaceRoot": {"newRoot": "$results"}},
+        {"$sort": {"date_heure": 1}}
+    ]
+    return list(dbname[collection].aggregate(pipeline))
 
-### WE ARE NOT USING THOSE FUNCTIONS ANYMORE
-def transform_to_df(data:list):
-    if not data:
-        print("Aucune donnée trouvée.")
-        return None
 
-    results = data
+def get_data_from_one_date_to_another_date_and_one_region(collection: str, date1: str, date2: str, region: str):
+    """ Enable User to get the data from a collection for a specific date range and a specific region"""
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$match": {"results.date": {"$gte": date1, "$lte": date2}, "results.libelle_region": region}},
+        {"$project": {"_id": 0, "date": "$results.date", "data": "$results.data"}},
+        {"$sort": {"results.date_heure": 1}}
+    ]
+    return list(dbname[collection].aggregate(pipeline))
 
-    if not results:
-        print("Pas de résultats dans les données.")
-        return None
-    
-    try:
-        dataframe = pd.DataFrame(results)
-        return dataframe
-    except pd.errors.EmptyDataError:
-        print("Aucune donnée à charger dans le DataFrame.")
-        return None
-    except Exception as e:
-        print("Une erreur inattendue s'est produite :", str(e))
-        return None
 
-def data_to_df(table_name:str):
-    """return the dataframe of a table from the database
-
-    Args:
-        table_name (str): name of the table from the database
-
-    Returns:
-        Dataframe: pandas dataframe
-    """
-    data = get_data(table_name)
-    
-    if not data:
-        print("Aucune donnée trouvée.")
-        return None
-
-    results = data[0].get('results', [])
-
-    if not results:
-        print("Pas de résultats dans les données.")
-        return None
-    
-    try:
-        dataframe = pd.DataFrame(results)
-        return dataframe
-    except pd.errors.EmptyDataError:
-        print("Aucune donnée à charger dans le DataFrame.")
-        return None
-    except Exception as e:
-        print("Une erreur inattendue s'est produite :", str(e))
-        return None
-
-    
+def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, date2: str, mean_fields: [str]):
+    """ Enable User to get the mean of a field from a collection for a specific date range"""
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$match": {"results.date": {"$gte": date1, "$lte": date2}}},
+        {"$replaceRoot": {"newRoot": "$results"}},
+        {"$group": {"_id": "$date", **{field: {"$avg": f"$data.{field}"} for field in mean_fields}}},
+        {"$sort": {"_id": 1}}
+    ]
+    return list(dbname[collection].aggregate(pipeline))

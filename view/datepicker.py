@@ -4,13 +4,11 @@ from dash.dependencies import Input, Output
 datepicker = html.Div([
     dcc.DatePickerRange(
         id='date-picker',
-        start_date=None,
+        start_date='2020-01-01',
+        end_date='2020-01-01',
         end_date_placeholder_text='End Date'
     ),
-
-    html.Button('Clear', id='clear-button', n_clicks=0, style={'margin-top': '10px'}),
-
-    html.Div(id='output')
+    html.Button('Clear', id='clear-button', n_clicks=0, className='btn btn-primary'),
 ])
 
 @callback(
@@ -21,18 +19,3 @@ datepicker = html.Div([
 )
 def clear_dates(n_clicks):
     return None, None
-
-@callback(
-    Output('output', 'children'),
-    [Input('date-picker', 'start_date'),
-     Input('date-picker', 'end_date')]
-)
-def update_output(start_date, end_date):
-    output_string = ''
-    
-    if start_date == end_date:
-        output_string += f'Single Date selected: {start_date}<br>'
-    else:
-        output_string += f'Date Range selected: {start_date} to {end_date}'
-    
-    return html.Div([html.Br(), html.Br(), html.Div([html.P(output_string)])])

@@ -27,21 +27,6 @@ def fetch_data_by_date(data, start, rows, date):
         print(response.text)
         return 
     
-def get_dataset_lenght(dataset:str):
-    url = "https://odre.opendatasoft.com/api/records/1.0/search/"
-    params = {
-        "dataset": dataset,
-        "rows": 1
-    }
-    response = requests.get(url, params=params)  
-    if response.status_code == 200:
-        data = response.json()
-        return int(data.get('nhits', []))
-    else:
-        print(f"Échec de la requête: {response.status_code}")
-        print(response.text)
-        return 0
-    
 def get_date(data:str, first:bool=True):
     """get the minimum date in a dataset
 
