@@ -1,9 +1,9 @@
 from dash import register_page, html, dcc, callback, Output, Input
-import view.figures as figures
 import dash_bootstrap_components as dbc
-import view.GUI
 import data.db_services as db_services
 import view.datepicker as datepicker
+
+import view.figures as figures
 
 register_page(__name__)
 
@@ -14,7 +14,7 @@ layout = dbc.Container([
         dbc.Col(datepicker.datepicker, width=12),
     ]),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='choropleth-map', figure=view.GUI.build_map(), style={'height': '80vh'}), lg=6),
+        dbc.Col(dcc.Graph(id='choropleth-map', figure=figures.build_map(), style={'height': '80vh'}), lg=6),
         dbc.Col(dcc.Graph(id="stacked_bar_chart_echanges", 
                           figure=figures.build_stacked_bar_chart(
                               db_services.get_data_from_one_date_to_another_date('DonneesNationales', "2020-06-08", "2020-06-09"), 
@@ -35,4 +35,3 @@ def update_bar_chart_echanges(date1, date2):
     if date2 is None:
         return figures.build_stacked_bar_chart(db_services.get_data_from_one_date_to_another_date('DonneesNationales', date1, date1), ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])
     return figures.build_stacked_bar_chart(db_services.get_data_from_one_date_to_another_date('DonneesNationales', date1, date2), ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])
-    

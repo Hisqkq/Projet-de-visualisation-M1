@@ -9,7 +9,7 @@ db_constructor.update_data("eco2mix-regional-cons-def", "DonneesRegionales")
 db_constructor.update_data("eco2mix-regional-tr", "DonneesRegionales")
 
 #### National data ####
-print("Filling national data...")
-db_constructor.create_collection("DonneesNationales")
-db_constructor.update_data("eco2mix-national-cons-def", "DonneesNationales")
-db_constructor.update_data("eco2mix-national-tr", "DonneesNationales")
+# print("Filling national data...")
+# db_constructor.create_collection("DonneesNationales")
+# db_constructor.update_data("eco2mix-national-cons-def", "DonneesNationales")
+# db_constructor.update_data("eco2mix-national-tr", "DonneesNationales")

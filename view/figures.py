@@ -1,6 +1,8 @@
 import plotly.express as px
 import data.db_services as dbs
 
+import view.map
+
 #### data used by graphs ####
 
 prodution = dbs.get_data_group_by_sum("DonneesRegionales", "date_heure", ["consommation", "ech_physiques", "eolien", "hydraulique", "nucleaire", "solaire"], 1)
@@ -9,6 +11,15 @@ données_echanges = dbs.get_data_from_one_date("DonneesNationales", "2020-07-02"
 
 
 #### graphs ####
+
+def build_map(scope: str = 'France') -> px.choropleth:
+    data = view.map.get_json()
+    data = view.map.exclude_overseas_and_corsica(data)
+    if scope != 'France':
+        fig = view.map.build_region_map(data, scope)
+    else:
+        fig = view.map.build_metropolitan_map(data)
+    return fig
 
 line_chart = px.line(prodution, x="_id", y="solaire", labels={
                      "_id": "date_heure",
@@ -27,4 +38,3 @@ def build_stacked_bar_chart(data, arguments):
     return px.bar(data, x="date_heure", y=arguments)
 
 stacked_area_chart_echanges = px.bar(données_echanges, x="date_heure", y=["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])
-
