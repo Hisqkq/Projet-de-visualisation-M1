@@ -95,3 +95,33 @@ def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, 
         {"$sort": {"_id": 1}}
     ]
     return list(dbname[collection].aggregate(pipeline))
+
+
+def get_average_values(collection, fields):
+    """Enable User to get the averages of many fields (when values are not null) from a collection"""
+    # Construct the match conditions to exclude null and ensure the field exists and is of a numeric type
+    match_conditions = {"$and": [{f"results.{field}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}} for field in fields]}
+
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$match": match_conditions},
+        {"$group": {"_id": None, **{f"{field}": {"$avg": f"$results.{field}"} for field in fields}}},
+        {"$project": {"_id": 0, **{f"{field}": 1 for field in fields}}}
+    ]
+    result = list(dbname[collection].aggregate(pipeline))
+    return result[0] if result else {}
+
+
+def get_sum_values(collection, fields):
+    """Enable User to get the sum of many fields (when values are not null) from a collection"""
+    # Construct the match conditions to exclude null and ensure the field exists and is of a numeric type
+    match_conditions = {"$and": [{f"results.{field}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}} for field in fields]}
+
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$match": match_conditions},
+        {"$group": {"_id": None, **{f"{field}": {"$sum": f"$results.{field}"} for field in fields}}},
+        {"$project": {"_id": 0, **{f"{field}": 1 for field in fields}}}
+    ]
+    result = list(dbname[collection].aggregate(pipeline))
+    return result[0] if result else {}

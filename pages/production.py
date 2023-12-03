@@ -16,7 +16,8 @@ layout = html.Div([
     ),
  #   dcc.Graph(figure=figures.line_chart),
     dcc.Dropdown(["eolien", "hydraulique", "nucleaire", "solaire"], 'solaire', id="dropdown"),
-    dcc.Graph(figure=figures.build_stacked_area_chart(figures.test_data_one_date, "solaire"), id="graph_production_stacked_area")
+    dcc.Graph(figure=figures.build_stacked_area_chart(figures.test_data_one_date, "solaire"), id="graph_production_stacked_area"),
+    dcc.Graph(figure=figures.build_pie_chart_production_par_filiere(figures.production_par_filiere), id="pie_chart_production_par_filiere")
 ])
 
 
