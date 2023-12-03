@@ -50,7 +50,7 @@ def build_metropolitan_map(data: dict) -> px.choropleth:
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0}) # Remove margins
     fig.update_layout(showlegend=False) # Remove the legend
     fig.update_layout(dragmode=False) # Disable the drag mode
-
+    
     return fig
 
 def build_region_map(data: dict, region: str) -> px.choropleth:

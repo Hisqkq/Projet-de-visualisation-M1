@@ -14,7 +14,11 @@ layout = dbc.Container([
         dbc.Col(datepicker.datepicker, width=12),
     ]),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='choropleth-map', figure=figures.build_map()), lg=6),
+        dbc.Col(dcc.Graph(
+            id='choropleth-map', 
+            figure=figures.build_map(),
+            config={'displayModeBar': False}
+        ), lg=6),
         dbc.Col(dcc.Graph(id="stacked_bar_chart_echanges", 
                           figure=figures.build_stacked_bar_chart(
                               db_services.get_data_from_one_date_to_another_date('DonneesNationales', "2020-06-08", "2020-06-09"), 

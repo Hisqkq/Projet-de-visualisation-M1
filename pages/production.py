@@ -1,18 +1,24 @@
 from dash import register_page, html, dcc, callback, no_update
 from dash.dependencies import Input, Output
+import time
 
 import view.figures as figures
 from view.datepicker import datepicker
 
 register_page(__name__)
 
+### Variables ###
+france_map = figures.build_map()
+current_map_state = "France"
+#################
+
 layout = html.Div([
     dcc.Link(html.Button('Home'), href='/'),
     datepicker,
     dcc.Graph(
         id='choropleth-map_production',
-        figure=figures.build_map(),
-        style={'height': '80vh'} 
+        figure=france_map,
+        config={'displayModeBar': False}
     ),
  #   dcc.Graph(figure=figures.line_chart),
     dcc.Dropdown(["eolien", "hydraulique", "nucleaire", "solaire"], 'solaire', id="dropdown"),
@@ -25,10 +31,17 @@ layout = html.Div([
     [Input('choropleth-map_production', 'clickData')]
 )
 def update_map(selected_data):
+    global current_map_state
+
     if selected_data is None:
         return no_update
 
-    new_fig = figures.build_map(selected_data['points'][0]['location'])
+    if current_map_state == "France":
+        new_fig = figures.build_map(selected_data['points'][0]['location'])
+        current_map_state = "Region"
+    else:
+        new_fig = france_map
+        current_map_state = "France"
 
     return new_fig
 
