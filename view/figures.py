@@ -1,8 +1,6 @@
 import plotly.express as px
 import data.db_services as dbs
 
-import view.map
-
 #### data used by graphs ####
 
 prodution = dbs.get_data_group_by_sum("DonneesRegionales", "date_heure", ["consommation", "ech_physiques", "eolien", "hydraulique", "nucleaire", "solaire"], 1)
@@ -11,29 +9,6 @@ données_echanges = dbs.get_data_from_one_date("DonneesNationales", "2020-07-02"
 production_par_filiere = dbs.get_average_values("DonneesNationales", ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])
 
 #### graphs ####
-
-def build_map(scope: str = 'France') -> px.choropleth:
-    """Create a map.
-
-    Parameters
-    ----------
-    scope : str, optional
-        Scope of the map, by default 'France'. Can be 'France' or a region.
-    
-    Returns
-    -------
-    px.choropleth
-        Figure containing the map.
-    
-    """
-    data = view.map.get_json()
-    data = view.map.exclude_overseas_and_corsica(data)
-    if scope != 'France':
-        fig = view.map.build_region_map(data, scope)
-    else:
-        fig = view.map.build_metropolitan_map(data)
-    return fig
-
 line_chart = px.line(prodution, x="_id", y="solaire", labels={
                      "_id": "date_heure",
                      "solaire": "Production solaire",

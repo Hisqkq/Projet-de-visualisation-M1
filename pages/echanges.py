@@ -4,6 +4,7 @@ import data.db_services as db_services
 import view.datepicker as datepicker
 
 import view.figures as figures
+import view.map as map
 
 register_page(__name__)
 
@@ -16,7 +17,7 @@ layout = dbc.Container([
     dbc.Row([
         dbc.Col(dcc.Graph(
             id='choropleth-map', 
-            figure=figures.build_map(),
+            figure=map.build_metropolitan_map(),
             config={'displayModeBar': False}
         ), lg=6),
         dbc.Col(dcc.Graph(id="stacked_bar_chart_echanges", 
