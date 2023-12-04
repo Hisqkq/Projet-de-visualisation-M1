@@ -2,7 +2,14 @@
 from pymongo import MongoClient
 
 def get_database():
- 
+   """Get the database
+   
+   Returns
+   -------
+   Database
+       The database.
+   """
+   # Provide the mongodb atlas url to connect python to mongodb using pymongo
    CONNECTION_STRING = "mongodb://localhost:27017"
 
    # Create a connection using MongoClient.

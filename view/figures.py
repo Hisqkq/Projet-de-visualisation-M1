@@ -6,8 +6,8 @@ import view.map
 #### data used by graphs ####
 
 prodution = dbs.get_data_group_by_sum("DonneesRegionales", "date_heure", ["consommation", "ech_physiques", "eolien", "hydraulique", "nucleaire", "solaire"], 1)
-test_data_one_date = dbs.get_data_from_one_date("DonneesRegionales", "2013-01-12")
-données_echanges = dbs.get_data_from_one_date("DonneesNationales", "2020-07-02")
+test_data_one_date = dbs.get_data_from_one_date("DonneesRegionales", "2013-01-01")
+données_echanges = dbs.get_data_from_one_date("DonneesNationales", "2012-01-20")
 production_par_filiere = dbs.get_average_values("DonneesNationales", ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])
 
 #### graphs ####

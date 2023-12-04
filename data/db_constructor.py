@@ -13,13 +13,21 @@ URL = "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/"
 def fetch_data_by_date(data:str, start:int, rows:int, date:str):
     """Fetch data from a dataset by date and offset
     
-    Args:
-        dataset (str): dataset name
-        start (int): offset
-        rows (int): number of rows desired
-        date (str): date
-    Returns:
-        JSON: data
+    Parameters
+    ----------
+    data : str
+        Name of the dataset.
+    start : int
+        Offset.
+    rows : int
+        Number of rows.
+    date : str
+        Date of the data.
+
+    Returns
+    -------
+    dict
+        Dictionary containing the data. 
     """
     url = f"{URL}{data}" + "/records"
     url = f"{URL}{data}" + "/records"
@@ -39,13 +47,19 @@ def fetch_data_by_date(data:str, start:int, rows:int, date:str):
         return 
     
 def get_date(data:str, first:bool=True):
-    """get the minimum date in a dataset
+    """Get the minimum or maximum date in a dataset
 
-    Args:
-        dataset (str): _description_
-        first (bool): True to get first date, False to get last date
-    Returns:
-        _type_: _description_
+    Parameters
+    ----------
+    data : str
+        Name of the dataset.
+    first : bool, optional
+        If True, get the minimum date, else get the maximum date. The default is True.
+    
+    Returns
+    -------
+    str
+        Date.
     """
 
     date = "date" if first else "-date"
@@ -68,13 +82,19 @@ def get_date(data:str, first:bool=True):
         return
     
 def get_length_per_date(data:str, date:str):
-    """get the minimum date in a dataset
+    """Get the number of rows for a given date
 
-    Args:
-        dataset (str): _description_
+    Parameters
+    ----------
+    data : str
+        Name of the dataset.
+    date : str
+        Date of the data.
 
-    Returns:
-        _type_: _description_
+    Returns
+    -------
+    int
+        Number of rows.
     """
     url = f"{URL}{data}" + "/records"
     url = f"{URL}{data}" + "/records"
@@ -98,20 +118,25 @@ def get_length_per_date(data:str, date:str):
 ###### Construction ######     
     
 def create_collection(name:str):
-    """Permet de créer une nouvelle collection dans la database
+    """Create a collection in the database
 
-    Args:
-        name (str): nom de la base de données
+    Parameters
+    ----------
+    name : str
+        Name of the collection.
     """
     if(not (name in dbname.list_collection_names())):
         dbname.create_collection(name)    
     
 def insert_in_coll(table_name:str, data:dict):
-    """Add data (JSON) to a collection
+    """Insert data in a collection (JSON)
 
-    Args:
-        table_name (str): nom de la table visée
-        data (dict): données à injecter
+    Parameters
+    ----------
+    table_name : str
+        Name of the collection.
+    data : dict
+        Data to insert.
     """
     if isinstance(data, list): 
         dbname.get_collection(table_name).insert_many(data)
@@ -121,10 +146,15 @@ def insert_in_coll(table_name:str, data:dict):
 def get_last_date_db(collection):
     """Get the last date in a collection
     
-    Args:
-        collection (str): name of the collection
-    Returns:
-        str : date
+    Parameters
+    ----------
+    collection : str
+        Name of the collection.
+
+    Returns
+    -------
+    str
+        Date.
     """
     pipeline = [
         {"$unwind": "$results"},
@@ -138,18 +168,23 @@ def get_last_date_db(collection):
 def delete_data_last_date(collection):
     """Delete data from the last date in a collection
     
-    Args:
-        collection (str): name of the collection
+    Parameters
+    ----------
+    collection : str
+        Name of the collection.
     """
     last_date = get_last_date_db(collection)
     dbname.get_collection(collection).delete_many({"results.date": last_date})
     
 def update_data(from_data:str, collection_name:str):
-    """Allows to update a collection with new data 100 rows by 100
+    """Update data in a collection
 
-    Args:
-        from_data (str): nom de la dataset API
-        collection_name (str): nom de la collection 
+    Parameters
+    ----------
+    from_data : str
+        Name of the dataset.
+    collection_name : str
+        Name of the collection.
     """
     step = 100
 
@@ -182,9 +217,3 @@ def update_data(from_data:str, collection_name:str):
                 continue
                 
         current_date += datetime.timedelta(days=1)
-
-
-# Run to update date from eco2mix-regional-tr
-#update_data("eco2mix-regional-tr", "eco2mix")
-
-    

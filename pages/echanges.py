@@ -21,7 +21,7 @@ layout = dbc.Container([
         ), lg=6),
         dbc.Col(dcc.Graph(id="stacked_bar_chart_echanges", 
                           figure=figures.build_stacked_bar_chart(
-                              db_services.get_data_from_one_date_to_another_date('DonneesNationales', "2020-06-08", "2020-06-09"), 
+                              db_services.get_data_from_one_date_to_another_date('DonneesNationales', "2012-01-02", "2012-01-03"), 
                               ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])), lg=6)
     ]),
     html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
@@ -36,7 +36,7 @@ layout = dbc.Container([
 def update_bar_chart_echanges(date1, date2):
     """Define dates to avoid callbak error."""
     if date1 is None and date2 is None:
-        date1, date2 = "2020-06-08", "2020-06-09"
+        date1, date2 = "2012-01-02", "2012-01-03"
     elif date1 is None:
         date1 = date2
     elif date2 is None:
