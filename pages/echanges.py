@@ -24,7 +24,7 @@ layout = dbc.Container([
                               db_services.get_data_from_one_date_to_another_date('DonneesNationales', "2020-06-08", "2020-06-09"), 
                               ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])), lg=6)
     ]),
-    html.Footer(html.P("PVA - CMI ISI - 2023", className="text-center"))
+    html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
 ], fluid=True)
 
 
