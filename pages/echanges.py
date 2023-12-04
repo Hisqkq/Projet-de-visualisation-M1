@@ -16,9 +16,7 @@ layout = dbc.Container([
     dbc.Row([
         dbc.Col(dcc.Graph(id='choropleth-map', figure=figures.build_map()), lg=6),
         dbc.Col(dcc.Graph(id="stacked_bar_chart_echanges", 
-                          figure=figures.build_stacked_bar_chart(
-                              db_services.get_data_from_one_date_to_another_date('DonneesNationales', "2020-06-08", "2020-06-09"), 
-                              ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])), lg=6)
+                          figure=figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"], "2020-01-01", "2020-01-02")), lg=6)
     ]),
     html.Footer(html.P("PVA - CMI ISI - 2023", className="text-center"))
 ], fluid=True)
@@ -38,5 +36,4 @@ def update_bar_chart_echanges(date1, date2):
     elif date2 is None:
         date2 = date1
 
-    data = db_services.get_data_from_one_date_to_another_date('DonneesNationales', date1, date2)
-    return figures.build_stacked_bar_chart(data, ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])
+    return figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"], date1, date2)

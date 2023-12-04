@@ -11,5 +11,5 @@ layout = html.Div([
         figure=figures.build_map(),
         style={'height': '80vh'} 
     ),
-    dcc.Graph(figure=figures.line_chart_cons)
+    dcc.Graph(figure=figures.build_line_chart_with_prediction(), id="graph_consommation_prediction"),
 ])

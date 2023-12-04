@@ -16,8 +16,8 @@ layout = html.Div([
     ),
  #   dcc.Graph(figure=figures.line_chart),
     dcc.Dropdown(["eolien", "hydraulique", "nucleaire", "solaire"], 'solaire', id="dropdown"),
-    dcc.Graph(figure=figures.build_stacked_area_chart(figures.test_data_one_date, "solaire"), id="graph_production_stacked_area"),
-    dcc.Graph(figure=figures.build_pie_chart_production_par_filiere(figures.production_par_filiere), id="pie_chart_production_par_filiere")
+    dcc.Graph(figure=figures.build_stacked_area_chart(argument="solaire", date = "2020-01-01"), id="graph_production_stacked_area"),
+    dcc.Graph(figure=figures.build_pie_chart_production_par_filiere(), id="pie_chart_production_par_filiere")
 ])
 
 
@@ -38,4 +38,4 @@ def update_map(selected_data):
     [Input(component_id='dropdown', component_property='value')]
 )
 def update_graph_production_stacked_area(value):
-    return figures.build_stacked_area_chart(figures.test_data_one_date, value)
+    return figures.build_stacked_area_chart(str(value), "2020-01-01")

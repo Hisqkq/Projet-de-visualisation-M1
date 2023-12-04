@@ -1,16 +1,10 @@
 import plotly.express as px
 import data.db_services as dbs
+import pandas as pd
+import datetime
 
 import view.map
 
-#### data used by graphs ####
-
-prodution = dbs.get_data_group_by_sum("DonneesRegionales", "date_heure", ["consommation", "ech_physiques", "eolien", "hydraulique", "nucleaire", "solaire"], 1)
-test_data_one_date = dbs.get_data_from_one_date("DonneesRegionales", "2013-01-12")
-données_echanges = dbs.get_data_from_one_date("DonneesNationales", "2020-07-02")
-production_par_filiere = dbs.get_average_values("DonneesNationales", ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])
-
-#### graphs ####
 
 def build_map(scope: str = 'France') -> px.choropleth:
     data = view.map.get_json()
@@ -21,34 +15,35 @@ def build_map(scope: str = 'France') -> px.choropleth:
         fig = view.map.build_metropolitan_map(data)
     return fig
 
-line_chart = px.line(prodution, x="_id", y="solaire", labels={
-                     "_id": "date_heure",
-                     "solaire": "Production solaire",
-                 },
-                title="Production d'enérgie solaire en France")
 
-line_chart_cons = px.bar(données_echanges, x="date_heure", y="consommation")
+def build_line_chart_with_prediction(date=datetime.datetime.now().strftime("%Y-%m-%d")):
+    # Fetching data and converting JSON to DataFrame
+    json_data = dbs.get_data_from_one_date("DonneesNationales", date)
+    data = pd.DataFrame(json_data)
+
+    # Check if the necessary columns are in the DataFrame
+    if not {'date_heure', 'consommation', 'prevision_j', 'prevision_j1'}.issubset(data.columns):
+        raise ValueError("One or more required columns are missing in the data")
+
+    # Creating the line chart
+    line_chart_cons = px.area(data, x="date_heure", y="consommation")
+    line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j"], mode='lines', name='Prediction J')
+    line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j1"], mode='lines', name='Prediction J-1')
+
+    return line_chart_cons
 
 
-def build_stacked_area_chart(data, argument):
-    return px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}")
-
-
-def build_stacked_bar_chart(data, arguments):
-    return px.bar(data, x="date_heure", y=arguments)
-
-stacked_area_chart_echanges = px.bar(données_echanges, x="date_heure", y=["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])
-
-
-def build_pie_chart_production_par_filiere(data):
+def build_pie_chart_production_par_filiere():
     """Create a pie chart.
     
     Args:
         data (dict): Dictionary containing the data.
     Returns:
         plotly.graph_objects.Figure: Figure containing the pie chart."""
+        
+    data = dbs.get_average_values("DonneesNationales", ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])
+
     pie_chart_production_par_filiere = px.pie(names=list(data.keys()), values=list(data.values()), title='Répartition de la Production des Sources d’Énergie')
-    # Customize the pie chart layout
     pie_chart_production_par_filiere.update_traces(
         textposition='inside',
         textinfo='percent+label',
@@ -58,7 +53,6 @@ def build_pie_chart_production_par_filiere(data):
             line=dict(color='#FFFFFF', width=2)
         )
     )
-
     pie_chart_production_par_filiere.update_layout(
         showlegend=True,
         legend=dict(
@@ -73,6 +67,29 @@ def build_pie_chart_production_par_filiere(data):
             font=dict(size=24)
         )
     )
-
     return pie_chart_production_par_filiere
 
+
+def build_stacked_area_chart(argument = "nucleaire", date = datetime.datetime.now().strftime("%Y-%m-%d")):
+    data = dbs.get_data_from_one_date("DonneesRegionales", date)
+    return px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}")
+
+
+def build_stacked_bar_chart(arguments, starting_date, ending_date):
+    # Fetching data and converting JSON to DataFrame
+    json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
+    data = pd.DataFrame(json_data)
+    
+    # Convert all the string values to float
+    for arg in arguments:
+        data[arg] = data[arg].astype(float)
+
+    # Check if the necessary columns are in the DataFrame
+    if not all(arg in data.columns for arg in arguments):
+        raise ValueError("One or more specified arguments are not in the data")
+
+    # Reshaping the data for stacked bar chart
+    data_melted = data.melt(id_vars='date_heure', value_vars=arguments, var_name='category', value_name='value')
+
+    # Creating the stacked bar chart
+    return px.bar(data_melted, x='date_heure', y='value', color='category', barmode='stack')
