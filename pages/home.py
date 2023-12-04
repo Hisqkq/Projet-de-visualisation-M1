@@ -28,7 +28,7 @@ layout = html.Div(
                             html.H1('Production'),
                             dcc.Graph(
                                 id="pie_chart_production_par_filiere",
-                                figure=figures.build_pie_chart_production_par_filiere(figures.production_par_filiere).update_layout(title_text=""),
+                                figure=figures.build_pie_chart_production_par_filiere().update_layout(title_text=""),
                             )
                         ]
                     ), href='/production'), width=4),
@@ -36,7 +36,7 @@ layout = html.Div(
                     dcc.Link(html.Div(
                         children=[
                             html.H1('Consommation'),
-                            dcc.Graph(figure=figures.line_chart_cons)
+                            dcc.Graph(figure=figures.build_line_chart_with_prediction(), id="graph_consommation_prediction"),
                         ]
                     ), href='/consommation'), width=4)
             ], className="mt-3")
