@@ -13,6 +13,19 @@ production_par_filiere = dbs.get_average_values("DonneesNationales", ["eolien", 
 #### graphs ####
 
 def build_map(scope: str = 'France') -> px.choropleth:
+    """Create a map.
+
+    Parameters
+    ----------
+    scope : str, optional
+        Scope of the map, by default 'France'. Can be 'France' or a region.
+    
+    Returns
+    -------
+    px.choropleth
+        Figure containing the map.
+    
+    """
     data = view.map.get_json()
     data = view.map.exclude_overseas_and_corsica(data)
     if scope != 'France':

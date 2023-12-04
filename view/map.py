@@ -6,16 +6,34 @@ JSON = './data/regions.geojson'
 
 def get_json(path: str = JSON) -> dict:
     """Load a JSON file.
-    :param path: Path to the JSON file.
-    :return: Dictionary containing the JSON file.
+
+    Parameters
+    ----------
+    path : str
+        Path to the JSON file.
+    
+    Returns
+    -------
+    dict
+        Dictionary containing the data.
+    
     """
     with open(path) as JSON_file:
         return json.load(JSON_file)
 
 def exclude_overseas_and_corsica(data: dict) -> dict:
-    """Filter the metropolitan regions from the data.
-    :param data: Dictionary containing the data.
-    :return: Dictionary containing the metropolitan regions.
+    """Exclude the overseas and Corsica from the data.
+
+    Parameters
+    ----------
+    data : dict
+        Dictionary containing the data.
+    
+    Returns
+    -------
+    dict
+        Dictionary containing the regions without the overseas and Corsica.
+    
     """
     codes_out = ["01", "02", "03", "04", "06", "94"]
     data['features'] = [f for f in data['features'] if f['properties']['code'] not in codes_out]
@@ -23,8 +41,17 @@ def exclude_overseas_and_corsica(data: dict) -> dict:
 
 def build_metropolitan_map(data: dict) -> px.choropleth:
     """Create a metropolitan map.
-    :param data: Dictionary containing the data.
-    :return: Figure containing the map.
+    
+    Parameters
+    ----------
+    data : dict
+        Dictionary containing the data.
+    
+    Returns
+    -------
+    px.choropleth
+        Figure containing the map.
+    
     """
     features = data['features']
     tab = {'code': [], 'nom': [], 'geometry': []}
@@ -42,8 +69,7 @@ def build_metropolitan_map(data: dict) -> px.choropleth:
                         featureidkey="properties.nom",  # Key identifying the region in the GeoJSON
                         locations="nom",  # Column in the DataFrame corresponding to the regions
                         color="code",  # Column in the DataFrame corresponding to the values for the coloration
-                        color_continuous_scale="Viridis",  # Scale of colors
-                        title="Carte des régions de France")
+                        color_continuous_scale="Viridis")  # Scale of colors
 
     # Update the map
     fig.update_geos(fitbounds="locations", visible=False) # Fit the map to the regions
@@ -55,9 +81,19 @@ def build_metropolitan_map(data: dict) -> px.choropleth:
 
 def build_region_map(data: dict, region: str) -> px.choropleth:
     """Create a map for a specific region.
-    :param data: Dictionary containing the data.
-    :param region: Region to display.
-    :return: Figure containing the map.
+    
+    Parameters
+    ----------
+    data : dict
+        Dictionary containing the data.
+    region : str
+        Name of the region.
+    
+    Returns
+    -------
+    px.choropleth
+        Figure containing the map.
+    
     """
     data = [f for f in data['features'] if f['properties']['nom'] == region][0]
     tab = {'code': data['properties']['code'], 'nom': data['properties']['nom'], 'geometry': data['geometry']}
@@ -70,8 +106,7 @@ def build_region_map(data: dict, region: str) -> px.choropleth:
                         featureidkey="properties.nom",  # Key identifying the region in the GeoJSON
                         locations="nom",  # Column in the DataFrame corresponding to the regions
                         color="code",  # Column in the DataFrame corresponding to the values for the coloration
-                        color_continuous_scale="Viridis",  # Scale of colors
-                        title="Carte des régions de France")
+                        color_continuous_scale="Viridis")  # Scale of colors
 
     # Update the map
     fig.update_geos(fitbounds="locations", visible=False) # Fit the map to the regions

@@ -14,13 +14,17 @@ layout = dbc.Container([
         dbc.Col(datepicker.datepicker, width=12),
     ]),
     dbc.Row([
-        dbc.Col(dcc.Graph(id='choropleth-map', figure=figures.build_map()), lg=6),
+        dbc.Col(dcc.Graph(
+            id='choropleth-map', 
+            figure=figures.build_map(),
+            config={'displayModeBar': False}
+        ), lg=6),
         dbc.Col(dcc.Graph(id="stacked_bar_chart_echanges", 
                           figure=figures.build_stacked_bar_chart(
                               db_services.get_data_from_one_date_to_another_date('DonneesNationales', "2020-06-08", "2020-06-09"), 
                               ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])), lg=6)
     ]),
-    html.Footer(html.P("PVA - CMI ISI - 2023", className="text-center"))
+    html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
 ], fluid=True)
 
 

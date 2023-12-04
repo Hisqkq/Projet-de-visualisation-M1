@@ -9,7 +9,7 @@ layout = html.Div([
     dcc.Graph(
         id='choropleth-map',
         figure=figures.build_map(),
-        style={'height': '80vh'} 
+        config={'displayModeBar': False}
     ),
     dcc.Graph(figure=figures.line_chart_cons)
 ])
