@@ -5,7 +5,7 @@ import configparser
 config = configparser.ConfigParser()
 config.read('data/config.ini')
 
-JSON = config.get('GeoJSON', 'json')
+JSON = config.get('GeoJSON', 'path')
 
 def get_json(path: str = JSON) -> dict:
     """Load a JSON file.
