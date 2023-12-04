@@ -31,6 +31,7 @@ layout = html.Div([
     [Input('choropleth-map_production', 'clickData')]
 )
 def update_map(selected_data):
+    """Update the map when a region is selected."""
     global current_map_state
 
     if selected_data is None:
