@@ -42,7 +42,7 @@ layout = html.Div([
             ),
             dcc.Graph(
                 id="pie_chart_production_par_filiere",
-                figure=figures.build_pie_chart_production_par_filiere()
+                figure=figures.build_pie_chart_production_by_field()
             )
         ], width=6),
     ]),
