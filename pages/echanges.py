@@ -34,7 +34,7 @@ layout = dbc.Container([
 def update_bar_chart_echanges(date1, date2):
     """Define dates to avoid callbak error."""
     if date1 is None and date2 is None:
-        date1, date2 = "2020-06-08", "2020-06-09"
+        date1, date2 = "2012-01-02", "2012-01-03"
     elif date1 is None:
         date1 = date2
     elif date2 is None:
