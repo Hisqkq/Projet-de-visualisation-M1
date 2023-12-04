@@ -1,5 +1,6 @@
 from dash import register_page, html, dcc, callback, no_update
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 
 import view.figures as figures
 from view.datepicker import datepicker
@@ -12,6 +13,7 @@ current_map_state = "France"
 #################
 
 layout = html.Div([
+    dbc.NavbarSimple(brand="La production d'électricité en France", color="primary", dark=True, className="mb-4"),
     dcc.Link(html.Button('Home'), href='/'),
     datepicker,
     dcc.Graph(
@@ -22,7 +24,8 @@ layout = html.Div([
  #   dcc.Graph(figure=figures.line_chart),
     dcc.Dropdown(["eolien", "hydraulique", "nucleaire", "solaire"], 'solaire', id="dropdown"),
     dcc.Graph(figure=figures.build_stacked_area_chart(figures.test_data_one_date, "solaire"), id="graph_production_stacked_area"),
-    dcc.Graph(figure=figures.build_pie_chart_production_par_filiere(figures.production_par_filiere), id="pie_chart_production_par_filiere")
+    dcc.Graph(figure=figures.build_pie_chart_production_par_filiere(figures.production_par_filiere), id="pie_chart_production_par_filiere"),
+    html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
 ])
 
 

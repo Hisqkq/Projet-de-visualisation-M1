@@ -40,6 +40,7 @@ layout = html.Div(
                         ]
                     ), href='/consommation'), width=4)
             ], className="mt-3")
-        ])
+        ]),
+        html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ]
 )
