@@ -17,18 +17,37 @@ layout = html.Div([
     dbc.NavbarSimple(brand="La production d'électricité en France", color="primary", dark=True, className="mb-4"),
     dcc.Link(html.Button('Home'), href='/'),
     datepicker,
-    dcc.Graph(
-        id='choropleth-map_production',
-        figure=france_map,
-        config={'displayModeBar': False}
-    ),
- #   dcc.Graph(figure=figures.line_chart),
-    dcc.Dropdown(["eolien", "hydraulique", "nucleaire", "solaire"], 'solaire', id="dropdown"),
-    dcc.Graph(figure=figures.build_stacked_area_chart(argument="solaire", date = "2020-01-01"), id="graph_production_stacked_area"),
-    dcc.Graph(figure=figures.build_pie_chart_production_par_filiere(), id="pie_chart_production_par_filiere"),
+    dbc.Row([
+        dbc.Col([
+            dcc.Graph(
+                id='choropleth-map_production',
+                figure=france_map,
+                config={'displayModeBar': False}
+            )
+        ], width=6),
+        dbc.Col([
+            dcc.Dropdown(
+                id="dropdown",
+                options=[
+                    {'label': 'Eolien', 'value': 'eolien'},
+                    {'label': 'Hydraulique', 'value': 'hydraulique'},
+                    {'label': 'Nucléaire', 'value': 'nucleaire'},
+                    {'label': 'Solaire', 'value': 'solaire'}
+                ],
+                value='solaire'
+            ),
+            dcc.Graph(
+                id="graph_production_stacked_area",
+                figure=figures.build_stacked_area_chart(argument="solaire", date="2020-01-01")
+            ),
+            dcc.Graph(
+                id="pie_chart_production_par_filiere",
+                figure=figures.build_pie_chart_production_par_filiere()
+            )
+        ], width=6),
+    ]),
     html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
 ])
-
 
 @callback(
     Output('choropleth-map_production', 'figure'),
@@ -36,7 +55,7 @@ layout = html.Div([
 )
 def update_map(selected_data):
     """Update the map when a region is selected."""
-    global current_map_state
+    global current_map_state # TODO: Fix this
 
     if selected_data is None:
         return no_update

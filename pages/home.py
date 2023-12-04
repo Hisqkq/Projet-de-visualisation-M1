@@ -1,11 +1,10 @@
-import dash
-from dash import html, dcc
+from dash import register_page, html, dcc
 import dash_bootstrap_components as dbc
 
 import view.figures as figures
 import view.map as map
 
-dash.register_page(__name__, path='/')
+register_page(__name__, path='/')
 
 layout = html.Div(
     children=[
@@ -29,7 +28,7 @@ layout = html.Div(
                             html.H1('Production'),
                             dcc.Graph(
                                 id="pie_chart_production_par_filiere",
-                                figure=figures.build_pie_chart_production_par_filiere().update_layout(title_text=""),
+                                figure=figures.build_pie_chart_production_par_filiere().update_layout(title_text=""), # TODO: Fix title
                             )
                         ]
                     ), href='/production'), width=4),
@@ -37,7 +36,7 @@ layout = html.Div(
                     dcc.Link(html.Div(
                         children=[
                             html.H1('Consommation'),
-                            dcc.Graph(figure=figures.build_line_chart_with_prediction(), id="graph_consommation_prediction"),
+                            dcc.Graph(figure=figures.build_line_chart_with_prediction(), id="graph_consommation_prediction")
                         ]
                     ), href='/consommation'), width=4)
             ], className="mt-3")

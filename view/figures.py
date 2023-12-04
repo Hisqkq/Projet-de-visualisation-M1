@@ -1,7 +1,8 @@
 import plotly.express as px
-import data.db_services as dbs
 import pandas as pd
 import datetime
+
+import data.db_services as dbs
 
 def build_line_chart_with_prediction(date=datetime.datetime.now().strftime("%Y-%m-%d")):
     # Fetching data and converting JSON to DataFrame
