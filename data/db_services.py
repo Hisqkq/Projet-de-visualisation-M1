@@ -42,7 +42,13 @@ def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], 
 
 
 def get_data_from_one_date(collection: str, date: str):
-    """ Enable User to get the data from a collection for a specific date"""
+    """ Enable User to get the data from a collection for a specific date
+    
+    Args:
+        collection (str): Name of the collection.
+        date (str): Date.
+    Returns:
+        list: List of documents."""
     pipeline = [
         {"$unwind": "$results"},
         {"$match": {"results.date": date}},
@@ -53,7 +59,14 @@ def get_data_from_one_date(collection: str, date: str):
 
 
 def get_data_from_one_date_and_one_region(collection: str, date: str, region: str):
-    """ Enable User to get the data from a collection for a specific date and a specific region"""
+    """ Enable User to get the data from a collection for a specific date and a specific region
+    
+    Args:
+        collection (str): Name of the collection.
+        date (str): Date.
+        region (str): Region.
+    Returns:
+        list: List of documents."""
     pipeline = [
         {"$unwind": "$results"},
         {"$match": {"results.date": date, "results.libelle_region": region}},
@@ -64,7 +77,14 @@ def get_data_from_one_date_and_one_region(collection: str, date: str, region: st
 
 
 def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: str):
-    """ Enable User to get the data from a collection for a specific date range"""
+    """ Enable User to get the data from a collection for a specific date range
+    
+    Args:
+        collection (str): Name of the collection.
+        date1 (str): First date.
+        date2 (str): Second date.
+    Returns:
+        list: List of documents."""
     pipeline = [
         {"$unwind": "$results"},
         {"$match": {"results.date": {"$gte": date1, "$lte": date2}}},
@@ -75,7 +95,15 @@ def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: s
 
 
 def get_data_from_one_date_to_another_date_and_one_region(collection: str, date1: str, date2: str, region: str):
-    """ Enable User to get the data from a collection for a specific date range and a specific region"""
+    """ Enable User to get the data from a collection for a specific date range and a specific region
+    
+    Args:
+        collection (str): Name of the collection.
+        date1 (str): First date.
+        date2 (str): Second date.
+        region (str): Region.
+    Returns:
+        list: List of documents."""
     pipeline = [
         {"$unwind": "$results"},
         {"$match": {"results.date": {"$gte": date1, "$lte": date2}, "results.libelle_region": region}},
@@ -86,7 +114,15 @@ def get_data_from_one_date_to_another_date_and_one_region(collection: str, date1
 
 
 def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, date2: str, mean_fields: [str]):
-    """ Enable User to get the mean of a field from a collection for a specific date range"""
+    """ Enable User to get the mean of a field from a collection for a specific date range
+    
+    Args:
+        collection (str): Name of the collection.
+        date1 (str): First date.
+        date2 (str): Second date.
+        mean_fields (list of str): Mean fields.
+    Returns:
+        list: List of documents."""
     pipeline = [
         {"$unwind": "$results"},
         {"$match": {"results.date": {"$gte": date1, "$lte": date2}}},
@@ -98,7 +134,13 @@ def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, 
 
 
 def get_average_values(collection, fields):
-    """Enable User to get the averages of many fields (when values are not null) from a collection"""
+    """Enable User to get the averages of many fields (when values are not null) from a collection
+    
+    Args:
+        collection (str): Name of the collection.
+        fields (list of str): Fields.
+    Returns:
+        dict: Dictionary of averages."""
     # Construct the match conditions to exclude null and ensure the field exists and is of a numeric type
     match_conditions = {"$and": [{f"results.{field}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}} for field in fields]}
 
@@ -113,7 +155,13 @@ def get_average_values(collection, fields):
 
 
 def get_sum_values(collection, fields):
-    """Enable User to get the sum of many fields (when values are not null) from a collection"""
+    """Enable User to get the sum of many fields (when values are not null) from a collection
+    
+    Args:
+        collection (str): Name of the collection.
+        fields (list of str): Fields.
+    Returns:
+        dict: Dictionary of sums."""
     # Construct the match conditions to exclude null and ensure the field exists and is of a numeric type
     match_conditions = {"$and": [{f"results.{field}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}} for field in fields]}
 

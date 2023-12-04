@@ -10,7 +10,17 @@ dbname = mongodb.get_database()
 
 URL = "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/"
 
-def fetch_data_by_date(data, start, rows, date):
+def fetch_data_by_date(data:str, start:int, rows:int, date:str):
+    """Fetch data from a dataset by date and offset
+    
+    Args:
+        dataset (str): dataset name
+        start (int): offset
+        rows (int): number of rows desired
+        date (str): date
+    Returns:
+        JSON: data
+    """
     url = f"{URL}{data}" + "/records"
     params = {
         "offset" : start,
