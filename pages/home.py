@@ -3,6 +3,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 import view.figures as figures
+import view.map as map
 
 dash.register_page(__name__, path='/')
 
@@ -17,7 +18,7 @@ layout = html.Div(
                             html.H1('Échanges'),
                             dcc.Graph(
                                 id='choropleth-map',
-                                figure=figures.build_map(),
+                                figure=map.build_metropolitan_map(),
                                 config={'displayModeBar': False}
                             ),
                         ]
