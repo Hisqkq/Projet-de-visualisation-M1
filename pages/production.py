@@ -3,12 +3,13 @@ from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
 import view.figures as figures
+import view.map as map
 from view.datepicker import datepicker
 
 register_page(__name__)
 
 ### Variables ###
-france_map = figures.build_map()
+france_map = map.build_metropolitan_map()
 current_map_state = "France"
 #################
 
@@ -41,7 +42,7 @@ def update_map(selected_data):
         return no_update
 
     if current_map_state == "France":
-        new_fig = figures.build_map(selected_data['points'][0]['location'])
+        new_fig = map.build_region_map(selected_data['points'][0]['location'])
         current_map_state = "Region"
     else:
         new_fig = france_map

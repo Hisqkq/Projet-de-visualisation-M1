@@ -2,6 +2,7 @@ from dash import register_page, html, dcc
 import dash_bootstrap_components as dbc
 
 import view.figures as figures
+import view.map as map
 
 register_page(__name__)
 
@@ -10,7 +11,7 @@ layout = html.Div([
     dcc.Link(html.Button('Home'), href='/'),
     dcc.Graph(
         id='choropleth-map',
-        figure=figures.build_map(),
+        figure=map.build_metropolitan_map(),
         config={'displayModeBar': False}
     ),
     dcc.Graph(figure=figures.build_line_chart_with_prediction(), id="graph_consommation_prediction"),

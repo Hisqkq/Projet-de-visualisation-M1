@@ -3,32 +3,6 @@ import data.db_services as dbs
 import pandas as pd
 import datetime
 
-import view.map
-
-
-def build_map(scope: str = 'France') -> px.choropleth:
-    """Create a map.
-
-    Parameters
-    ----------
-    scope : str, optional
-        Scope of the map, by default 'France'. Can be 'France' or a region.
-    
-    Returns
-    -------
-    px.choropleth
-        Figure containing the map.
-    
-    """
-    data = view.map.get_json()
-    data = view.map.exclude_overseas_and_corsica(data)
-    if scope != 'France':
-        fig = view.map.build_region_map(data, scope)
-    else:
-        fig = view.map.build_metropolitan_map(data)
-    return fig
-
-
 def build_line_chart_with_prediction(date=datetime.datetime.now().strftime("%Y-%m-%d")):
     # Fetching data and converting JSON to DataFrame
     json_data = dbs.get_data_from_one_date("DonneesNationales", date)
