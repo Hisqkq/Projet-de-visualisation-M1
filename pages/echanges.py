@@ -34,8 +34,13 @@ layout = dbc.Container([
      Input('date-picker', 'end_date')]
 )
 def update_bar_chart_echanges(date1, date2):
-    if date1 is None and date2 is None: # Avoid error with callback
-        return figures.build_stacked_bar_chart(db_services.get_data_from_one_date_to_another_date('DonneesNationales', "2020-06-08", "2020-06-09"), ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])
-    if date2 is None:
-        return figures.build_stacked_bar_chart(db_services.get_data_from_one_date_to_another_date('DonneesNationales', date1, date1), ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])
-    return figures.build_stacked_bar_chart(db_services.get_data_from_one_date_to_another_date('DonneesNationales', date1, date2), ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])
+    # Define dates to avoid callbak error
+    if date1 is None and date2 is None:
+        date1, date2 = "2020-06-08", "2020-06-09"
+    elif date1 is None:
+        date1 = date2
+    elif date2 is None:
+        date2 = date1
+
+    data = db_services.get_data_from_one_date_to_another_date('DonneesNationales', date1, date2)
+    return figures.build_stacked_bar_chart(data, ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"])

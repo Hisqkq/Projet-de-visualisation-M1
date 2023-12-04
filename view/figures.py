@@ -54,6 +54,12 @@ stacked_area_chart_echanges = px.bar(données_echanges, x="date_heure", y=["ech_
 
 
 def build_pie_chart_production_par_filiere(data):
+    """Create a pie chart.
+    
+    Args:
+        data (dict): Dictionary containing the data.
+    Returns:
+        plotly.graph_objects.Figure: Figure containing the pie chart."""
     pie_chart_production_par_filiere = px.pie(names=list(data.keys()), values=list(data.values()), title='Répartition de la Production des Sources d’Énergie')
     # Customize the pie chart layout
     pie_chart_production_par_filiere.update_traces(
