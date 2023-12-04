@@ -26,7 +26,10 @@ layout = html.Div(
                     dcc.Link(html.Div(
                         children=[
                             html.H1('Production'),
-                            html.Img(src='./assets/images/production.png')
+                            dcc.Graph(
+                                id="pie_chart_production_par_filiere",
+                                figure=figures.build_pie_chart_production_par_filiere(figures.production_par_filiere).update_layout(title_text=""),
+                            )
                         ]
                     ), href='/production'), width=4),
                 dbc.Col(

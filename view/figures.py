@@ -73,19 +73,10 @@ def build_pie_chart_production_par_filiere(data):
     )
 
     pie_chart_production_par_filiere.update_layout(
-        showlegend=True,
-        legend=dict(
-            title='Sources d’Énergie',
-            orientation='h',
-            yanchor='bottom',
-            y=1.02,
-            xanchor='right',
-            x=1
-        ),
+        showlegend=False,
         title=dict(
             font=dict(size=24)
         )
     )
 
     return pie_chart_production_par_filiere
-

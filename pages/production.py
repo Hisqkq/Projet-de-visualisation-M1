@@ -1,6 +1,5 @@
 from dash import register_page, html, dcc, callback, no_update
 from dash.dependencies import Input, Output
-import time
 
 import view.figures as figures
 from view.datepicker import datepicker
