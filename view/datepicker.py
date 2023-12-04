@@ -15,7 +15,6 @@ datepicker = html.Div([
     Output('date-picker', 'start_date'),
     Output('date-picker', 'end_date'),
     Input('clear-button', 'n_clicks'),
-    prevent_initial_call=True
 )
-def clear_dates(n_clicks):
+def clear_dates(_):
     return None, None

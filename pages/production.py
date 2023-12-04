@@ -1,23 +1,31 @@
 from dash import register_page, html, dcc, callback, no_update
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 
 import view.figures as figures
 from view.datepicker import datepicker
 
 register_page(__name__)
 
+### Variables ###
+france_map = figures.build_map()
+current_map_state = "France"
+#################
+
 layout = html.Div([
+    dbc.NavbarSimple(brand="La production d'électricité en France", color="primary", dark=True, className="mb-4"),
     dcc.Link(html.Button('Home'), href='/'),
     datepicker,
     dcc.Graph(
         id='choropleth-map_production',
-        figure=figures.build_map(),
-        style={'height': '80vh'} 
+        figure=france_map,
+        config={'displayModeBar': False}
     ),
  #   dcc.Graph(figure=figures.line_chart),
     dcc.Dropdown(["eolien", "hydraulique", "nucleaire", "solaire"], 'solaire', id="dropdown"),
     dcc.Graph(figure=figures.build_stacked_area_chart(argument="solaire", date = "2020-01-01"), id="graph_production_stacked_area"),
-    dcc.Graph(figure=figures.build_pie_chart_production_par_filiere(), id="pie_chart_production_par_filiere")
+    dcc.Graph(figure=figures.build_pie_chart_production_par_filiere(), id="pie_chart_production_par_filiere"),
+    html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
 ])
 
 
@@ -26,10 +34,18 @@ layout = html.Div([
     [Input('choropleth-map_production', 'clickData')]
 )
 def update_map(selected_data):
+    """Update the map when a region is selected."""
+    global current_map_state
+
     if selected_data is None:
         return no_update
 
-    new_fig = figures.build_map(selected_data['points'][0]['location'])
+    if current_map_state == "France":
+        new_fig = figures.build_map(selected_data['points'][0]['location'])
+        current_map_state = "Region"
+    else:
+        new_fig = france_map
+        current_map_state = "France"
 
     return new_fig
 

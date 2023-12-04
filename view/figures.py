@@ -7,6 +7,19 @@ import view.map
 
 
 def build_map(scope: str = 'France') -> px.choropleth:
+    """Create a map.
+
+    Parameters
+    ----------
+    scope : str, optional
+        Scope of the map, by default 'France'. Can be 'France' or a region.
+    
+    Returns
+    -------
+    px.choropleth
+        Figure containing the map.
+    
+    """
     data = view.map.get_json()
     data = view.map.exclude_overseas_and_corsica(data)
     if scope != 'France':
@@ -54,15 +67,7 @@ def build_pie_chart_production_par_filiere():
         )
     )
     pie_chart_production_par_filiere.update_layout(
-        showlegend=True,
-        legend=dict(
-            title='Sources d’Énergie',
-            orientation='h',
-            yanchor='bottom',
-            y=1.02,
-            xanchor='right',
-            x=1
-        ),
+        showlegend=False,
         title=dict(
             font=dict(size=24)
         )
