@@ -4,23 +4,23 @@ Bienvenue sur notre projet de visualisation analytique CMI ISI.
 
 ## Getting started
 
-Creer l'environement virtuel:
+Créer l'environnement virtuel:
 ```bash
 python -m venv venv
 ```
-Activer l'environement virtuel (Windows):
+Activer l'environnement virtuel (Windows):
 ```bash
 venv\Scripts\activate
 ```
-Activer l'environement virtuel (Mac ou Linux):
+Activer l'environnement virtuel (Mac ou Linux):
 ```bash
 source venv/bin/activate
 ```
-Si il y a une erreur après avoir executer la commande précédente, essayez ceci:
+Si il y a une erreur après avoir exécuter la commande précédente, essayez ceci:
 ```bash
 Set-ExecutionPolicy Unrestricted -Scope Process
 ```
-Installer les Dépendances:
+Installer les dépendances:
 ```bash
 pip install -r requirements.txt
 ```
@@ -30,16 +30,14 @@ Lancer l'app localement
 python app.py
 ```
 
-Quitter l'environement virtuel:
+Quitter l'environnement virtuel:
 ```bash
 deactivate
 ```
 
 ## Data
 
-link:
 
-Ici ajouter une decription generale des données
 
 
 
