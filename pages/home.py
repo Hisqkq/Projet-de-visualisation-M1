@@ -28,7 +28,7 @@ layout = html.Div(
                             html.H1('Production'),
                             dcc.Graph(
                                 id="pie_chart_production_par_filiere",
-                                figure=figures.build_pie_chart_production_par_filiere().update_layout(title_text=""),
+                                figure=figures.build_pie_chart_production_by_field().update_layout(title_text=""),
                             )
                         ]
                     ), href='/production'), width=4),

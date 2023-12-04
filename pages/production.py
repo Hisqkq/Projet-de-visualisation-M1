@@ -24,7 +24,7 @@ layout = html.Div([
  #   dcc.Graph(figure=figures.line_chart),
     dcc.Dropdown(["eolien", "hydraulique", "nucleaire", "solaire"], 'solaire', id="dropdown"),
     dcc.Graph(figure=figures.build_stacked_area_chart(argument="solaire", date = "2020-01-01"), id="graph_production_stacked_area"),
-    dcc.Graph(figure=figures.build_pie_chart_production_par_filiere(), id="pie_chart_production_par_filiere"),
+    dcc.Graph(figure=figures.build_pie_chart_production_by_field(), id="pie_chart_production_par_filiere"),
     html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
 ])
 

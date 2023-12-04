@@ -1,6 +1,5 @@
 import plotly.express as px
 import data.db_services as dbs
-import pandas as pd
 import datetime
 
 import view.map
@@ -30,9 +29,21 @@ def build_map(scope: str = 'France') -> px.choropleth:
 
 
 def build_line_chart_with_prediction(date=datetime.datetime.now().strftime("%Y-%m-%d")):
+    """Create a line chart.
+    
+    Parameters
+    ----------
+    date : str, optional
+        Date, by default datetime.datetime.now().strftime("%Y-%m-%d").
+        
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        Figure containing the line chart.
+    """
     # Fetching data and converting JSON to DataFrame
     json_data = dbs.get_data_from_one_date("DonneesNationales", date)
-    data = pd.DataFrame(json_data)
+    data = dbs.transform_data_to_df(json_data)
 
     # Check if the necessary columns are in the DataFrame
     if not {'date_heure', 'consommation', 'prevision_j', 'prevision_j1'}.issubset(data.columns):
@@ -46,14 +57,14 @@ def build_line_chart_with_prediction(date=datetime.datetime.now().strftime("%Y-%
     return line_chart_cons
 
 
-def build_pie_chart_production_par_filiere():
+def build_pie_chart_production_by_field():
     """Create a pie chart.
     
-    Args:
-        data (dict): Dictionary containing the data.
-    Returns:
-        plotly.graph_objects.Figure: Figure containing the pie chart."""
-        
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        Figure containing the pie chart.
+    """
     data = dbs.get_average_values("DonneesNationales", ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])
 
     pie_chart_production_par_filiere = px.pie(names=list(data.keys()), values=list(data.values()), title='Répartition de la Production des Sources d’Énergie')
@@ -76,14 +87,42 @@ def build_pie_chart_production_par_filiere():
 
 
 def build_stacked_area_chart(argument = "nucleaire", date = datetime.datetime.now().strftime("%Y-%m-%d")):
+    """Create a stacked area chart.
+    
+    Parameters
+    ----------
+    argument : str, optional
+        Argument, by default "nucleaire".
+    date : str, optional
+        Date, by default datetime.datetime.now().strftime("%Y-%m-%d").
+        
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        Figure containing the stacked area chart."""
     data = dbs.get_data_from_one_date("DonneesRegionales", date)
     return px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}")
 
 
 def build_stacked_bar_chart(arguments, starting_date, ending_date):
+    """Create a stacked bar chart.
+    
+    Parameters
+    ----------
+    arguments : list
+        List of arguments.
+    starting_date : str
+        Starting date.
+    ending_date : str
+        Ending date.
+        
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        Figure containing the stacked bar chart."""
     # Fetching data and converting JSON to DataFrame
     json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
-    data = pd.DataFrame(json_data)
+    data = dbs.transform_data_to_df(json_data)
     
     # Convert all the string values to float
     for arg in arguments:

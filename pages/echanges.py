@@ -1,8 +1,7 @@
 from dash import register_page, html, dcc, callback, Output, Input
 import dash_bootstrap_components as dbc
-import data.db_services as db_services
-import view.datepicker as datepicker
 
+import view.datepicker as datepicker
 import view.figures as figures
 
 register_page(__name__)

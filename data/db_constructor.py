@@ -181,8 +181,4 @@ def update_data(from_data:str, collection_name:str):
                 
         current_date += datetime.timedelta(days=1)
 
-
-# Run to update date from eco2mix-regional-tr
-#update_data("eco2mix-regional-tr", "eco2mix")
-
     
