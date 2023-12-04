@@ -1,7 +1,14 @@
 ### Permet la connexion avec la base de données
 from pymongo import MongoClient
+import configparser
 
-def get_database():
+config = configparser.ConfigParser()
+config.read('data/config.ini')
+
+# Provide the mongodb atlas url to connect python to mongodb using pymongo
+CONNECTION_STRING = config.get('MongoDB', 'connection_path')
+
+def get_database(path: str = CONNECTION_STRING):
    """Get the database
    
    Returns
@@ -9,11 +16,8 @@ def get_database():
    Database
        The database.
    """
-   # Provide the mongodb atlas url to connect python to mongodb using pymongo
-   CONNECTION_STRING = "mongodb://localhost:27017"
-
    # Create a connection using MongoClient.
-   client = MongoClient(CONNECTION_STRING)
+   client = MongoClient(path)
  
    # Create the database
    return client['ProjetM1']

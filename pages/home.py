@@ -36,7 +36,10 @@ layout = html.Div(
                     dcc.Link(html.Div(
                         children=[
                             html.H1('Consommation'),
-                            dcc.Graph(figure=figures.build_line_chart_with_prediction(), id="graph_consommation_prediction")
+                            dcc.Graph(
+                                id="graph_consommation_prediction",
+                                figure=figures.build_line_chart_with_prediction().update_layout(showlegend=False) # TODO: Fix legend
+                            )
                         ]
                     ), href='/consommation'), width=4)
             ], className="mt-3")

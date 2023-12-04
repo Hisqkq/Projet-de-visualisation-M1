@@ -2,13 +2,17 @@ import requests
 import mongodb
 import datetime
 import time
+import configparser
+
+config = configparser.ConfigParser()
+config.read('data/config.ini')
 
 ## CONNECT TO DB
 dbname = mongodb.get_database()
     
 ###### API ######   
   
-URL = "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/"
+URL = config.get('API', 'url')
 
 def fetch_data_by_date(data:str, start:int, rows:int, date:str):
     """Fetch data from a dataset by date and offset

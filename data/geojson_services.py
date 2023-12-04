@@ -1,7 +1,11 @@
 import json
 import pandas as pd
+import configparser
 
-JSON = './data/regions.geojson'
+config = configparser.ConfigParser()
+config.read('data/config.ini')
+
+JSON = config.get('GeoJSON', 'json')
 
 def get_json(path: str = JSON) -> dict:
     """Load a JSON file.
