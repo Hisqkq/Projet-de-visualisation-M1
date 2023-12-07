@@ -5,7 +5,7 @@ Ce projet consiste à créer une application [Dash](https://plotly.com/dash/) en
 
 ## Cloner l'application sur votre machine
 
-Une fois que vous avez cloné le dépot github sur votre machine, vous pouvez suivre les étapes suivantes afin d'installer toute les dépendance nécessaires pour que l'application puisse fonctionner.
+Une fois que vous avez cloné le dépot github sur votre machine, vous pouvez suivre les étapes suivantes afin d'installer toute les dépendances nécessaires pour que l'application puisse fonctionner.
 
 Créer l'environnement virtuel:
 ```bash
@@ -38,7 +38,7 @@ Avant de commencer à mettre en place l'application, assurez-vous d'avoir instal
 
 ## 💾  Initialisation de la Base de Données
 
-Une fois MongoDB installé, vous devez initialiser la base de données et la remplir avec les données nécessaires. Pour ce faire, exécutez le script `initialize_db.py` situé dans le dossier `data` (cette étape peux durer plusieurs heures à cause du débit limité des APIs...⌛):
+Une fois MongoDB installé, vous devez initialiser la base de données et la remplir avec les données nécessaires. Pour ce faire, exécutez le script `initialize_db.py` situé dans le dossier `data` (cette étape peut durer plusieurs heures à cause des limitations des APIs...⌛):
 
 ```bash
 python data/initialize_db.py
@@ -54,7 +54,7 @@ python app.py
 
 ## 📃  Ressources externes
 
- Liste des API que nous avons utiliser pour récupérer nos données:
+ Liste des API que nous avons utilisé pour récupérer nos données:
 - Données nationales en temps réel :  https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-national-tr
 - Données nationales consolidées :    https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-national-cons-def
 - Données régionales en temps réel :  https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-regional-tr

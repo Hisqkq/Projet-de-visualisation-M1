@@ -2,6 +2,7 @@ from dash import register_page, html, dcc, callback, Output, Input
 import dash_bootstrap_components as dbc
 
 import view.datepicker as datepicker
+from view.datepicker import default_start_date, default_end_date
 import view.figures as figures
 import view.map as map
 
@@ -21,7 +22,7 @@ layout = dbc.Container([
         ), lg=6),
         dbc.Col(dcc.Graph(
             id="stacked_bar_chart_echanges", 
-            figure=figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"], "2020-01-01", "2020-01-02")
+            figure=figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"], default_start_date, default_end_date)
         ), lg=6)
     ]),
     html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
@@ -36,7 +37,7 @@ layout = dbc.Container([
 def update_bar_chart_echanges(date1, date2):
     """Define dates to avoid callbak error."""
     if date1 is None and date2 is None:
-        date1, date2 = "2013-01-01", "2013-01-01"
+        date1, date2 = default_start_date, default_start_date
     elif date1 is None:
         date1 = date2
     elif date2 is None:
