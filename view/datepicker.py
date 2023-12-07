@@ -1,23 +1,41 @@
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
 import datetime
+import dash_bootstrap_components as dbc
+import configparser
 
+config = configparser.ConfigParser()
+config.read('data/config.ini')
+
+### Variables ###
+# DatepickerDate
+default_start_date = config.get('DatepickerDate', 'default_start_date')
+default_end_date = config.get('DatepickerDate', 'default_end_date')
+default_min_date_allowed = config.get('DatepickerDate', 'default_min_date_allowed')
+
+# YearDropdown
 year_options = [{'label': i, 'value': i} for i in range(2013, datetime.datetime.now().year + 1)]
+##################
 
-# Define the default start and end dates
-default_start_date = '2020-01-01'
-default_end_date = '2020-01-01'
-
+### Datepicker ###
 datepicker = html.Div([
-    dcc.Dropdown(id='year-dropdown', options=year_options, placeholder='Select Year'),
-    dcc.DatePickerRange(
-        id='date-picker',
-        start_date=default_start_date,
-        end_date=default_start_date,
-        end_date_placeholder_text='End Date',
-        max_date_allowed= datetime.datetime.now().strftime('%Y-%m-%d'),
-        min_date_allowed= "2013-01-01",
-    ),
+    dbc.Row([
+        dbc.Col(
+            dcc.Dropdown(id='year-dropdown', 
+                         options=year_options, 
+                         placeholder='Select Year', 
+                         style={'width': '50%'})
+        ),
+        dbc.Col(
+            dcc.DatePickerRange(
+                id='date-picker',
+                start_date=default_start_date,
+                end_date=default_end_date,
+                end_date_placeholder_text='End Date',
+                max_date_allowed=datetime.datetime.now().strftime('%Y-%m-%d'),
+                min_date_allowed=default_min_date_allowed),
+        ),
+    ]),
     html.Button('Clear', id='clear-button', n_clicks=0, className='btn btn-primary'),
     html.Div(id='n-clicks-store', style={'display': 'none'}),
 ])
