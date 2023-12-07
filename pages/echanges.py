@@ -8,7 +8,12 @@ import view.map as map
 register_page(__name__)
 
 layout = dbc.Container([
-    dbc.NavbarSimple(brand="Les échanges commerciaux aux frontières", color="primary", dark=True, className="mb-4"),
+    dbc.NavbarSimple(
+        brand="Les échanges commerciaux aux frontières", 
+        color="primary", 
+        dark=True, 
+        className="mb-4"
+    ),
     dbc.Row([
         dbc.Col(dcc.Link(html.Button('Accueil', className='btn btn-primary'), href='/'), width=12),
         dbc.Col(datepicker.datepicker, width=12),

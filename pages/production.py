@@ -13,9 +13,14 @@ france_map = map.build_metropolitan_map()
 current_map_state = "France"
 #################
 
-layout = html.Div([
-    dbc.NavbarSimple(brand="La production d'électricité en France", color="primary", dark=True, className="mb-4"),
-    dcc.Link(html.Button('Accueil'), href='/'),
+layout = dbc.Container([
+    dbc.NavbarSimple(
+        brand="La production d'électricité en France", 
+        color="primary", 
+        dark=True, 
+        className="mb-4"
+    ),
+    dbc.Col(dcc.Link(html.Button('Accueil', className='btn btn-primary'), href='/'), width=12),
     datepicker,
     dbc.Row([
         dbc.Col([
@@ -47,7 +52,7 @@ layout = html.Div([
         ], width=6),
     ]),
     html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
-])
+], fluid=True)
 
 @callback(
     Output('choropleth-map_production', 'figure'),

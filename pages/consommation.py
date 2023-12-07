@@ -6,9 +6,14 @@ import view.map as map
 
 register_page(__name__)
 
-layout = html.Div([
-    dbc.NavbarSimple(brand="La consommation d'électricité en France", color="primary", dark=True, className="mb-4"),
-    dcc.Link(html.Button('Accueil'), href='/'),
+layout = dbc.Container([
+    dbc.NavbarSimple(
+        brand="La consommation d'électricité en France", 
+        color="primary", 
+        dark=True, 
+        className="mb-4"
+    ),
+    dbc.Col(dcc.Link(html.Button('Accueil', className='btn btn-primary'), href='/'), width=12),
     dbc.Row([
         dbc.Col([
             dcc.Graph(
@@ -25,4 +30,4 @@ layout = html.Div([
         ], width=8),
     ]),
     html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
-])
+], fluid=True)
