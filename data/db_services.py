@@ -29,18 +29,12 @@ def build_pipeline(unwind_field=None, match_conditions=None, group_conditions=No
     """Build a MongoDB aggregation pipeline with optional stages."""
     pipeline = []
 
-    if unwind_field:
-        pipeline.append({"$unwind": unwind_field})
-    if match_conditions:
-        pipeline.append({"$match": match_conditions})
-    if group_conditions:
-        pipeline.append({"$group": group_conditions})
-    if sort_conditions:
-        pipeline.append({"$sort": sort_conditions})
-    if project_conditions:
-        pipeline.append({"$project": project_conditions})
-    if replace_root_conditions:
-        pipeline.append({"$replaceRoot": {"newRoot": replace_root_conditions}})
+    if unwind_field: pipeline.append({"$unwind": unwind_field})
+    if match_conditions: pipeline.append({"$match": match_conditions})
+    if group_conditions: pipeline.append({"$group": group_conditions})
+    if sort_conditions: pipeline.append({"$sort": sort_conditions})
+    if project_conditions: pipeline.append({"$project": project_conditions})
+    if replace_root_conditions: pipeline.append({"$replaceRoot": {"newRoot": replace_root_conditions}})
 
     return pipeline
 
@@ -74,7 +68,7 @@ def get_data(collection, unwind_field=None, match_conditions=None, group_conditi
 
 
 def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], order: int):
-    """ Enable User to get the sum of a field from a collection grouped by a field
+    """Enable User to get the sum of fields from a collection, grouped by a specific field.
     
     Parameters:
     ----------
@@ -82,75 +76,72 @@ def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], 
         Name of the collection.
     group_field : str
         Field to group by.
-    sum_fields : [str]
+    sum_fields : list of str
         Fields to sum.
-        
+    order : int
+        Sorting order (1 for ascending, -1 for descending).
+
     Returns:
     -------
     list
-        List of documents.
+        List of aggregated documents.
     """
-    pipeline = [
-        {"$unwind": "$results"},
-        {
-            "$group": {
-                "_id": f"$results.{group_field}",
-                **{field: {"$sum": f"$results.{field}"} for field in sum_fields}
-            }
-        },
-        {"$sort": {"_id": order}}
-    ]
-    return execute_aggregation(collection, pipeline)
+    group_conditions = {
+        "_id": f"$results.{group_field}",
+        **{field: {"$sum": f"$results.{field}"} for field in sum_fields}
+    }
+    sort_conditions = {"_id": order}
+    return get_data(collection, unwind_field="$results", group_conditions=group_conditions, sort_conditions=sort_conditions)
 
 
 def get_data_from_one_date(collection: str, date: str):
-    """ Enable User to get the data from a collection for a specific date
+    """Enable User to get the data from a collection for a specific date.
     
     Parameters:
     ----------
     collection : str
         Name of the collection.
     date : str
-        Date.
+        Date for which to get the data.
         
     Returns:
     -------
     list
-        List of documents.
+        List of documents for the specified date.
     """
-    pipeline = [
-        {"$unwind": "$results"},
-        {"$match": {"results.date": date}},
-        {"$replaceRoot": {"newRoot": "$results"}},
-        {"$sort": {"date_heure": 1}}
-    ]
-    return execute_aggregation(collection, pipeline)
+    match_conditions = {"results.date": date}
+    return get_data(collection, 
+                    unwind_field="$results", 
+                    match_conditions=match_conditions, 
+                    replace_root_conditions="$results", 
+                    sort_conditions={"date_heure": 1})
 
 
 def get_data_from_one_date_and_one_region(collection: str, date: str, region: str):
-    """ Enable User to get the data from a collection for a specific date and a specific region
+    """Enable User to get the data from a collection for a specific date and a specific region.
     
     Parameters:
     ----------
     collection : str
         Name of the collection.
     date : str
-        Date.
+        Specific date.
     region : str
-        Region.
+        Specific region.
         
     Returns:
     -------
     list
-        List of documents.
+        List of documents for the specified date and region.
     """
-    pipeline = [
-        {"$unwind": "$results"},
-        {"$match": {"results.date": date, "results.libelle_region": region}},
-        {"$project": {"_id": 0, "date": "$results.date", "data": "$results.data"}},
-        {"$sort": {"results.date_heure": 1}}
-    ]
-    return execute_aggregation(collection, pipeline)
+    match_conditions = {"results.date": date, "results.libelle_region": region}
+    project_conditions = {"_id": 0, "date": "$results.date", "data": "$results.data"}
+    return get_data(collection, 
+                    unwind_field="$results", 
+                    match_conditions=match_conditions, 
+                    project_conditions=project_conditions, 
+                    sort_conditions={"results.date_heure": 1})
+
 
 
 def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: str):
@@ -170,123 +161,128 @@ def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: s
     list
         List of documents in the specified date range.
     """
-    # Define the match conditions to filter documents between two dates
     match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
-
-    # Call the get_data function with the match conditions
     return get_data(collection, unwind_field="$results", match_conditions=match_conditions, replace_root_conditions="$results", sort_conditions={"date_heure": 1})
 
 
 def get_data_from_one_date_to_another_date_and_one_region(collection: str, date1: str, date2: str, region: str):
-    """ Enable User to get the data from a collection for a specific date range and a specific region
+    """Enable User to get the data from a collection for a specific date range and a specific region.
     
     Parameters:
     ----------
     collection : str
         Name of the collection.
     date1 : str
-        First date.
+        Start date for the range.
     date2 : str
-        Second date.
+        End date for the range.
     region : str
-        Region.
+        Specific region.
         
     Returns:
     -------
     list
-        List of documents.
+        List of documents for the specified date range and region.
     """
-    pipeline = [
-        {"$unwind": "$results"},
-        {"$match": {"results.date": {"$gte": date1, "$lte": date2}, "results.libelle_region": region}},
-        {"$project": {"_id": 0, "date": "$results.date", "data": "$results.data"}},
-        {"$sort": {"results.date_heure": 1}}
-    ]
-    return execute_aggregation(collection, pipeline)
+    match_conditions = {
+        "results.date": {"$gte": date1, "$lte": date2},
+        "results.libelle_region": region
+    }
+    project_conditions = {"_id": 0, "date": "$results.date", "data": "$results.data"}
+    return get_data(collection, 
+                    unwind_field="$results", 
+                    match_conditions=match_conditions, 
+                    project_conditions=project_conditions, 
+                    sort_conditions={"results.date_heure": 1})
 
 
 def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, date2: str, mean_fields: [str]):
-    """ Enable User to get the mean of a field from a collection for a specific date range
+    """Enable User to get the mean of fields from a collection for a specific date range.
     
     Parameters:
     ----------
     collection : str
         Name of the collection.
     date1 : str
-        First date.
+        Start date for the range.
     date2 : str
-        Second date.
-    mean_fields : [str]
-        Fields to average.
+        End date for the range.
+    mean_fields : list of str
+        Fields for which to calculate the average.
     
     Returns:
     -------
     list
-        List of documents.
+        List of documents with average values for the specified fields.
     """
-    pipeline = [
-        {"$unwind": "$results"},
-        {"$match": {"results.date": {"$gte": date1, "$lte": date2}}},
-        {"$replaceRoot": {"newRoot": "$results"}},
-        {"$group": {"_id": "$date", **{field: {"$avg": f"$data.{field}"} for field in mean_fields}}},
-        {"$sort": {"_id": 1}}
-    ]
-    return execute_aggregation(collection, pipeline)
+    match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
+    group_conditions = {
+        "_id": "$date",
+        **{f"avg_{field}": {"$avg": f"$data.{field}"} for field in mean_fields}
+    }
+    return get_data(collection, 
+                    unwind_field="$results", 
+                    match_conditions=match_conditions, 
+                    group_conditions=group_conditions, 
+                    sort_conditions={"_id": 1})
+
 
 
 def get_average_values(collection, fields):
-    """Enable User to get the averages of many fields (when values are not null) from a collection
+    """Enable User to get the averages of many fields (when values are not null) from a collection.
     
     Parameters:
     ----------
     collection : str
         Name of the collection.
     fields : list of str
-        Fields.
+        Fields to calculate the average.
         
     Returns:
     -------
     dict
-        Dictionary of averages.
+        Dictionary of averages for each field.
     """
-    # Construct the match conditions to exclude null and ensure the field exists and is of a numeric type
     match_conditions = {"$and": [{f"results.{field}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}} for field in fields]}
-
-    pipeline = [
-        {"$unwind": "$results"},
-        {"$match": match_conditions},
-        {"$group": {"_id": None, **{f"{field}": {"$avg": f"$results.{field}"} for field in fields}}},
-        {"$project": {"_id": 0, **{f"{field}": 1 for field in fields}}}
-    ]
-    result = execute_aggregation(collection, pipeline)
+    group_conditions = {
+        "_id": None, 
+        **{f"avg_{field}": {"$avg": f"$results.{field}"} for field in fields}
+    }
+    project_conditions = {"_id": 0, **{f"avg_{field}": 1 for field in fields}}
+    result = get_data(collection, 
+                    unwind_field="$results", 
+                    match_conditions=match_conditions, 
+                    group_conditions=group_conditions,
+                    project_conditions=project_conditions)
     return result[0] if result else {}
 
 
 def get_sum_values(collection, fields):
-    """Enable User to get the sum of many fields (when values are not null) from a collection
+    """Enable User to get the sum of many fields (when values are not null) from a collection.
     
     Parameters:
     ----------
     collection : str
         Name of the collection.
     fields : list of str
-        Fields.
+        Fields to calculate the sum.
         
     Returns:
     -------
     dict
-        Dictionary of sums.
+        Dictionary of sums for each field.
     """
-    # Construct the match conditions to exclude null and ensure the field exists and is of a numeric type
     match_conditions = {"$and": [{f"results.{field}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}} for field in fields]}
-
-    pipeline = [
-        {"$unwind": "$results"},
-        {"$match": match_conditions},
-        {"$group": {"_id": None, **{f"{field}": {"$sum": f"$results.{field}"} for field in fields}}},
-        {"$project": {"_id": 0, **{f"{field}": 1 for field in fields}}}
-    ]
-    result = execute_aggregation(collection, pipeline)
+    group_conditions = {
+        "_id": None, 
+        **{f"sum_{field}": {"$sum": f"$results.{field}"} for field in fields}
+    }
+    project_conditions = {"_id": 0, **{f"sum_{field}": 1 for field in fields}}
+    result = get_data(collection, 
+                    unwind_field="$results", 
+                    match_conditions=match_conditions, 
+                    group_conditions=group_conditions,
+                    project_conditions=project_conditions)
     return result[0] if result else {}
 
 def transform_data_to_df(data: list) -> pd.DataFrame:
