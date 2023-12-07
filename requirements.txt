@@ -3,4 +3,5 @@ pandas
 plotly
 numpy
 dash-bootstrap-components
+dash-mantine-components
 pymongo[srv]
