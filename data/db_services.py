@@ -91,7 +91,10 @@ def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], 
         **{field: {"$sum": f"$results.{field}"} for field in sum_fields}
     }
     sort_conditions = {"_id": order}
-    return get_data(collection, unwind_field="$results", group_conditions=group_conditions, sort_conditions=sort_conditions)
+    return get_data(collection, 
+                    unwind_field="$results", 
+                    group_conditions=group_conditions, 
+                    sort_conditions=sort_conditions)
 
 
 def get_data_from_one_date(collection: str, date: str):
@@ -162,7 +165,11 @@ def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: s
         List of documents in the specified date range.
     """
     match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
-    return get_data(collection, unwind_field="$results", match_conditions=match_conditions, replace_root_conditions="$results", sort_conditions={"date_heure": 1})
+    return get_data(collection, 
+                    unwind_field="$results", 
+                    match_conditions=match_conditions, 
+                    replace_root_conditions="$results", 
+                    sort_conditions={"date_heure": 1})
 
 
 def get_data_from_one_date_to_another_date_and_one_region(collection: str, date1: str, date2: str, region: str):
@@ -218,12 +225,14 @@ def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, 
     match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
     group_conditions = {
         "_id": "$date",
-        **{f"avg_{field}": {"$avg": f"$data.{field}"} for field in mean_fields}
+        **{f"avg_{field}": {"$avg": f"$results.{field}"} for field in mean_fields}
     }
+    project_conditions = {"_id": 0, **{f"avg_{field}": 1 for field in mean_fields}}
     return get_data(collection, 
                     unwind_field="$results", 
                     match_conditions=match_conditions, 
                     group_conditions=group_conditions, 
+                    project_conditions=project_conditions,
                     sort_conditions={"_id": 1})
 
 
@@ -299,3 +308,23 @@ def transform_data_to_df(data: list) -> pd.DataFrame:
         DataFrame containing the data.
     """
     return pd.DataFrame(data)
+
+def convert_to_numeric(df: pd.DataFrame, columns: [str]) -> pd.DataFrame:
+    """Convert columns to numeric values.
+    
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame containing the data.
+    columns : list of str
+        Columns to convert.
+        
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame containing the data.
+    """
+    for column in columns: # Convert columns to numeric values (but some values are NA so we need to convert them to 0)
+        df[column] = df[column].fillna(0)
+        df[column] = df[column].astype(int)
+    return df
