@@ -42,8 +42,7 @@ def build_pie_chart_production_by_field():
     plotly.graph_objects.Figure
         Figure containing the pie chart.
     """
-    data = dbs.get_average_values("DonneesNationales", ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])
-
+    data = dbs.get_mean_by_date_from_one_date_to_another_date("DonneesNationales", "2020-01-01", "2020-01-02", ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])[0]
     pie_chart_production_par_filiere = px.pie(names=list(data.keys()), values=list(data.values()), title='Répartition de la Production des Sources d’Énergie')
     pie_chart_production_par_filiere.update_traces(
         textposition='inside',
@@ -100,11 +99,8 @@ def build_stacked_bar_chart(arguments, starting_date, ending_date):
     # Fetching data and converting JSON to DataFrame
     json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
     data = dbs.transform_data_to_df(json_data)
+    data = dbs.convert_to_numeric(data, arguments)
     
-    # Convert all the string values to float
-    for arg in arguments:
-        data[arg] = data[arg].astype(float)
-
     # Check if the necessary columns are in the DataFrame
     if not all(arg in data.columns for arg in arguments):
         raise ValueError("One or more specified arguments are not in the data")
@@ -113,4 +109,6 @@ def build_stacked_bar_chart(arguments, starting_date, ending_date):
     data_melted = data.melt(id_vars='date_heure', value_vars=arguments, var_name='category', value_name='value')
 
     # Creating the stacked bar chart
-    return px.bar(data_melted, x='date_heure', y='value', color='category', barmode='stack')
+    fig = px.bar(data_melted, x='date_heure', y='value', color='category', barmode='stack')
+    fig.update_layout(bargap=0.01)
+    return fig

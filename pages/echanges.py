@@ -49,4 +49,14 @@ def update_bar_chart_echanges(date1, date2):
     elif date2 is None:
         date2 = date1
 
-    return figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"], date1, date2)
+    return figures.build_stacked_bar_chart(
+        arguments=[
+            "ech_comm_angleterre", 
+            "ech_comm_espagne", 
+            "ech_comm_italie", 
+            "ech_comm_suisse", 
+            "ech_comm_allemagne_belgique"
+        ], 
+        starting_date=date1, 
+        ending_date=date2
+    )
