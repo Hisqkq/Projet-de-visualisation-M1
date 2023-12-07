@@ -8,7 +8,7 @@ register_page(__name__)
 
 layout = html.Div([
     dbc.NavbarSimple(brand="La consommation d'électricité en France", color="primary", dark=True, className="mb-4"),
-    dcc.Link(html.Button('Home'), href='/'),
+    dcc.Link(html.Button('Accueil'), href='/'),
     dbc.Row([
         dbc.Col([
             dcc.Graph(

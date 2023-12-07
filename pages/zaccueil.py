@@ -1,10 +1,11 @@
-from dash import register_page, html, dcc
+import dash
+from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 import view.figures as figures
 import view.map as map
 
-register_page(__name__, path='/')
+dash.register_page(__name__, name="accueil", path='/')
 
 layout = html.Div(
     children=[
@@ -21,7 +22,7 @@ layout = html.Div(
                                 config={'displayModeBar': False}
                             ),
                         ]
-                    ), href='/echanges'), width=4),
+                    ), href=dash.page_registry['pages.echanges']['path']), width=4),
                 dbc.Col(
                     dcc.Link(html.Div(
                         children=[
@@ -31,7 +32,7 @@ layout = html.Div(
                                 figure=figures.build_pie_chart_production_by_field().update_layout(title_text=""), # TODO: Fix title
                             )
                         ]
-                    ), href='/production'), width=4),
+                    ), href=dash.page_registry['pages.production']['path']), width=4),
                 dbc.Col(
                     dcc.Link(html.Div(
                         children=[
@@ -41,7 +42,7 @@ layout = html.Div(
                                 figure=figures.build_line_chart_with_prediction().update_layout(showlegend=False) # TODO: Fix legend
                             )
                         ]
-                    ), href='/consommation'), width=4)
+                    ), href=dash.page_registry['pages.consommation']['path']), width=4)
             ], className="mt-3")
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))

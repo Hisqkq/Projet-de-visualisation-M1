@@ -15,7 +15,7 @@ current_map_state = "France"
 
 layout = html.Div([
     dbc.NavbarSimple(brand="La production d'électricité en France", color="primary", dark=True, className="mb-4"),
-    dcc.Link(html.Button('Home'), href='/'),
+    dcc.Link(html.Button('Accueil'), href='/'),
     datepicker,
     dbc.Row([
         dbc.Col([
