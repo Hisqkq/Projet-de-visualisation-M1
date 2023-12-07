@@ -170,7 +170,7 @@ def get_last_date_db(collection):
     return result[0]['date'] if result else None
     
 def delete_data_last_date(collection):
-    """Delete data from the last date in a collection
+    """Delete today's data in a collection
     
     Parameters
     ----------
@@ -178,7 +178,7 @@ def delete_data_last_date(collection):
         Name of the collection.
     """
     last_date = get_last_date_db(collection)
-    dbname.get_collection(collection).delete_many({"results.date": last_date})
+    dbname.get_collection(collection).delete_many({"results.date": {"$gte": datetime.datetime.now().strftime('%Y-%m-%d')}})
     
 def update_data(from_data:str, collection_name:str):
     """Update data in a collection
@@ -196,6 +196,9 @@ def update_data(from_data:str, collection_name:str):
         start_date = get_date(from_data)
     else: 
         start_date = get_last_date_db(collection_name)
+        # Check if start date is greater than today's date (Because in some case API has data for future dates too)
+        if datetime.datetime.strptime(start_date, '%Y-%m-%d') >= datetime.datetime.now():
+            start_date = datetime.datetime.now().strptime(start_date, '%Y-%m-%d')
         delete_data_last_date(collection_name) # delete data from last date in collection to avoid duplicates when updating data
 
     end_date = get_date(from_data, first = False)

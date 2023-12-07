@@ -19,6 +19,8 @@ def build_line_chart_with_prediction(date=datetime.datetime.now().strftime("%Y-%
     # Fetching data and converting JSON to DataFrame
     json_data = dbs.get_data_from_one_date("DonneesNationales", date)
     data = dbs.transform_data_to_df(json_data)
+    #Order data by datetime
+    data = data.sort_values(by=['date_heure'])
 
     # Check if the necessary columns are in the DataFrame
     if not {'date_heure', 'consommation', 'prevision_j', 'prevision_j1'}.issubset(data.columns):
