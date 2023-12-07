@@ -4,12 +4,16 @@ import datetime
 
 year_options = [{'label': i, 'value': i} for i in range(2013, datetime.datetime.now().year + 1)]
 
+# Define the default start and end dates
+default_start_date = '2020-01-01'
+default_end_date = '2020-01-01'
+
 datepicker = html.Div([
     dcc.Dropdown(id='year-dropdown', options=year_options, placeholder='Select Year'),
     dcc.DatePickerRange(
         id='date-picker',
-        start_date='2020-01-01',
-        end_date='2020-01-01',
+        start_date=default_start_date,
+        end_date=default_start_date,
         end_date_placeholder_text='End Date',
         max_date_allowed= datetime.datetime.now().strftime('%Y-%m-%d'),
         min_date_allowed= "2013-01-01",
@@ -34,7 +38,6 @@ def update_dates(year, n_clicks, n_clicks_store):
         return None, None, None, n_clicks
     elif year:
         start_date = datetime.date(year, 1, 1)
-        end_date = datetime.date(year, 1, 2)
-        return start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'), year, n_clicks
+        return start_date.strftime('%Y-%m-%d'), None, year, n_clicks
     else:
         return None, None, None, n_clicks
