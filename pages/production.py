@@ -13,41 +13,47 @@ france_map = map.build_metropolitan_map()
 current_map_state = "France"
 #################
 
-layout = html.Div([
-    dbc.NavbarSimple(brand="La production d'électricité en France", color="primary", dark=True, className="mb-4"),
-    dcc.Link(html.Button('Accueil'), href='/'),
-    datepicker,
-    dbc.Row([
-        dbc.Col([
-            dcc.Graph(
-                id='choropleth-map_production',
-                figure=france_map,
-                config={'displayModeBar': False}
-            )
-        ], width=6),
-        dbc.Col([
-            dcc.Dropdown(
-                id="dropdown",
-                options=[
-                    {'label': 'Eolien', 'value': 'eolien'},
-                    {'label': 'Hydraulique', 'value': 'hydraulique'},
-                    {'label': 'Nucléaire', 'value': 'nucleaire'},
-                    {'label': 'Solaire', 'value': 'solaire'}
-                ],
-                value='solaire'
-            ),
-            dcc.Graph(
-                id="graph_production_stacked_area",
-                figure=figures.build_stacked_area_chart(argument="solaire", date="2020-01-01")
-            ),
-            dcc.Graph(
-                id="pie_chart_production_par_filiere",
-                figure=figures.build_pie_chart_production_by_field()
-            )
-        ], width=6),
-    ]),
-    html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
-])
+def layout():
+    return dbc.Container([
+        dbc.NavbarSimple(
+            brand="La production d'électricité en France", 
+            color="primary", 
+            dark=True, 
+            className="mb-4"
+        ),
+        dbc.Col(dcc.Link(html.Button('Accueil', className='btn btn-primary'), href='/'), width=12),
+        datepicker,
+        dbc.Row([
+            dbc.Col([
+                dcc.Graph(
+                    id='choropleth-map_production',
+                    figure=france_map,
+                    config={'displayModeBar': False}
+                )
+            ], width=6),
+            dbc.Col([
+                dcc.Dropdown(
+                    id="dropdown",
+                    options=[
+                        {'label': 'Eolien', 'value': 'eolien'},
+                        {'label': 'Hydraulique', 'value': 'hydraulique'},
+                        {'label': 'Nucléaire', 'value': 'nucleaire'},
+                        {'label': 'Solaire', 'value': 'solaire'}
+                    ],
+                    value='solaire'
+                ),
+                dcc.Graph(
+                    id="graph_production_stacked_area",
+                    figure=figures.build_stacked_area_chart(argument="solaire", date="2020-01-01")
+                ),
+                dcc.Graph(
+                    id="pie_chart_production_par_filiere",
+                    figure=figures.build_pie_chart_production_by_field()
+                )
+            ], width=6),
+        ]),
+        html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
+    ], fluid=True)
 
 @callback(
     Output('choropleth-map_production', 'figure'),
