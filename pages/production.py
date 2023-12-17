@@ -2,9 +2,10 @@ from dash import register_page, html, dcc, callback, no_update
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
+from view.datepicker import default_start_date, default_end_date
+from view.datepicker import datepicker
 import view.figures as figures
 import view.map as map
-from view.datepicker import datepicker
 
 register_page(__name__)
 
@@ -44,7 +45,7 @@ def layout():
                 ),
                 dcc.Graph(
                     id="graph_production_stacked_area",
-                    figure=figures.build_stacked_area_chart(argument="solaire", date="2020-01-01")
+                    figure=figures.build_stacked_area_chart(argument="solaire", starting_date=default_start_date, ending_date=default_end_date)
                 ),
                 dcc.Graph(
                     id="pie_chart_production_par_filiere",
@@ -77,7 +78,11 @@ def update_map(selected_data):
 
 @callback(
     Output(component_id='graph_production_stacked_area', component_property='figure'),
-    [Input(component_id='dropdown', component_property='value')]
+    [Input(component_id='dropdown', component_property='value'),
+     Input(component_id="date-range-picker", component_property="value"),]
 )
-def update_graph_production_stacked_area(value):
-    return figures.build_stacked_area_chart(str(value), "2020-01-01")
+def update_graph_production_stacked_area(value, dates):
+    """Define dates to avoid callbak error."""
+    if dates is None:
+        dates = [default_start_date, default_start_date]
+    return figures.build_stacked_area_chart(str(value), dates[0], dates[1])

@@ -2,6 +2,7 @@ import dash
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 
+from view.datepicker import default_start_date, default_end_date
 import view.figures as figures
 import view.map as map
 
@@ -39,7 +40,7 @@ def layout():
                             html.H1('Consommation'),
                             dcc.Graph(
                                 id="graph_consommation_prediction",
-                                figure=figures.build_line_chart_with_prediction().update_layout(showlegend=False) # TODO: Fix legend
+                                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date).update_layout(showlegend=False) # TODO: Fix legend
                             )
                         ]
                     ), href=dash.page_registry['pages.consommation']['path']), width=4)

@@ -3,13 +3,16 @@ import datetime
 
 import data.db_services as dbs
 
-def build_line_chart_with_prediction(date=datetime.datetime.now().strftime("%Y-%m-%d")):
+def build_line_chart_with_prediction(starting_date = datetime.datetime.now().strftime("%Y-%m-%d"), 
+                                     ending_date = datetime.datetime.now().strftime("%Y-%m-%d")):
     """Create a line chart.
     
     Parameters
     ----------
-    date : str, optional
-        Date, by default datetime.datetime.now().strftime("%Y-%m-%d").
+    starting_date : str, optional   
+        Starting date, by default datetime.datetime.now().strftime("%Y-%m-%d").
+    ending_date : str, optional
+        Ending date, by default datetime.datetime.now().strftime("%Y-%m-%d").
         
     Returns
     -------
@@ -17,7 +20,7 @@ def build_line_chart_with_prediction(date=datetime.datetime.now().strftime("%Y-%
         Figure containing the line chart.
     """
     # Fetching data and converting JSON to DataFrame
-    json_data = dbs.get_data_from_one_date("DonneesNationales", date)
+    json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
     data = dbs.transform_data_to_df(json_data)
     #Order data by datetime
     data = data.sort_values(by=['date_heure'])
@@ -62,7 +65,9 @@ def build_pie_chart_production_by_field():
     return pie_chart_production_par_filiere
 
 
-def build_stacked_area_chart(argument = "nucleaire", date = datetime.datetime.now().strftime("%Y-%m-%d")):
+def build_stacked_area_chart(argument = "nucleaire", 
+                             starting_date = datetime.datetime.now().strftime("%Y-%m-%d"), 
+                             ending_date = datetime.datetime.now().strftime("%Y-%m-%d")):
     """Create a stacked area chart.
     
     Parameters
@@ -76,7 +81,7 @@ def build_stacked_area_chart(argument = "nucleaire", date = datetime.datetime.no
     -------
     plotly.graph_objects.Figure
         Figure containing the stacked area chart."""
-    data = dbs.get_data_from_one_date("DonneesRegionales", date)
+    data = dbs.get_data_from_one_date_to_another_date("DonneesRegionales", starting_date, ending_date)
     return px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}")
 
 
