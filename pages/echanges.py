@@ -37,18 +37,12 @@ def layout():
 
 @callback(
     Output('stacked_bar_chart_echanges', 'figure'),
-    [Input('date-picker', 'start_date'),
-     Input('date-picker', 'end_date')]
+    Input("date-range-picker", "value"),
 )
-def update_bar_chart_echanges(date1, date2):
+def update_bar_chart_echanges(dates):
     """Define dates to avoid callbak error."""
-    if date1 is None and date2 is None:
-        date1, date2 = default_start_date, default_start_date
-    elif date1 is None:
-        date1 = date2
-    elif date2 is None:
-        date2 = date1
-
+    if dates is None:
+        dates = [default_start_date, default_start_date]
     return figures.build_stacked_bar_chart(
         arguments=[
             "ech_comm_angleterre", 
@@ -57,6 +51,6 @@ def update_bar_chart_echanges(date1, date2):
             "ech_comm_suisse", 
             "ech_comm_allemagne_belgique"
         ], 
-        starting_date=date1, 
-        ending_date=date2
+        starting_date=dates[0], 
+        ending_date=dates[1]
     )
