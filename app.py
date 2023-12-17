@@ -4,6 +4,7 @@ import dash_bootstrap_components as dbc
 app = Dash(__name__, use_pages=True, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.CYBORG])
 
 app.layout = html.Div(
+    style={'backgroundColor': '#555555'},
     children=[
         dcc.Location(id="url"),
         page_container
