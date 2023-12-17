@@ -8,25 +8,31 @@ import view.map as map
 
 register_page(__name__)
 
-layout = dbc.Container([
-    dbc.NavbarSimple(brand="Les échanges commerciaux aux frontières", color="primary", dark=True, className="mb-4"),
-    dbc.Row([
-        dbc.Col(dcc.Link(html.Button('Home', className='btn btn-primary'), href='/'), width=12),
-        dbc.Col(datepicker.datepicker, width=12),
-    ]),
-    dbc.Row([
-        dbc.Col(dcc.Graph(
-            id='choropleth-map', 
-            figure=map.build_metropolitan_map(),
-            config={'displayModeBar': False}
-        ), lg=6),
-        dbc.Col(dcc.Graph(
-            id="stacked_bar_chart_echanges", 
-            figure=figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"], default_start_date, default_end_date)
-        ), lg=6)
-    ]),
-    html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
-], fluid=True)
+def layout():
+    return dbc.Container([
+        dbc.NavbarSimple(
+            brand="Les échanges commerciaux aux frontières", 
+            color="primary", 
+            dark=True, 
+            className="mb-4"
+        ),
+        dbc.Row([
+            dbc.Col(dcc.Link(html.Button('Accueil', className='btn btn-primary'), href='/'), width=12),
+            dbc.Col(datepicker.datepicker, width=12),
+        ]),
+        dbc.Row([
+            dbc.Col(dcc.Graph(
+                id='choropleth-map', 
+                figure=map.build_metropolitan_map(),
+                config={'displayModeBar': False}
+            ), lg=6),
+            dbc.Col(dcc.Graph(
+                id="stacked_bar_chart_echanges", 
+                figure=figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"], default_start_date, default_end_date)
+            ), lg=6)
+        ]),
+        html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
+    ], fluid=True)
 
 
 @callback(
@@ -43,4 +49,14 @@ def update_bar_chart_echanges(date1, date2):
     elif date2 is None:
         date2 = date1
 
-    return figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"], date1, date2)
+    return figures.build_stacked_bar_chart(
+        arguments=[
+            "ech_comm_angleterre", 
+            "ech_comm_espagne", 
+            "ech_comm_italie", 
+            "ech_comm_suisse", 
+            "ech_comm_allemagne_belgique"
+        ], 
+        starting_date=date1, 
+        ending_date=date2
+    )

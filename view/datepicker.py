@@ -35,8 +35,10 @@ datepicker = html.Div([
                 max_date_allowed=datetime.datetime.now().strftime('%Y-%m-%d'),
                 min_date_allowed=default_min_date_allowed),
         ),
+        dbc.Col(
+        html.Button('Clear', id='clear-button', n_clicks=0, className='btn btn-primary')
+        ),
     ]),
-    html.Button('Clear', id='clear-button', n_clicks=0, className='btn btn-primary'),
     html.Div(id='n-clicks-store', style={'display': 'none'}),
 ])
 
