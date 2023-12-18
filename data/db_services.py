@@ -328,3 +328,21 @@ def convert_to_numeric(df: pd.DataFrame, columns: [str]) -> pd.DataFrame:
         df[column] = df[column].fillna(0)
         df[column] = df[column].astype(int)
     return df
+
+def remove_nan_from_data(data, column):
+    """Remove NaN values from a column.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        DataFrame containing the data.
+    column : str
+        Column to check.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame containing the data.
+    """
+
+    return data[data[column].notna()]
