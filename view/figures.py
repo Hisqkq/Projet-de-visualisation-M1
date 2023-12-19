@@ -1,7 +1,7 @@
 import plotly.express as px
-import datetime
 
 import data.db_services as dbs
+from view.datepicker import default_start_date, default_end_date
 import configparser
 
 config = configparser.ConfigParser()
@@ -9,16 +9,16 @@ config.read('data/config.ini')
 
 field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
 
-def build_line_chart_with_prediction(starting_date = datetime.datetime.now().strftime("%Y-%m-%d"), 
-                                     ending_date = datetime.datetime.now().strftime("%Y-%m-%d")):
+def build_line_chart_with_prediction(starting_date: str = default_start_date, 
+                                     ending_date: str = default_end_date) -> px.area:
     """Create a line chart.
     
     Parameters
     ----------
-    starting_date : str, optional   
-        Starting date, by default datetime.datetime.now().strftime("%Y-%m-%d").
+    starting_date : str, optional
+        Starting date, by default default_start_date.
     ending_date : str, optional
-        Ending date, by default datetime.datetime.now().strftime("%Y-%m-%d").
+        Ending date, by default default_end_date.
         
     Returns
     -------
@@ -44,17 +44,25 @@ def build_line_chart_with_prediction(starting_date = datetime.datetime.now().str
     return line_chart_cons
 
 
-def build_pie_chart_production_by_field():
+def build_pie_chart_production_by_field(start_date: str = default_start_date, 
+                                        end_date: str = default_end_date) -> px.pie:
     """Create a pie chart.
+
+    Parameters
+    ----------
+    start_date : str, optional
+        Starting date, by default default_start_date.
+    end_date : str, optional
+        Ending date, by default default_end_date.
     
     Returns
     -------
     plotly.graph_objects.Figure
         Figure containing the pie chart.
     """
-    data = dbs.get_mean_by_date_from_one_date_to_another_date("DonneesNationales", "2020-01-01", "2020-01-02", ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])[0]
-    pie_chart_production_par_filiere = px.pie(names=list(data.keys()), values=list(data.values()), title='Répartition de la Production des Sources d’Énergie')
-    pie_chart_production_par_filiere.update_traces(
+    data = dbs.get_mean_by_date_from_one_date_to_another_date("DonneesNationales", start_date, end_date, ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])[0]
+    fig = px.pie(names=list(data.keys()), values=list(data.values()), title='Répartition de la Production des Sources d’Énergie')
+    fig.update_traces(
         textposition='inside',
         textinfo='percent+label',
         hoverinfo='label+percent',
@@ -63,18 +71,18 @@ def build_pie_chart_production_by_field():
             line=dict(color='#FFFFFF', width=2)
         )
     )
-    pie_chart_production_par_filiere.update_layout(
+    fig.update_layout(
         showlegend=False,
         title=dict(
             font=dict(size=24)
         )
     )
-    return pie_chart_production_par_filiere
+    return fig
 
 
-def build_stacked_area_chart(argument = "nucleaire", 
-                             starting_date = datetime.datetime.now().strftime("%Y-%m-%d"), 
-                             ending_date = datetime.datetime.now().strftime("%Y-%m-%d")):
+def build_stacked_area_chart(argument: str = "nucleaire", 
+                             starting_date: str = default_start_date, 
+                             ending_date: str = default_end_date) -> px.area:
     """Create a stacked area chart.
     
     Parameters
@@ -92,17 +100,19 @@ def build_stacked_area_chart(argument = "nucleaire",
     return px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}")
 
 
-def build_stacked_bar_chart(arguments, starting_date, ending_date):
+def build_stacked_bar_chart(arguments: list, 
+                            starting_date: str = default_start_date, 
+                            ending_date: str = default_end_date) -> px.bar:
     """Create a stacked bar chart.
     
     Parameters
     ----------
     arguments : list
         List of arguments.
-    starting_date : str
-        Starting date.
-    ending_date : str
-        Ending date.
+    starting_date : str, optional
+        Starting date, by default default_start_date.
+    ending_date : str, optional
+        Ending date, by default default_end_date.
         
     Returns
     -------

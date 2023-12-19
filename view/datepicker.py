@@ -1,10 +1,10 @@
-from dash import html, callback
-from dash.dependencies import Input, Output, State
+from dash import html
 import datetime
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash.exceptions import PreventUpdate
 import configparser
+
+from data.db_services import get_last_date_db
 
 config = configparser.ConfigParser()
 config.read('data/config.ini')
@@ -13,6 +13,9 @@ config.read('data/config.ini')
 # DatepickerDate
 default_start_date = config.get('DatepickerDate', 'default_start_date')
 default_end_date = config.get('DatepickerDate', 'default_end_date')
+if config.get('DatepickerDate', 'default_date_mode') == "dynamic":
+    default_start_date = get_last_date_db()
+    default_end_date = get_last_date_db()
 default_min_date_allowed = config.get('DatepickerDate', 'default_min_date_allowed')
 
 # YearDropdown
