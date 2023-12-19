@@ -40,9 +40,8 @@ def build_map(data: dict, homepage: bool=False) -> px.choropleth:
         dragmode=False, # Disable the drag mode
     )
     if not homepage:
-        fig.update_layout(geo=dict(bgcolor= '#555555')) # Remove the background color
+        fig.update_layout(geo=dict(bgcolor= '#555555'), paper_bgcolor='#555555') # Remove the background color
         fig.update_traces(marker_line_color="#555555", marker_line_width = 1.5) # Add a grey border to the regions"
-
     return fig
 
 def build_metropolitan_map(homepage=False) -> px.choropleth:
