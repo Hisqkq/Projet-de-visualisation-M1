@@ -14,7 +14,7 @@ dbname = mongodb.get_database()
   
 URL = config.get('API', 'url')
 
-def fetch_data_by_date(data:str, start:int, rows:int, date:str):
+def fetch_data_by_date(data: str, start: int, rows: int, date: str) -> dict:
     """Fetch data from a dataset by date and offset
     
     Parameters
@@ -49,7 +49,7 @@ def fetch_data_by_date(data:str, start:int, rows:int, date:str):
         print(response.text)
         return 
     
-def get_date(data:str, first:bool=True):
+def get_date(data: str, first: bool=True) -> str:
     """Get the minimum or maximum date in a dataset
 
     Parameters
@@ -83,7 +83,7 @@ def get_date(data:str, first:bool=True):
         print(response.text)
         return
     
-def get_length_per_date(data:str, date:str):
+def get_length_per_date(data: str, date: str) -> int:
     """Get the number of rows for a given date
 
     Parameters
@@ -118,7 +118,7 @@ def get_length_per_date(data:str, date:str):
     
 ###### Construction ######     
     
-def create_collection(name:str):
+def create_collection(name: str) -> None:
     """Create a collection in the database
 
     Parameters
@@ -129,7 +129,7 @@ def create_collection(name:str):
     if(not (name in dbname.list_collection_names())):
         dbname.create_collection(name)    
     
-def insert_in_coll(table_name:str, data:dict):
+def insert_in_coll(table_name: str, data: dict) -> None:
     """Insert data in a collection (JSON)
 
     Parameters
@@ -144,7 +144,7 @@ def insert_in_coll(table_name:str, data:dict):
         return
     else: dbname.get_collection(table_name).insert_one(data)
     
-def get_last_date_db(collection):
+def get_last_date_db(collection: str) -> str:
     """Get the last date in a collection
     
     Parameters
@@ -166,7 +166,7 @@ def get_last_date_db(collection):
     result = list(dbname.get_collection(collection).aggregate(pipeline))
     return result[0]['date'] if result else None
     
-def delete_data_last_date(collection):
+def delete_data_last_date(collection: str) -> None:
     """Delete today's data in a collection
     
     Parameters
@@ -176,7 +176,7 @@ def delete_data_last_date(collection):
     """
     dbname.get_collection(collection).delete_many({"results.date": {"$gte": datetime.datetime.now().strftime('%Y-%m-%d')}})
     
-def update_data(from_data:str, collection_name:str):
+def update_data(from_data: str, collection_name: str) -> None:
     """Update data in a collection
 
     Parameters
