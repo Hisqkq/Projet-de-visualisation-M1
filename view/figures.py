@@ -2,6 +2,12 @@ import plotly.express as px
 import datetime
 
 import data.db_services as dbs
+import configparser
+
+config = configparser.ConfigParser()
+config.read('data/config.ini')
+
+field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
 
 def build_line_chart_with_prediction(starting_date = datetime.datetime.now().strftime("%Y-%m-%d"), 
                                      ending_date = datetime.datetime.now().strftime("%Y-%m-%d")):
@@ -119,4 +125,36 @@ def build_stacked_bar_chart(arguments, starting_date, ending_date):
     fig.update_layout(bargroupgap=0.01)
     fig.update_traces(marker_line_width=0) 
     
+    return fig
+
+
+def build_stacked_area_by_production(starting_date, end_date):
+    """Create a stacked area chart for each production field.
+    
+    Parameters
+    ----------
+    starting_date : str
+        Starting date.
+    end_date : str
+        Ending date.
+        
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        Figure containing the stacked area chart."""
+    data = dbs.transform_data_to_df(dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, end_date))
+
+    # S'assurer que le DataFrame est trié par date_heure et que toutes les colonnes nécessaires existent
+    data = data.sort_values(by=['date_heure'])
+    data = dbs.remove_nan_from_data(data, "consommation")
+    
+    # Vérifier que toutes les colonnes pour 'y' existent dans 'data'
+    production_fields = ["eolien", "hydraulique", "nucleaire", "solaire", "bioenergies"]
+    if not set(production_fields).issubset(data.columns):
+        missing_fields = list(set(production_fields) - set(data.columns))
+        raise ValueError(f"Les colonnes suivantes sont manquantes dans le DataFrame: {missing_fields}")
+
+    # Création du graphique à aires empilées
+    fig = px.area(data, x="date_heure", y=production_fields, title="Production par filière", color_discrete_map=field_colors)
+
     return fig
