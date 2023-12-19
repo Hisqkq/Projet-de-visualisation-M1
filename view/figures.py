@@ -10,12 +10,17 @@ config.read('data/config.ini')
 
 field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
 
-def build_line_chart_with_prediction(starting_date: str = default_start_date, 
-                                     ending_date: str = default_end_date) -> px.area:
-    """Create a line chart.
+## Echanges ##
+
+def build_stacked_bar_chart(arguments: list, 
+                            starting_date: str = default_start_date, 
+                            ending_date: str = default_end_date) -> px.bar:
+    """Create a stacked bar chart.
     
     Parameters
     ----------
+    arguments : list
+        List of arguments.
     starting_date : str, optional
         Starting date, by default default_start_date.
     ending_date : str, optional
@@ -24,26 +29,27 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date,
     Returns
     -------
     plotly.graph_objects.Figure
-        Figure containing the line chart.
-    """
+        Figure containing the stacked bar chart."""
     # Fetching data and converting JSON to DataFrame
     json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
     data = dbs.transform_data_to_df(json_data)
-    #Order data by datetime
-    data = data.sort_values(by=['date_heure'])
-    data = dbs.remove_nan_from_data(data, "consommation")
-
+    data = dbs.convert_to_numeric(data, arguments)
+    
     # Check if the necessary columns are in the DataFrame
-    if not {'date_heure', 'consommation', 'prevision_j', 'prevision_j1'}.issubset(data.columns):
-        raise ValueError("One or more required columns are missing in the data")
+    if not all(arg in data.columns for arg in arguments):
+        raise ValueError("One or more specified arguments are not in the data")
 
-    # Creating the line chart
-    line_chart_cons = px.area(data, x="date_heure", y="consommation")
-    line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j"], mode='lines', name='Prediction J')
-    line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j1"], mode='lines', name='Prediction J-1')
+    # Reshaping the data for stacked bar chart
+    data_melted = data.melt(id_vars='date_heure', value_vars=arguments, var_name='category', value_name='value')
 
-    return line_chart_cons
+    # Creating the stacked bar chart
+    fig = px.bar(data_melted, x='date_heure', y='value', color='category', barmode='relative')
+    fig.update_layout(bargroupgap=0.01)
+    fig.update_traces(marker_line_width=0) 
+    
+    return fig
 
+## Production ##
 
 def build_pie_chart_production_by_field(start_date: str = default_start_date, 
                                         end_date: str = default_end_date, legend = True) -> px.pie:
@@ -92,7 +98,6 @@ def build_pie_chart_production_by_field(start_date: str = default_start_date,
     return fig
 
 
-
 def build_stacked_area_chart(argument: str = "nucleaire", 
                              starting_date: str = default_start_date, 
                              ending_date: str = default_end_date) -> px.area:
@@ -111,45 +116,6 @@ def build_stacked_area_chart(argument: str = "nucleaire",
         Figure containing the stacked area chart."""
     data = dbs.get_data_from_one_date_to_another_date("DonneesRegionales", starting_date, ending_date)
     return px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}")
-
-
-def build_stacked_bar_chart(arguments: list, 
-                            starting_date: str = default_start_date, 
-                            ending_date: str = default_end_date) -> px.bar:
-    """Create a stacked bar chart.
-    
-    Parameters
-    ----------
-    arguments : list
-        List of arguments.
-    starting_date : str, optional
-        Starting date, by default default_start_date.
-    ending_date : str, optional
-        Ending date, by default default_end_date.
-        
-    Returns
-    -------
-    plotly.graph_objects.Figure
-        Figure containing the stacked bar chart."""
-    # Fetching data and converting JSON to DataFrame
-    json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
-    data = dbs.transform_data_to_df(json_data)
-    data = dbs.convert_to_numeric(data, arguments)
-    
-    # Check if the necessary columns are in the DataFrame
-    if not all(arg in data.columns for arg in arguments):
-        raise ValueError("One or more specified arguments are not in the data")
-
-    # Reshaping the data for stacked bar chart
-    data_melted = data.melt(id_vars='date_heure', value_vars=arguments, var_name='category', value_name='value')
-
-    # Creating the stacked bar chart
-    fig = px.bar(data_melted, x='date_heure', y='value', color='category', barmode='relative')
-    fig.update_layout(bargroupgap=0.01)
-    fig.update_traces(marker_line_width=0) 
-    
-    return fig
-
 
 def build_stacked_area_by_production(starting_date, end_date):
     """Create a stacked area chart for each production field.
@@ -175,3 +141,47 @@ def build_stacked_area_by_production(starting_date, end_date):
         raise ValueError(f"Les colonnes suivantes sont manquantes dans le DataFrame: {missing_fields}")
 
     return px.area(data, x="date_heure", y=production_fields, title="Production par filière", color_discrete_map=field_colors)
+
+
+## Consommation ##
+
+def build_line_chart_with_prediction(starting_date: str = default_start_date, 
+                                     ending_date: str = default_end_date) -> px.area:
+    """Create a line chart.
+    
+    Parameters
+    ----------
+    starting_date : str, optional
+        Starting date, by default default_start_date.
+    ending_date : str, optional
+        Ending date, by default default_end_date.
+        
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        Figure containing the line chart.
+    """
+    # Fetching data and converting JSON to DataFrame
+    json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
+    data = dbs.transform_data_to_df(json_data)
+    #Order data by datetime
+    data = data.sort_values(by=['date_heure'])
+    data = dbs.remove_nan_from_data(data, "consommation")
+
+    # Check if the necessary columns are in the DataFrame
+    if not {'date_heure', 'consommation', 'prevision_j', 'prevision_j1'}.issubset(data.columns):
+        raise ValueError("One or more required columns are missing in the data")
+
+    # Creating the line chart
+    line_chart_cons = px.area(data, x="date_heure", y="consommation")
+    line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j"], mode='lines', name='Prediction J')
+    line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j1"], mode='lines', name='Prediction J-1')
+
+    return line_chart_cons
+
+
+
+
+
+
+
