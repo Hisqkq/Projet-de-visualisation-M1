@@ -84,6 +84,7 @@ def build_pie_chart_production_by_field(start_date: str = default_start_date,
     if not homepage:
         fig.update_layout(paper_bgcolor="#555555")
         fig.update_layout(font_color="#FFFFFF")
+        fig.update_traces(marker=dict(line=dict(color='#555555', width=2)))
     return fig
 
 
