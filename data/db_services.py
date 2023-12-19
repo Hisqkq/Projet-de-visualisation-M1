@@ -346,3 +346,25 @@ def remove_nan_from_data(data, column):
     """
 
     return data[data[column].notna()]
+
+def get_last_date_db():
+    """Get the last date in the database. Take the earliest date between the national and regional data.
+    
+    Returns
+    -------
+    str
+        Date.
+    """
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$sort": {"results.date": -1}},
+        {"$limit": 1},
+        {"$project": {"_id": 0, "date": "$results.date"}}
+    ]
+    national_result = list(dbname.get_collection("DonneesNationales").aggregate(pipeline))
+    regional_result = list(dbname.get_collection("DonneesRegionales").aggregate(pipeline))
+
+    last_national_date = national_result[0]['date'] if national_result else None
+    last_regional_date = regional_result[0]['date'] if regional_result else None
+
+    return last_national_date if last_national_date < last_regional_date else last_regional_date

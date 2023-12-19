@@ -34,7 +34,7 @@ def layout():
             ], width=6),
             dbc.Col([
                 dcc.Graph(
-                    id="pie_chart_production_par_filiere",
+                    id="pie_chart_production_by_sector",
                     figure=figures.build_pie_chart_production_by_field()
                 ),
                 dcc.Dropdown(
@@ -49,7 +49,7 @@ def layout():
                 ),
                 dcc.Graph(
                     id="graph_production_stacked_area",
-                    figure=figures.build_stacked_area_chart(argument="solaire", starting_date=default_start_date, ending_date=default_end_date)
+                    figure=figures.build_stacked_area_chart("solaire")
                 )
             ], width=6)
         ]),
@@ -77,12 +77,22 @@ def update_map(selected_data):
     return new_fig
 
 @callback(
-    Output(component_id='graph_production_stacked_area', component_property='figure'),
-    [Input(component_id='dropdown', component_property='value'),
-     Input(component_id="date-range-picker", component_property="value"),]
+    Output('graph_production_stacked_area', 'figure'),
+    [Input('dropdown', 'value'),
+     Input("date-range-picker", "value"),]
 )
 def update_graph_production_stacked_area(value, dates):
-    """Define dates to avoid callbak error."""
+    """Update the stacked area chart."""
+    if value is None or dates is None:
+        return no_update
+    return figures.build_stacked_area_chart(value.lower(), dates[0], dates[1])
+
+@callback(
+    Output('pie_chart_production_by_sector', 'figure'),
+    [Input(component_id="date-range-picker", component_property="value"),]
+)
+def update_pie_chart_production_by_sector(dates):
+    """Update the pie chart."""
     if dates is None:
-        dates = [default_start_date, default_start_date]
-    return figures.build_stacked_area_chart(str(value), dates[0], dates[1])
+        return no_update
+    return figures.build_pie_chart_production_by_field(dates[0], dates[1])
