@@ -3,7 +3,8 @@ import plotly.express as px
 import data.db_services as dbs
 from view.datepicker import default_start_date, default_end_date
 
-def build_line_chart_with_prediction(starting_date: str = default_start_date, ending_date: str = default_end_date) -> px.area:
+def build_line_chart_with_prediction(starting_date: str = default_start_date, 
+                                     ending_date: str = default_end_date) -> px.area:
     """Create a line chart.
     
     Parameters
@@ -37,7 +38,8 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date, en
     return line_chart_cons
 
 
-def build_pie_chart_production_by_field(start_date: str = default_start_date, end_date: str = default_end_date) -> px.pie:
+def build_pie_chart_production_by_field(start_date: str = default_start_date, 
+                                        end_date: str = default_end_date) -> px.pie:
     """Create a pie chart.
 
     Parameters
@@ -53,8 +55,8 @@ def build_pie_chart_production_by_field(start_date: str = default_start_date, en
         Figure containing the pie chart.
     """
     data = dbs.get_mean_by_date_from_one_date_to_another_date("DonneesNationales", start_date, end_date, ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])[0]
-    pie_chart_production_par_filiere = px.pie(names=list(data.keys()), values=list(data.values()), title='Répartition de la Production des Sources d’Énergie')
-    pie_chart_production_par_filiere.update_traces(
+    fig = px.pie(names=list(data.keys()), values=list(data.values()), title='Répartition de la Production des Sources d’Énergie')
+    fig.update_traces(
         textposition='inside',
         textinfo='percent+label',
         hoverinfo='label+percent',
@@ -63,13 +65,13 @@ def build_pie_chart_production_by_field(start_date: str = default_start_date, en
             line=dict(color='#FFFFFF', width=2)
         )
     )
-    pie_chart_production_par_filiere.update_layout(
+    fig.update_layout(
         showlegend=False,
         title=dict(
             font=dict(size=24)
         )
     )
-    return pie_chart_production_par_filiere
+    return fig
 
 
 def build_stacked_area_chart(argument: str = "nucleaire", 
