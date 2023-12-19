@@ -30,7 +30,7 @@ def layout():
                             html.H1('Production'),
                             dcc.Graph(
                                 id="pie_chart_production_par_filiere",
-                                figure=figures.build_pie_chart_production_by_field().update_layout(title_text=""), # TODO: Fix title
+                                figure=figures.build_pie_chart_production_by_field(legend=False).update_layout(title_text=""), # TODO: Fix title
                             )
                         ]
                     ), href=dash.page_registry['pages.production']['path']), width=4),

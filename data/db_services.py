@@ -225,9 +225,9 @@ def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, 
     match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
     group_conditions = {
         "_id": "$date",
-        **{f"avg_{field}": {"$avg": f"$results.{field}"} for field in mean_fields}
+        **{f"{field}": {"$avg": f"$results.{field}"} for field in mean_fields}
     }
-    project_conditions = {"_id": 0, **{f"avg_{field}": 1 for field in mean_fields}}
+    project_conditions = {"_id": 0, **{f"{field}": 1 for field in mean_fields}}
     return get_data(collection, 
                     unwind_field="$results", 
                     match_conditions=match_conditions, 

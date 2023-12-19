@@ -1,4 +1,5 @@
 import plotly.express as px
+import plotly.graph_objects as go
 
 import data.db_services as dbs
 from view.datepicker import default_start_date, default_end_date
@@ -45,7 +46,7 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date,
 
 
 def build_pie_chart_production_by_field(start_date: str = default_start_date, 
-                                        end_date: str = default_end_date) -> px.pie:
+                                        end_date: str = default_end_date, legend = True) -> px.pie:
     """Create a pie chart.
 
     Parameters
@@ -60,24 +61,36 @@ def build_pie_chart_production_by_field(start_date: str = default_start_date,
     plotly.graph_objects.Figure
         Figure containing the pie chart.
     """
+
+    # Récupération des données moyennes
     data = dbs.get_mean_by_date_from_one_date_to_another_date("DonneesNationales", start_date, end_date, ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])[0]
-    fig = px.pie(names=list(data.keys()), values=list(data.values()), title='Répartition de la Production des Sources d’Énergie')
+
+    # Extraction des clés et des valeurs pour le diagramme circulaire
+    keys = list(data.keys())
+    values = list(data.values())
+
+    # Création d'une liste de couleurs pour les tranches du diagramme circulaire, en utilisant field_colors
+    slice_colors = [field_colors[key] for key in keys if key in field_colors]
+
+    # Création du diagramme circulaire avec Graph Objects
+    fig = go.Figure(data=[go.Pie(labels=keys, values=values, marker=dict(colors=slice_colors))])
+
+    # Mise à jour des traces pour le positionnement du texte et les informations au survol
     fig.update_traces(
         textposition='inside',
         textinfo='percent+label',
         hoverinfo='label+percent',
-        marker=dict(
-            colors=px.colors.qualitative.Pastel1,
-            line=dict(color='#FFFFFF', width=2)
-        )
     )
+
+    # Mise à jour de la mise en page pour ajuster le titre
     fig.update_layout(
-        showlegend=False,
-        title=dict(
-            font=dict(size=24)
-        )
+        showlegend=False if legend == False else True,
+        title_text='Répartition de la Production des Sources d’Énergie',
+        title_font_size=24
     )
+
     return fig
+
 
 
 def build_stacked_area_chart(argument: str = "nucleaire", 
@@ -153,18 +166,12 @@ def build_stacked_area_by_production(starting_date, end_date):
     plotly.graph_objects.Figure
         Figure containing the stacked area chart."""
     data = dbs.transform_data_to_df(dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, end_date))
-
-    # S'assurer que le DataFrame est trié par date_heure et que toutes les colonnes nécessaires existent
     data = data.sort_values(by=['date_heure'])
     data = dbs.remove_nan_from_data(data, "consommation")
     
-    # Vérifier que toutes les colonnes pour 'y' existent dans 'data'
-    production_fields = ["eolien", "hydraulique", "nucleaire", "solaire", "bioenergies"]
+    production_fields = ["eolien", "hydraulique", "nucleaire", "solaire", "bioenergies", "gaz", "fioul", "charbon"]
     if not set(production_fields).issubset(data.columns):
         missing_fields = list(set(production_fields) - set(data.columns))
         raise ValueError(f"Les colonnes suivantes sont manquantes dans le DataFrame: {missing_fields}")
 
-    # Création du graphique à aires empilées
-    fig = px.area(data, x="date_heure", y=production_fields, title="Production par filière", color_discrete_map=field_colors)
-
-    return fig
+    return px.area(data, x="date_heure", y=production_fields, title="Production par filière", color_discrete_map=field_colors)
