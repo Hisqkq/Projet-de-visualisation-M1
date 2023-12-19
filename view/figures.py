@@ -115,6 +115,8 @@ def build_stacked_bar_chart(arguments, starting_date, ending_date):
     data_melted = data.melt(id_vars='date_heure', value_vars=arguments, var_name='category', value_name='value')
 
     # Creating the stacked bar chart
-    fig = px.bar(data_melted, x='date_heure', y='value', color='category', barmode='stack')
-    fig.update_layout(bargap=0.01)
+    fig = px.bar(data_melted, x='date_heure', y='value', color='category', barmode='relative')
+    fig.update_layout(bargroupgap=0.01)
+    fig.update_traces(marker_line_width=0) 
+    
     return fig

@@ -34,7 +34,6 @@ def fetch_data_by_date(data:str, start:int, rows:int, date:str):
         Dictionary containing the data. 
     """
     url = f"{URL}{data}" + "/records"
-    url = f"{URL}{data}" + "/records"
     params = {
         "offset" : start,
         "rows": rows,
@@ -67,8 +66,7 @@ def get_date(data:str, first:bool=True):
     """
 
     date = "date" if first else "-date"
-
-    url = f"{URL}{data}" + "/records"
+    
     url = f"{URL}{data}" + "/records"
     params = {
         "select": "date",
@@ -100,7 +98,6 @@ def get_length_per_date(data:str, date:str):
     int
         Number of rows.
     """
-    url = f"{URL}{data}" + "/records"
     url = f"{URL}{data}" + "/records"
     params = {
         "select": "date",
@@ -177,7 +174,6 @@ def delete_data_last_date(collection):
     collection : str
         Name of the collection.
     """
-    last_date = get_last_date_db(collection)
     dbname.get_collection(collection).delete_many({"results.date": {"$gte": datetime.datetime.now().strftime('%Y-%m-%d')}})
     
 def update_data(from_data:str, collection_name:str):
