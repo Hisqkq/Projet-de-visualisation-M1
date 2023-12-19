@@ -49,7 +49,7 @@ def layout():
                 ),
                 dcc.Graph(
                     id="graph_production_stacked_area",
-                    figure=figures.build_stacked_area_chart(argument="solaire", starting_date=default_start_date, ending_date=default_end_date)
+                    figure=figures.build_stacked_area_chart("solaire")
                 )
             ], width=6)
         ]),
@@ -83,9 +83,9 @@ def update_map(selected_data):
 )
 def update_graph_production_stacked_area(value, dates):
     """Update the stacked area chart."""
-    if dates is None:
-        dates = [default_start_date, default_start_date]
-    return figures.build_stacked_area_chart(str(value), dates[0], dates[1])
+    if value is None or dates is None:
+        return no_update
+    return figures.build_stacked_area_chart(value.lower(), dates[0], dates[1])
 
 @callback(
     Output('pie_chart_production_by_sector', 'figure'),
