@@ -4,7 +4,8 @@ import data.db_services as dbs
 from view.datepicker import default_start_date, default_end_date
 
 def build_line_chart_with_prediction(starting_date: str = default_start_date, 
-                                     ending_date: str = default_end_date) -> px.area:
+                                     ending_date: str = default_end_date, 
+                                     homepage:bool=False) -> px.area:
     """Create a line chart.
     
     Parameters
@@ -13,6 +14,8 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date,
         Starting date, by default default_start_date.
     ending_date : str, optional
         Ending date, by default default_end_date.
+    homepage : bool, optional
+        True if the line chart is for the homepage, False otherwise, by default False.
         
     Returns
     -------
@@ -35,11 +38,16 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date,
     line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j"], mode='lines', name='Prediction J')
     line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j1"], mode='lines', name='Prediction J-1')
 
+    if not homepage:
+        line_chart_cons.update_layout(paper_bgcolor="#555555")
+        line_chart_cons.update_layout(font_color="#FFFFFF")
+
     return line_chart_cons
 
 
 def build_pie_chart_production_by_field(start_date: str = default_start_date, 
-                                        end_date: str = default_end_date) -> px.pie:
+                                        end_date: str = default_end_date, 
+                                        homepage:bool=False) -> px.pie:
     """Create a pie chart.
 
     Parameters
@@ -48,6 +56,8 @@ def build_pie_chart_production_by_field(start_date: str = default_start_date,
         Starting date, by default default_start_date.
     end_date : str, optional
         Ending date, by default default_end_date.
+    homepage : bool, optional
+        True if the pie chart is for the homepage, False otherwise, by default False.
     
     Returns
     -------
@@ -71,12 +81,16 @@ def build_pie_chart_production_by_field(start_date: str = default_start_date,
             font=dict(size=24)
         )
     )
+    if not homepage:
+        fig.update_layout(paper_bgcolor="#555555")
+        fig.update_layout(font_color="#FFFFFF")
     return fig
 
 
 def build_stacked_area_chart(argument: str = "nucleaire", 
                              starting_date: str = default_start_date, 
-                             ending_date: str = default_end_date) -> px.area:
+                             ending_date: str = default_end_date,
+                             homepage:bool=False) -> px.area:
     """Create a stacked area chart.
     
     Parameters
@@ -85,13 +99,19 @@ def build_stacked_area_chart(argument: str = "nucleaire",
         Argument, by default "nucleaire".
     date : str, optional
         Date, by default datetime.datetime.now().strftime("%Y-%m-%d").
+    homepage : bool, optional
+        True if the stacked area chart is for the homepage, False otherwise, by default False.
         
     Returns
     -------
     plotly.graph_objects.Figure
         Figure containing the stacked area chart."""
     data = dbs.get_data_from_one_date_to_another_date("DonneesRegionales", starting_date, ending_date)
-    return px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}")
+    fig = px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}")
+    if not homepage:
+        fig.update_layout(paper_bgcolor="#555555")
+        fig.update_layout(font_color="#FFFFFF") 
+    return fig
 
 
 def build_stacked_bar_chart(arguments: list, 
@@ -127,6 +147,7 @@ def build_stacked_bar_chart(arguments: list,
     # Creating the stacked bar chart
     fig = px.bar(data_melted, x='date_heure', y='value', color='category', barmode='relative')
     fig.update_layout(bargroupgap=0.01)
-    fig.update_traces(marker_line_width=0) 
+    fig.update_layout(paper_bgcolor="#555555")
+    fig.update_layout(font_color="#FFFFFF")
     
     return fig
