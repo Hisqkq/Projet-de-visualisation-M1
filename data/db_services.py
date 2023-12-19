@@ -4,7 +4,7 @@ import pandas as pd
 ## CONNECT TO DB
 dbname = mongodb.get_database()
 
-def execute_aggregation(collection, pipeline):
+def execute_aggregation(collection: str, pipeline: list) -> list:
     """Execute a MongoDB aggregation pipeline and return the result.
     
     Parameters:
@@ -25,7 +25,7 @@ def execute_aggregation(collection, pipeline):
         return []
 
 
-def build_pipeline(unwind_field=None, match_conditions=None, group_conditions=None, sort_conditions=None, project_conditions=None, replace_root_conditions=None):
+def build_pipeline(unwind_field=None, match_conditions=None, group_conditions=None, sort_conditions=None, project_conditions=None, replace_root_conditions=None) -> list:
     """Build a MongoDB aggregation pipeline with optional stages."""
     pipeline = []
 
@@ -38,7 +38,7 @@ def build_pipeline(unwind_field=None, match_conditions=None, group_conditions=No
 
     return pipeline
 
-def get_data(collection, unwind_field=None, match_conditions=None, group_conditions=None, sort_conditions=None, project_conditions=None, replace_root_conditions=None):
+def get_data(collection: str, unwind_field=None, match_conditions=None, group_conditions=None, sort_conditions=None, project_conditions=None, replace_root_conditions=None) -> list:
     """Get data from a collection using a flexible aggregation pipeline.
 
     Parameters:
@@ -67,7 +67,7 @@ def get_data(collection, unwind_field=None, match_conditions=None, group_conditi
     return execute_aggregation(collection, pipeline)
 
 
-def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], order: int):
+def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], order: int) -> list:
     """Enable User to get the sum of fields from a collection, grouped by a specific field.
     
     Parameters:
@@ -97,7 +97,7 @@ def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], 
                     sort_conditions=sort_conditions)
 
 
-def get_data_from_one_date(collection: str, date: str):
+def get_data_from_one_date(collection: str, date: str) -> list:
     """Enable User to get the data from a collection for a specific date.
     
     Parameters:
@@ -120,7 +120,7 @@ def get_data_from_one_date(collection: str, date: str):
                     sort_conditions={"date_heure": 1})
 
 
-def get_data_from_one_date_and_one_region(collection: str, date: str, region: str):
+def get_data_from_one_date_and_one_region(collection: str, date: str, region: str) -> list:
     """Enable User to get the data from a collection for a specific date and a specific region.
     
     Parameters:
@@ -147,7 +147,7 @@ def get_data_from_one_date_and_one_region(collection: str, date: str, region: st
 
 
 
-def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: str):
+def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: str) -> list:
     """Get data from a collection for a specific date range using the modular get_data function.
     
     Parameters:
@@ -172,7 +172,7 @@ def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: s
                     sort_conditions={"date_heure": 1})
 
 
-def get_data_from_one_date_to_another_date_and_one_region(collection: str, date1: str, date2: str, region: str):
+def get_data_from_one_date_to_another_date_and_one_region(collection: str, date1: str, date2: str, region: str) -> list:
     """Enable User to get the data from a collection for a specific date range and a specific region.
     
     Parameters:
@@ -203,7 +203,7 @@ def get_data_from_one_date_to_another_date_and_one_region(collection: str, date1
                     sort_conditions={"results.date_heure": 1})
 
 
-def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, date2: str, mean_fields: [str]):
+def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, date2: str, mean_fields: [str]) -> list:
     """Enable User to get the mean of fields from a collection for a specific date range.
     
     Parameters:
@@ -237,7 +237,7 @@ def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, 
 
 
 
-def get_average_values(collection, fields):
+def get_average_values(collection: str, fields: [str]) -> dict:
     """Enable User to get the averages of many fields (when values are not null) from a collection.
     
     Parameters:
@@ -266,7 +266,7 @@ def get_average_values(collection, fields):
     return result[0] if result else {}
 
 
-def get_sum_values(collection, fields):
+def get_sum_values(collection: str, fields: [str]) -> dict:
     """Enable User to get the sum of many fields (when values are not null) from a collection.
     
     Parameters:
@@ -329,7 +329,7 @@ def convert_to_numeric(df: pd.DataFrame, columns: [str]) -> pd.DataFrame:
         df[column] = df[column].astype(int)
     return df
 
-def remove_nan_from_data(data, column):
+def remove_nan_from_data(data: pd.DataFrame, column: str) -> pd.DataFrame:
     """Remove NaN values from a column.
 
     Parameters
@@ -347,7 +347,7 @@ def remove_nan_from_data(data, column):
 
     return data[data[column].notna()]
 
-def get_last_date_db():
+def get_last_date_db() -> str:
     """Get the last date in the database. Take the earliest date between the national and regional data.
     
     Returns

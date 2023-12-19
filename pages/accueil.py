@@ -19,7 +19,7 @@ def layout():
                             html.H1('Échanges'),
                             dcc.Graph(
                                 id='choropleth-map',
-                                figure=map.build_metropolitan_map(),
+                                figure=map.build_metropolitan_map(True),
                                 config={'displayModeBar': False}
                             ),
                         ]
@@ -30,7 +30,7 @@ def layout():
                             html.H1('Production'),
                             dcc.Graph(
                                 id="pie_chart_production_par_filiere",
-                                figure=figures.build_pie_chart_production_by_field(legend=False).update_layout(title_text=""), # TODO: Fix title
+                                figure=figures.build_pie_chart_production_by_field(homepage=True).update_layout(title_text=""), # TODO: Fix title
                             )
                         ]
                     ), href=dash.page_registry['pages.production']['path']), width=4),
@@ -40,7 +40,7 @@ def layout():
                             html.H1('Consommation'),
                             dcc.Graph(
                                 id="graph_consommation_prediction",
-                                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date).update_layout(showlegend=False) # TODO: Fix legend
+                                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, True).update_layout(showlegend=False) # TODO: Fix legend
                             )
                         ]
                     ), href=dash.page_registry['pages.consommation']['path']), width=4)
