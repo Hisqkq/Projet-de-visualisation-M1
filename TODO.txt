@@ -1,0 +1,9 @@
+- link les visu
+- fonction compare régions
+- améliorer le design du site
+- fix graph échanges commerciaux
+- flèches sur map échanges commerciaux
+- renommer les variables dans les légendes, mettre des titres, disabled tool bars
+- réduire les bordures des maps
+- ajouter du texte : description, explication, storytelling
+- réduire les temps de chargement dans la navigation (link les visu devrait régler le problème)

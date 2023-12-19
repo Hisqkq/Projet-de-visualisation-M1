@@ -33,6 +33,10 @@ def layout():
                 )
             ], width=6),
             dbc.Col([
+                dcc.Graph(
+                    id="pie_chart_production_par_filiere",
+                    figure=figures.build_pie_chart_production_by_field()
+                ),
                 dcc.Dropdown(
                     id="dropdown",
                     options=[
@@ -46,12 +50,8 @@ def layout():
                 dcc.Graph(
                     id="graph_production_stacked_area",
                     figure=figures.build_stacked_area_chart(argument="solaire", starting_date=default_start_date, ending_date=default_end_date)
-                ),
-                dcc.Graph(
-                    id="pie_chart_production_par_filiere",
-                    figure=figures.build_pie_chart_production_by_field()
                 )
-            ], width=6),
+            ], width=6)
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
