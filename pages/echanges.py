@@ -40,7 +40,7 @@ def layout():
     Input("date-range-picker", "value"),
 )
 def update_bar_chart_echanges(dates):
-    """Define dates to avoid callbak error."""
+    """Update the stacked bar chart of the page."""
     if dates is None:
         dates = [default_start_date, default_start_date]
     return figures.build_stacked_bar_chart(

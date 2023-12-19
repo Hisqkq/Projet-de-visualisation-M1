@@ -2,6 +2,7 @@ import plotly.express as px
 import datetime
 
 import data.db_services as dbs
+from view.datepicker import default_start_date, default_end_date
 
 def build_line_chart_with_prediction(starting_date = datetime.datetime.now().strftime("%Y-%m-%d"), 
                                      ending_date = datetime.datetime.now().strftime("%Y-%m-%d")):
@@ -38,7 +39,7 @@ def build_line_chart_with_prediction(starting_date = datetime.datetime.now().str
     return line_chart_cons
 
 
-def build_pie_chart_production_by_field():
+def build_pie_chart_production_by_field(start_date: str = default_start_date, end_date: str = default_end_date):
     """Create a pie chart.
     
     Returns
@@ -46,7 +47,7 @@ def build_pie_chart_production_by_field():
     plotly.graph_objects.Figure
         Figure containing the pie chart.
     """
-    data = dbs.get_mean_by_date_from_one_date_to_another_date("DonneesNationales", "2020-01-01", "2020-01-02", ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])[0]
+    data = dbs.get_mean_by_date_from_one_date_to_another_date("DonneesNationales", start_date, end_date, ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])[0]
     pie_chart_production_par_filiere = px.pie(names=list(data.keys()), values=list(data.values()), title='Répartition de la Production des Sources d’Énergie')
     pie_chart_production_par_filiere.update_traces(
         textposition='inside',
