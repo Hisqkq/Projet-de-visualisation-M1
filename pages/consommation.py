@@ -30,6 +30,7 @@ def layout():
                 dcc.Graph(
                     id="graph_consommation_prediction",
                     figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date),
+                    config={'displayModeBar': False}
                 )
             ], width=8),
         ]),

@@ -2,15 +2,15 @@ import plotly.express as px
 
 import data.geojson_services as gjs
 
-def build_map(data: dict, homepage: bool=False) -> px.choropleth:
+def build_map(data: dict, background: bool=False) -> px.choropleth:
     """Create a map.
 
     Parameters
     ----------
     data : dict
         Dictionary containing the data.
-    homepage : bool
-        True if the map is for the homepage, False otherwise, by default False.
+    background : bool
+        True if the map has a background, False otherwise.
     
     Returns
     -------
@@ -39,18 +39,19 @@ def build_map(data: dict, homepage: bool=False) -> px.choropleth:
         showlegend=False, # Remove the legend
         dragmode=False, # Disable the drag mode
     )
-    if not homepage:
+    if not background:
         fig.update_layout(geo=dict(bgcolor= '#555555'), paper_bgcolor='#555555') # Remove the background color
         fig.update_traces(marker_line_color="#555555", marker_line_width = 1.5) # Add a grey border to the regions"
+    
     return fig
 
-def build_metropolitan_map(homepage=False) -> px.choropleth:
+def build_metropolitan_map(background=False) -> px.choropleth:
     """Create a metropolitan map (without overseas and Corsica).
 
     Parameters
     ----------
-    homepage : bool
-        True if the map is for the homepage, False otherwise.
+    background : bool
+        True if the map has a background, False otherwise.
 
     Returns
     -------
@@ -59,7 +60,7 @@ def build_metropolitan_map(homepage=False) -> px.choropleth:
     
     """
     data = gjs.get_map_data()
-    fig = build_map(data, homepage)
+    fig = build_map(data, background)
 
     return fig
 

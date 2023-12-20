@@ -28,7 +28,8 @@ def layout():
             ), lg=6),
             dbc.Col(dcc.Graph(
                 id="stacked_bar_chart_echanges", 
-                figure=figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"], default_start_date, default_end_date)
+                figure=figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"], default_start_date, default_end_date),
+                config={'displayModeBar': False}
             ), lg=6)
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))

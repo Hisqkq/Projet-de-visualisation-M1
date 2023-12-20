@@ -1,9 +1,20 @@
 import plotly.express as px
+import plotly.graph_objects as go
+import configparser
 
 import data.db_services as dbs
 from view.datepicker import default_start_date, default_end_date
 
-def build_pie_chart_production_by_field(data: list, title: str) -> px.pie:
+### Data ###
+# Read the configuration file
+config = configparser.ConfigParser()
+config.read('data/config.ini')
+
+# Create a dictionary containing the colors for each field
+field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
+############
+
+def build_pie_chart_production_by_field(data: list, title: str, background: bool = False) -> go.Figure:
     """Create a pie chart.
 
     Parameters
@@ -12,32 +23,47 @@ def build_pie_chart_production_by_field(data: list, title: str) -> px.pie:
         List containing the data.
     title : str
         Title of the pie chart.
+    background : bool
+        True if the pie chart has a background, False otherwise.
     
     Returns
     -------
     plotly.graph_objects.Figure
         Figure containing the pie chart.
+    
     """
-    fig = px.pie(names=list(data.keys()), values=list(data.values()), title=title)
+    keys = list(data.keys())
+    values = list(data.values())
+
+    slice_colors = [field_colors[key] for key in keys if key in field_colors]
+
+    fig = go.Figure(data=[
+        go.Pie(
+            labels=keys, 
+            values=values, 
+            marker=dict(colors=slice_colors)
+        )
+    ])
     fig.update_traces(
         textposition='inside',
         textinfo='percent+label',
         hoverinfo='label+percent',
-        marker=dict(
-            colors=px.colors.qualitative.Pastel1,
-            line=dict(color='#FFFFFF', width=2)
-        )
     )
     fig.update_layout(
-        showlegend=False,
-        title=dict(
-            font=dict(size=24)
-        )
+        showlegend=False, # Hide the legend
+        title_text=title,
+        title_font_size=24
     )
+    if not background:
+        fig.update_layout(paper_bgcolor="#555555")
+        fig.update_layout(font_color="#FFFFFF")
+    
     return fig
 
 def build_metropolitan_pie_chart_production_by_field(start_date: str = default_start_date,
-                                                     end_date: str = default_end_date) -> px.pie:  
+                                                     end_date: str = default_end_date,
+                                                     is_title: bool = True,
+                                                     background: bool = False) -> go.Figure:  
     """Create a metropolitan pie chart (without overseas and Corsica).
     
     Parameters
@@ -46,22 +72,30 @@ def build_metropolitan_pie_chart_production_by_field(start_date: str = default_s
         Starting date, by default default_start_date.
     end_date : str, optional
         Ending date, by default default_end_date.
+    is_title : bool, optional
+        True if the pie chart has a title, False otherwise, by default True.
+    background : bool
+        True if the pie chart has a background, False otherwise.
     
     Returns
     -------
     plotly.graph_objects.Figure
         Figure containing the pie chart.
+    
     """
     data = dbs.get_mean_for_fields(
         "DonneesNationales", 
         start_date, end_date, 
         ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"]
     )[0]
-    return build_pie_chart_production_by_field(data, "Répartition de la Production des Sources d’Énergie en Métropole (hors Corse)")
+    title = ''
+    if is_title:
+        title = "Répartition de la Production des Sources d’Énergie en Métropole (hors Corse)"
+    return build_pie_chart_production_by_field(data, title, background)
 
 def build_region_pie_chart_production_by_field(region: str, 
                                                start_date: str = default_start_date, 
-                                               end_date: str = default_end_date) -> px.pie:
+                                               end_date: str = default_end_date) -> go.Figure:
     """Create a pie chart for a specific region.
 
     Parameters
@@ -77,6 +111,7 @@ def build_region_pie_chart_production_by_field(region: str,
     -------
     plotly.graph_objects.Figure
         Figure containing the pie chart.
+    
     """
     data = dbs.get_mean_for_fields_in_a_region(
         "DonneesRegionales", 

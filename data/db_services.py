@@ -262,9 +262,9 @@ def get_mean_for_fields_in_a_region(collection: str, date1: str, date2: str, mea
     }
     group_conditions = {
         "_id": "$date",
-        **{f"avg_{field}": {"$avg": f"$results.{field}"} for field in mean_fields}
+        **{f"{field}": {"$avg": f"$results.{field}"} for field in mean_fields}
     }
-    project_conditions = {"_id": 0, **{f"avg_{field}": 1 for field in mean_fields}}
+    project_conditions = {"_id": 0, **{f"{field}": 1 for field in mean_fields}}
     return get_data(collection, 
                     unwind_field="$results", 
                     match_conditions=match_conditions, 

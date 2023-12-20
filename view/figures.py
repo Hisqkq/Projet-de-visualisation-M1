@@ -1,17 +1,20 @@
 import plotly.express as px
 import plotly.graph_objects as go
+import configparser
 
 import data.db_services as dbs
 from view.datepicker import default_start_date, default_end_date
-import configparser
 
+# Read the configuration file
 config = configparser.ConfigParser()
 config.read('data/config.ini')
 
+### Data ###
+# Create a dictionary containing the colors for each field
 field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
+############
 
 ## Echanges ##
-
 def build_stacked_bar_chart(arguments: list, 
                             starting_date: str = default_start_date, 
                             ending_date: str = default_end_date) -> px.bar:
@@ -51,48 +54,6 @@ def build_stacked_bar_chart(arguments: list,
     return fig
 
 ## Production ##
-
-def build_pie_chart_production_by_field(start_date: str = default_start_date, 
-                                        end_date: str = default_end_date, legend = False,
-                                        homepage:bool=False) -> px.pie:
-    """Create a pie chart.
-
-    Parameters
-    ----------
-    start_date : str, optional
-        Starting date, by default default_start_date.
-    end_date : str, optional
-        Ending date, by default default_end_date.
-    
-    Returns
-    -------
-    plotly.graph_objects.Figure
-        Figure containing the pie chart.
-    """
-    data = dbs.get_mean_by_date_from_one_date_to_another_date("DonneesNationales", start_date, end_date, ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])[0]
-
-    keys = list(data.keys())
-    values = list(data.values())
-
-    slice_colors = [field_colors[key] for key in keys if key in field_colors]
-
-    fig = go.Figure(data=[go.Pie(labels=keys, values=values, marker=dict(colors=slice_colors))])
-    fig.update_traces(
-        textposition='inside',
-        textinfo='percent+label',
-        hoverinfo='label+percent',
-    )
-    fig.update_layout(
-        showlegend=False if legend == False else True,
-        title_text='Répartition de la Production des Sources d’Énergie',
-        title_font_size=24
-    )
-    if not homepage:
-        fig.update_layout(paper_bgcolor="#555555")
-        fig.update_layout(font_color="#FFFFFF")
-    return fig
-
-
 def build_stacked_area_chart(argument: str = "nucleaire", 
                              starting_date: str = default_start_date, 
                              ending_date: str = default_end_date,
@@ -148,9 +109,7 @@ def build_stacked_area_by_production(starting_date: str = default_start_date,
     fig.update_layout(font_color="#FFFFFF") 
     return fig
 
-
 ## Consommation ##
-
 def build_line_chart_with_prediction(starting_date: str = default_start_date, 
                                      ending_date: str = default_end_date, 
                                      homepage:bool=False) -> px.area:
@@ -191,10 +150,3 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date,
         line_chart_cons.update_layout(font_color="#FFFFFF")
 
     return line_chart_cons
-
-
-
-
-
-
-

@@ -31,7 +31,8 @@ def layout():
                             html.H1('Production'),
                             dcc.Graph(
                                 id="pie_chart_production_par_filiere",
-                                figure=pie_chart.build_metropolitan_pie_chart_production_by_field().update_layout(title_text=""), # TODO: Fix title
+                                figure=pie_chart.build_metropolitan_pie_chart_production_by_field(is_title=False, background=True),
+                                config={'displayModeBar': False}
                             )
                         ]
                     ), href=dash.page_registry['pages.production']['path']), width=4),
@@ -41,7 +42,8 @@ def layout():
                             html.H1('Consommation'),
                             dcc.Graph(
                                 id="graph_consommation_prediction",
-                                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, homepage=True).update_layout(showlegend=False) # TODO: Fix legend
+                                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, homepage=True).update_layout(showlegend=False), # TODO: Fix legend
+                                config={'displayModeBar': False}
                             )
                         ]
                     ), href=dash.page_registry['pages.consommation']['path']), width=4)

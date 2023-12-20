@@ -6,6 +6,7 @@ import configparser
 
 from data.db_services import get_last_date_db
 
+# Read the configuration file
 config = configparser.ConfigParser()
 config.read('data/config.ini')
 
