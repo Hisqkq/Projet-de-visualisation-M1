@@ -203,7 +203,7 @@ def get_data_from_one_date_to_another_date_and_one_region(collection: str, date1
                     sort_conditions={"results.date_heure": 1})
 
 
-def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, date2: str, mean_fields: [str]) -> list:
+def get_mean_for_fields(collection: str, date1: str, date2: str, mean_fields: [str]) -> list:
     """Enable User to get the mean of fields from a collection for a specific date range.
     
     Parameters:
@@ -235,6 +235,42 @@ def get_mean_by_date_from_one_date_to_another_date(collection: str, date1: str, 
                     project_conditions=project_conditions,
                     sort_conditions={"_id": 1})
 
+def get_mean_for_fields_in_a_region(collection: str, date1: str, date2: str, mean_fields: [str], region: str) -> list:
+    """Enable User to get the mean of fields from a collection for a specific date range and a specific region.
+    
+    Parameters:
+    ----------
+    collection : str
+        Name of the collection.
+    date1 : str
+        Start date for the range.
+    date2 : str
+        End date for the range.
+    mean_fields : list of str
+        Fields for which to calculate the average.
+    region : str
+        Specific region.
+    
+    Returns:
+    -------
+    list
+        List of documents with average values for the specified fields and region.
+    """
+    match_conditions = {
+        "results.date": {"$gte": date1, "$lte": date2},
+        "results.libelle_region": region
+    }
+    group_conditions = {
+        "_id": "$date",
+        **{f"avg_{field}": {"$avg": f"$results.{field}"} for field in mean_fields}
+    }
+    project_conditions = {"_id": 0, **{f"avg_{field}": 1 for field in mean_fields}}
+    return get_data(collection, 
+                    unwind_field="$results", 
+                    match_conditions=match_conditions, 
+                    group_conditions=group_conditions, 
+                    project_conditions=project_conditions,
+                    sort_conditions={"_id": 1})
 
 
 def get_average_values(collection: str, fields: [str]) -> dict:

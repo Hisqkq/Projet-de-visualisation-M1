@@ -1,21 +1,24 @@
 from dash import register_page, html, dcc, callback, no_update
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
-from view.datepicker import default_start_date, default_end_date
 from view.datepicker import datepicker
 import view.figures as figures
 import view.map as map
+import view.pie_chart as pie_chart
 
 register_page(__name__)
 
 ### Variables ###
 france_map = map.build_metropolitan_map()
-current_map_state = "France"
 #################
 
 def layout():
     return dbc.Container([
+        dcc.Store(
+            id='memory-output',
+            data="France"
+        ),
         dbc.NavbarSimple(
             brand="La production d'électricité en France", 
             color="primary", 
@@ -35,7 +38,7 @@ def layout():
             dbc.Col([
                 dcc.Graph(
                     id="pie_chart_production_by_sector",
-                    figure=figures.build_pie_chart_production_by_field()
+                    figure=pie_chart.build_metropolitan_pie_chart_production_by_field()
                 ),
                 dcc.Dropdown(
                     id="dropdown",
@@ -59,51 +62,40 @@ def layout():
 
 @callback(
     Output('choropleth-map_production', 'figure'),
-    [Input('choropleth-map_production', 'clickData')]
+    Output('memory-output', 'data'),
+    [Input('choropleth-map_production', 'clickData'),
+     State('memory-output', 'data')]
 )
-def update_map(selected_data):
+def update_map(selected_data, data):
     """Update the map when a region is selected."""
-    global current_map_state # TODO: Fix this
-
     if selected_data is None:
         return no_update
 
-    if current_map_state == "France":
-        new_fig = map.build_region_map(selected_data['points'][0]['location'])
-        current_map_state = "Region"
-    else:
-        new_fig = france_map
-        current_map_state = "France"
+    if data == "France":
+        return map.build_region_map(selected_data['points'][0]['location']), selected_data['points'][0]['location']
+    return france_map, "France"
 
-    return new_fig
+@callback(
+    Output('pie_chart_production_by_sector', 'figure'),
+    [Input('date-range-picker', 'value'),
+     Input('memory-output', 'data'),]
+)
+def update_pie_chart_production_by_sector(dates, current_map_state):
+    """Update the pie chart."""
+    if dates is None:
+        return no_update
+
+    if current_map_state == "France":
+        return pie_chart.build_metropolitan_pie_chart_production_by_field(dates[0], dates[1])
+    return pie_chart.build_region_pie_chart_production_by_field(current_map_state, dates[0], dates[1])
 
 @callback(
     Output('graph_production_stacked_area', 'figure'),
     [Input('dropdown', 'value'),
-     Input("date-range-picker", "value"),]
+     Input('date-range-picker', 'value'),]
 )
-def update_graph_production_stacked_area(value, dates):
+def update_graph_production_stacked_area(value, dates): # TODO: sync avec la map
     """Update the stacked area chart."""
     if value is None or dates is None:
         return no_update
     return figures.build_stacked_area_chart(value.lower(), dates[0], dates[1])
-
-@callback(
-    Output('pie_chart_production_by_sector', 'figure'),
-    [Input(component_id="date-range-picker", component_property="value"),]
-)
-def update_pie_chart_production_by_sector(dates):
-    """Update the pie chart."""
-    if dates is None:
-        return no_update
-    return figures.build_pie_chart_production_by_field(dates[0], dates[1])
-
-@callback(
-    Output('graph_area_by_production_field', 'figure'),
-    [Input(component_id="date-range-picker", component_property="value"),]
-)
-def update_graph_area_by_production_field(dates):
-    """Update the stacked area chart for each production field."""
-    if dates is None:
-        return no_update
-    return figures.build_stacked_area_by_production(dates[0], dates[1])
