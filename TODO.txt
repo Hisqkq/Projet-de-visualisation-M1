@@ -1,7 +1,6 @@
 - link les visu
 - fonction compare régions
 - améliorer le design du site
-- fix graph échanges commerciaux
 - flèches sur map échanges commerciaux
 - renommer les variables dans les légendes, mettre des titres, disabled tool bars
 - réduire les bordures des maps

@@ -69,28 +69,19 @@ def build_pie_chart_production_by_field(start_date: str = default_start_date,
     plotly.graph_objects.Figure
         Figure containing the pie chart.
     """
-
-    # Récupération des données moyennes
     data = dbs.get_mean_by_date_from_one_date_to_another_date("DonneesNationales", start_date, end_date, ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])[0]
 
-    # Extraction des clés et des valeurs pour le diagramme circulaire
     keys = list(data.keys())
     values = list(data.values())
 
-    # Création d'une liste de couleurs pour les tranches du diagramme circulaire, en utilisant field_colors
     slice_colors = [field_colors[key] for key in keys if key in field_colors]
 
-    # Création du diagramme circulaire avec Graph Objects
     fig = go.Figure(data=[go.Pie(labels=keys, values=values, marker=dict(colors=slice_colors))])
-
-    # Mise à jour des traces pour le positionnement du texte et les informations au survol
     fig.update_traces(
         textposition='inside',
         textinfo='percent+label',
         hoverinfo='label+percent',
     )
-
-    # Mise à jour de la mise en page pour ajuster le titre
     fig.update_layout(
         showlegend=False if legend == False else True,
         title_text='Répartition de la Production des Sources d’Énergie',
@@ -128,7 +119,8 @@ def build_stacked_area_chart(argument: str = "nucleaire",
         fig.update_layout(font_color="#FFFFFF") 
     return fig
 
-def build_stacked_area_by_production(starting_date, end_date):
+def build_stacked_area_by_production(starting_date: str = default_start_date, 
+                                     ending_date: str = default_end_date,):
     """Create a stacked area chart for each production field.
     
     Parameters
@@ -142,7 +134,7 @@ def build_stacked_area_by_production(starting_date, end_date):
     -------
     plotly.graph_objects.Figure
         Figure containing the stacked area chart."""
-    data = dbs.transform_data_to_df(dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, end_date))
+    data = dbs.transform_data_to_df(dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date))
     data = data.sort_values(by=['date_heure'])
     data = dbs.remove_nan_from_data(data, "consommation")
     
@@ -151,7 +143,10 @@ def build_stacked_area_by_production(starting_date, end_date):
         missing_fields = list(set(production_fields) - set(data.columns))
         raise ValueError(f"Les colonnes suivantes sont manquantes dans le DataFrame: {missing_fields}")
 
-    return px.area(data, x="date_heure", y=production_fields, title="Production par filière", color_discrete_map=field_colors)
+    fig = px.area(data, x="date_heure", y=production_fields, title="Production par filière", color_discrete_map=field_colors)
+    fig.update_layout(paper_bgcolor="#555555")
+    fig.update_layout(font_color="#FFFFFF") 
+    return fig
 
 
 ## Consommation ##

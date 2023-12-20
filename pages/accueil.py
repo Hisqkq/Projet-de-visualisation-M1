@@ -40,7 +40,7 @@ def layout():
                             html.H1('Consommation'),
                             dcc.Graph(
                                 id="graph_consommation_prediction",
-                                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, True).update_layout(showlegend=False) # TODO: Fix legend
+                                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, homepage=True).update_layout(showlegend=False) # TODO: Fix legend
                             )
                         ]
                     ), href=dash.page_registry['pages.consommation']['path']), width=4)

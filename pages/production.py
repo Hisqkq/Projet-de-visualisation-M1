@@ -51,7 +51,7 @@ def layout():
                     id="graph_production_stacked_area",
                     figure=figures.build_stacked_area_chart(argument="solaire")
                 ),
-                dcc.Graph(id="graph_area_by_production_field", figure=figures.build_stacked_area_by_production(default_start_date, default_end_date))
+                dcc.Graph(id="graph_area_by_production_field", figure=figures.build_stacked_area_by_production())
             ], width=8)
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
@@ -97,3 +97,13 @@ def update_pie_chart_production_by_sector(dates):
     if dates is None:
         return no_update
     return figures.build_pie_chart_production_by_field(dates[0], dates[1])
+
+@callback(
+    Output('graph_area_by_production_field', 'figure'),
+    [Input(component_id="date-range-picker", component_property="value"),]
+)
+def update_graph_area_by_production_field(dates):
+    """Update the stacked area chart for each production field."""
+    if dates is None:
+        return no_update
+    return figures.build_stacked_area_by_production(dates[0], dates[1])
