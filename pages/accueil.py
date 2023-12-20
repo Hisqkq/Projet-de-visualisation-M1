@@ -5,6 +5,7 @@ import dash_bootstrap_components as dbc
 from view.datepicker import default_start_date, default_end_date
 import view.figures as figures
 import view.map as map
+import view.pie_chart as pie_chart
 
 dash.register_page(__name__, path='/')
 
@@ -30,7 +31,7 @@ def layout():
                             html.H1('Production'),
                             dcc.Graph(
                                 id="pie_chart_production_par_filiere",
-                                figure=figures.build_pie_chart_production_by_field().update_layout(title_text=""), # TODO: Fix title
+                                figure=pie_chart.build_metropolitan_pie_chart_production_by_field().update_layout(title_text=""), # TODO: Fix title
                             )
                         ]
                     ), href=dash.page_registry['pages.production']['path']), width=4),

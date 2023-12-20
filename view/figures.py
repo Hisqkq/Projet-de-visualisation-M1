@@ -37,43 +37,6 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date,
 
     return line_chart_cons
 
-
-def build_pie_chart_production_by_field(start_date: str = default_start_date, 
-                                        end_date: str = default_end_date) -> px.pie:
-    """Create a pie chart.
-
-    Parameters
-    ----------
-    start_date : str, optional
-        Starting date, by default default_start_date.
-    end_date : str, optional
-        Ending date, by default default_end_date.
-    
-    Returns
-    -------
-    plotly.graph_objects.Figure
-        Figure containing the pie chart.
-    """
-    data = dbs.get_mean_by_date_from_one_date_to_another_date("DonneesNationales", start_date, end_date, ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"])[0]
-    fig = px.pie(names=list(data.keys()), values=list(data.values()), title='Répartition de la Production des Sources d’Énergie')
-    fig.update_traces(
-        textposition='inside',
-        textinfo='percent+label',
-        hoverinfo='label+percent',
-        marker=dict(
-            colors=px.colors.qualitative.Pastel1,
-            line=dict(color='#FFFFFF', width=2)
-        )
-    )
-    fig.update_layout(
-        showlegend=False,
-        title=dict(
-            font=dict(size=24)
-        )
-    )
-    return fig
-
-
 def build_stacked_area_chart(argument: str = "nucleaire", 
                              starting_date: str = default_start_date, 
                              ending_date: str = default_end_date) -> px.area:
