@@ -3,16 +3,16 @@ import pandas as pd
 import time
 import db_services as dbs
 
-####################################################################################################
-# test time to get all regional data and transform it to df
-
-time_start = time.time()
-
 project_conditions = {"_id": 0,"results.stockage_batterie":0,"results.destockage_batterie":0,
                         "results.eolien_terrestre":0,"results.eolien_offshore":0, "results.tco_thermique":0,
                         "results.tch_thermique":0,"results.tco_nucleaire":0,"results.tch_nucleaire":0,"results.tco_eolien":0, 
                         "results.tch_eolien":0,"results.tco_solaire":0,"results.tch_solaire":0,"results.tco_hydraulique":0,
                         "results.tch_hydraulique":0, "results.tco_bioenergies":0, "results.tch_bioenergies":0}
+
+####################################################################################################
+# test time to get all regional data and transform it to df
+
+time_start = time.time()
 
 regionales_df = dbs.transform_data_to_df(dbs.get_data("DonneesRegionales",
                                                       replace_root_conditions="$results", 
@@ -27,12 +27,6 @@ print(f"Temps DonneesRegionales : {time_end - time_start}s") # 125.3656682968139
 # test time to get all natioal data and transform it to df
 
 time_start = time.time()
-
-project_conditions = {"_id": 0,"results.stockage_batterie":0,"results.destockage_batterie":0,
-                        "results.eolien_terrestre":0,"results.eolien_offshore":0, "results.tco_thermique":0,
-                        "results.tch_thermique":0,"results.tco_nucleaire":0,"results.tch_nucleaire":0,"results.tco_eolien":0, 
-                        "results.tch_eolien":0,"results.tco_solaire":0,"results.tch_solaire":0,"results.tco_hydraulique":0,
-                        "results.tch_hydraulique":0, "results.tco_bioenergies":0, "results.tch_bioenergies":0}
 
 nationales_df = dbs.transform_data_to_df(dbs.get_data("DonneesNationales", 
                                               replace_root_conditions="$results", 
