@@ -30,14 +30,14 @@ def layout():
         dbc.Row([
             dbc.Col([
                 dcc.Graph(
-                    id='choropleth-map_production',
+                    id='choropleth_map_production',
                     figure=france_map,
                     config={'displayModeBar': False}
                 )
             ], width=4),
             dbc.Col([
                 dcc.Graph(
-                    id="pie_chart_production_by_sector",
+                    id="production_pie_chart_by_sector",
                     figure=pie_chart.build_metropolitan_pie_chart_production_by_field(),
                     config={'displayModeBar': False}
                 ),
@@ -55,11 +55,6 @@ def layout():
                     id="graph_production_stacked_area",
                     figure=figures.build_stacked_area_chart(argument="solaire"),
                     config={'displayModeBar': False}
-                ),
-                dcc.Graph(
-                    id="graph_area_by_production_field", 
-                    figure=figures.build_stacked_area_by_production(),
-                    config={'displayModeBar': False}
                 )
             ], width=8)
         ]),
@@ -67,9 +62,9 @@ def layout():
     ], fluid=True)
 
 @callback(
-    Output('choropleth-map_production', 'figure'),
+    Output('choropleth_map_production', 'figure'),
     Output('memory-output', 'data'),
-    [Input('choropleth-map_production', 'clickData'),
+    [Input('choropleth_map_production', 'clickData'),
      State('memory-output', 'data')]
 )
 def update_map(selected_data, data):
@@ -82,11 +77,11 @@ def update_map(selected_data, data):
     return france_map, "France"
 
 @callback(
-    Output('pie_chart_production_by_sector', 'figure'),
+    Output('production_pie_chart_by_sector', 'figure'),
     [Input('date-range-picker', 'value'),
      Input('memory-output', 'data'),]
 )
-def update_pie_chart_production_by_sector(dates, current_map_state):
+def update_production_pie_chart_by_sector(dates, current_map_state):
     """Update the pie chart."""
     if dates is None:
         return no_update
