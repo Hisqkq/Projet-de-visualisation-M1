@@ -20,7 +20,7 @@ def layout():
                             html.H1('Échanges'),
                             dcc.Graph(
                                 id='choropleth-map',
-                                figure=map.build_metropolitan_map(True),
+                                figure=map.build_metropolitan_map(homepage=True),
                                 config={'displayModeBar': False}
                             ),
                         ]
