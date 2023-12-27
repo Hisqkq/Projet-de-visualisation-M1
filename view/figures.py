@@ -1,17 +1,17 @@
 import plotly.express as px
-import plotly.graph_objects as go
 import configparser
 
 import data.db_services as dbs
 from view.datepicker import default_start_date, default_end_date
 
+### Data ###
 # Read the configuration file
 config = configparser.ConfigParser()
 config.read('data/config.ini')
 
-### Data ###
 # Create a dictionary containing the colors for each field
 field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
+background_color = str(config['Colors']['background'])
 ############
 
 ## Echanges ##
@@ -46,10 +46,10 @@ def build_stacked_bar_chart(arguments: list,
     data_melted = data.melt(id_vars='date_heure', value_vars=arguments, var_name='category', value_name='value')
 
     # Creating the stacked bar chart
-    fig = px.bar(data_melted, x='date_heure', y='value', color='category', barmode='relative')
+    fig = px.bar(data_melted, x='date_heure', y='value', color='category', barmode='relative', template="plotly_dark")
     fig.update_layout(bargroupgap=0.01)
-    fig.update_layout(paper_bgcolor="#555555")
-    fig.update_layout(font_color="#FFFFFF")
+    fig.update_layout(paper_bgcolor= background_color)
+    fig.update_layout(font_color= "#FFFFFF")
     
     return fig
 
@@ -74,9 +74,9 @@ def build_stacked_area_chart(argument: str = "nucleaire",
     plotly.graph_objects.Figure
         Figure containing the stacked area chart."""
     data = dbs.get_data_from_one_date_to_another_date("DonneesRegionales", starting_date, ending_date)
-    fig = px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}")
+    fig = px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}", template="plotly_dark")
     if not homepage:
-        fig.update_layout(paper_bgcolor="#555555")
+        fig.update_layout(paper_bgcolor=background_color)
         fig.update_layout(font_color="#FFFFFF") 
     return fig
 
@@ -104,8 +104,8 @@ def build_stacked_area_by_production(starting_date: str = default_start_date,
         missing_fields = list(set(production_fields) - set(data.columns))
         raise ValueError(f"Les colonnes suivantes sont manquantes dans le DataFrame: {missing_fields}")
 
-    fig = px.area(data, x="date_heure", y=production_fields, title="Production par filière", color_discrete_map=field_colors)
-    fig.update_layout(paper_bgcolor="#555555")
+    fig = px.area(data, x="date_heure", y=production_fields, title="Production par filière", color_discrete_map=field_colors, template="plotly_dark")
+    fig.update_layout(paper_bgcolor=background_color)
     fig.update_layout(font_color="#FFFFFF") 
     return fig
 
@@ -141,12 +141,19 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date,
         raise ValueError("One or more required columns are missing in the data")
 
     # Creating the line chart
-    line_chart_cons = px.area(data, x="date_heure", y="consommation")
+    line_chart_cons = px.area(data, x="date_heure", y="consommation", template="plotly_dark")
     line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j"], mode='lines', name='Prediction J')
     line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j1"], mode='lines', name='Prediction J-1')
+    line_chart_cons.update_layout(legend=dict(
+        orientation="h",
+        yanchor="top",
+        xanchor="center",
+        y = 1.2,
+        x = 0.5
+    ))
 
     if not homepage:
-        line_chart_cons.update_layout(paper_bgcolor="#555555")
+        line_chart_cons.update_layout(paper_bgcolor=background_color)
         line_chart_cons.update_layout(font_color="#FFFFFF")
 
     return line_chart_cons

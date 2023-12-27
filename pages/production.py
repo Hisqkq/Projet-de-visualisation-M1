@@ -1,6 +1,7 @@
 from dash import register_page, html, dcc, callback, no_update
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 
 from view.datepicker import datepicker
 import view.figures as figures
@@ -9,9 +10,9 @@ import view.pie_chart as pie_chart
 
 register_page(__name__)
 
-### Variables ###
+### Data ###
 france_map = map.build_metropolitan_map()
-#################
+############
 
 def layout():
     return dbc.Container([
@@ -40,24 +41,33 @@ def layout():
                     id="production_pie_chart_by_sector",
                     figure=pie_chart.build_metropolitan_pie_chart_production_by_field(),
                     config={'displayModeBar': False}
-                ),
-                dcc.Dropdown(
-                    id="dropdown",
-                    options=[
-                        {'label': 'Eolien', 'value': 'eolien'},
-                        {'label': 'Hydraulique', 'value': 'hydraulique'},
-                        {'label': 'Nucléaire', 'value': 'nucleaire'},
-                        {'label': 'Solaire', 'value': 'solaire'}
-                    ],
-                    value='solaire'
-                ),
-                dcc.Graph(
-                    id="graph_production_stacked_area",
-                    figure=figures.build_stacked_area_chart(argument="solaire"),
-                    config={'displayModeBar': False}
                 )
             ], width=8)
         ]),
+        dbc.Row([
+            html.Div(
+                [
+                    html.H4("Production régionale par type d'énergie", className="text-center mb-3"),
+                    dmc.Select(
+                        placeholder="Choose a production field",
+                        id="select-energy-type",
+                        data=[
+                            {'value': 'eolien', 'label': 'Éolien'},
+                            {'value': 'hydraulique', 'label': 'Hydraulique'},
+                            {'value': 'nucleaire', 'label': 'Nucléaire'},
+                            {'value': 'solaire', 'label': 'Solaire'}
+                        ],
+                        value='solaire',  
+                        style={"width": "33%", "cebter": "true"}
+                    ),],
+                ),
+                dcc.Graph(
+                id="graph_production_stacked_area",
+                figure=figures.build_stacked_area_chart(argument="solaire"),
+                config={'displayModeBar': False}
+            )
+        ]),
+            
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
 
@@ -71,9 +81,10 @@ def update_map(selected_data, data):
     """Update the map when a region is selected."""
     if selected_data is None:
         return no_update
-
+    
     if data == "France":
-        return map.build_region_map(selected_data['points'][0]['location']), selected_data['points'][0]['location']
+        fig = map.build_region_map(selected_data['points'][0]['location'])
+        return fig, selected_data['points'][0]['location']
     return france_map, "France"
 
 @callback(
@@ -92,7 +103,7 @@ def update_production_pie_chart_by_sector(dates, current_map_state):
 
 @callback(
     Output('graph_production_stacked_area', 'figure'),
-    [Input('dropdown', 'value'),
+    [Input('select-energy-type', 'value'),
      Input('date-range-picker', 'value'),]
 )
 def update_graph_production_stacked_area(value, dates): # TODO: sync avec la map

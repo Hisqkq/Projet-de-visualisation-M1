@@ -1,6 +1,7 @@
 import json
 import pandas as pd
 import configparser
+from shapely.geometry import shape
 
 config = configparser.ConfigParser()
 config.read('data/config.ini')
@@ -96,3 +97,26 @@ def create_df(data: dict) -> pd.DataFrame:
         tab['nom'].append(f['properties']['nom'])
         tab['geometry'].append(f['geometry'])
     return pd.DataFrame(tab)
+
+
+def calculate_centroid(geojson_data):
+    """Calculate the centroid of a geojson data.
+    
+    Parameters
+    ----------
+    geojson_data : dict
+        Dictionary containing the data.
+    
+    Returns
+    -------
+    float
+        Latitude.
+    float
+        Longitude.
+        
+    """
+    if 'features' not in geojson_data:
+        polygon = shape(geojson_data['geometry'])
+        centroid = polygon.centroid
+        return centroid.y, centroid.x # Region's centroid
+    return 46.2276, 2.2137 # France's centroid

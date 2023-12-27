@@ -2,6 +2,7 @@ dash
 pandas
 plotly
 numpy
+shapely
 dash-bootstrap-components
 dash-mantine-components
 pymongo[srv]

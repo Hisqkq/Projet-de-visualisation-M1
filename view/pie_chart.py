@@ -11,6 +11,7 @@ config.read('data/config.ini')
 
 # Create a dictionary containing the colors for each field
 field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
+background_color = str(config['Colors']['background'])
 ############
 
 def build_pie_chart_production_by_field(data: list, title: str, background: bool = False) -> go.Figure:
@@ -53,8 +54,10 @@ def build_pie_chart_production_by_field(data: list, title: str, background: bool
         title_text=title,
         title_font_size=24
     )
+    fig.update_layout(paper_bgcolor=background_color)
+    fig.update_layout(font_color="#FFFFFF")
     if not background:
-        fig.update_layout(paper_bgcolor="#555555")
+        fig.update_layout(paper_bgcolor=background_color)
         fig.update_layout(font_color="#FFFFFF")
     
     return fig
