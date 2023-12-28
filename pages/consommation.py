@@ -21,8 +21,8 @@ def layout():
         dbc.Row([
             dbc.Col([
                 dcc.Graph(
-                    id='choropleth-map',
-                    figure=map.build_metropolitan_map(),
+                    id='consommation-map',
+                    figure=map.build_map_colors(default_start_date, default_end_date),
                     config={'displayModeBar': False}
                 )
             ], width=4),
@@ -33,6 +33,15 @@ def layout():
                     config={'displayModeBar': False}
                 )
             ], width=8),
+        ]),
+        dbc.Row([
+            dbc.Col([
+                dcc.Graph(
+                    id="graph_consommation_by_region",
+                    figure=figures.build_line_chart_consommation_by_region(default_start_date, default_end_date),
+                    config={'displayModeBar': False}
+                )
+            ], width=12),
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
@@ -49,3 +58,28 @@ def update_line_chart_with_prediction(dates):
         starting_date=dates[0], 
         ending_date=dates[1]
     )
+    
+@callback(
+    Output('graph_consommation_by_region', 'figure'),
+    Input("date-range-picker", "value"),
+)
+def update_line_chart_consommation_by_region(dates):
+    """Define dates to avoid callbak error."""
+    if dates is None:
+        dates = [default_start_date, default_start_date]
+    return figures.build_line_chart_consommation_by_region( 
+        starting_date=dates[0], 
+        ending_date=dates[1]
+    )
+    
+    
+## Here we update the region map colors ##
+@callback(
+    Output('consommation-map', 'figure'),
+    Input("date-range-picker", "value"),
+)
+def update_map(dates):
+    """Define dates to avoid callbak error."""
+    if dates is None:
+        dates = [default_start_date, default_start_date]
+    return map.build_map_colors(dates[0], dates[1])

@@ -98,6 +98,22 @@ def create_df(data: dict) -> pd.DataFrame:
         tab['geometry'].append(f['geometry'])
     return pd.DataFrame(tab)
 
+def color_df(data: dict):
+    """Transform a dictionary into a DataFrame to use it in a choropleth map (Plotly).
+    
+    Parameters
+    ----------
+    data : dict
+        Dictionary containing the data.
+        
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame containing the data.
+    
+    """
+    return pd.DataFrame(data.items(), columns=['region', 'mean_consommation'])
+
 
 def calculate_centroid(geojson_data):
     """Calculate the centroid of a geojson data.

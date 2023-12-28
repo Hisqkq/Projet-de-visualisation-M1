@@ -404,3 +404,48 @@ def get_last_date_db() -> str:
     last_regional_date = regional_result[0]['date'] if regional_result else None
 
     return last_national_date if last_national_date < last_regional_date else last_regional_date
+
+def get_mean_consommation_by_region(collection: str, date1: str, date2: str) -> dict:
+    """Enable User to get the mean of consommation by regions from a collection for a specific date range.
+    
+    Parameters:
+    ----------
+    collection : str
+        Name of the collection.
+    date1 : str
+        Start date for the range.
+    date2 : str
+        End date for the range.
+        
+    Returns:
+    -------
+    dict
+        Dictionary of mean values for each region.
+    """
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$match": {"results.date": {"$gte": date1, "$lte": date2}}},
+        {"$group": {
+            "_id": "$results.libelle_region",
+            "mean_consommation": {"$avg": "$results.consommation"}
+        }},
+        {"$project": {
+            "_id": 0,
+            "region": "$_id",
+            "mean_consommation": 1
+        }},
+        {"$sort": {"region": 1}}
+    ]
+
+    mean_cons = list(dbname[collection].aggregate(pipeline))
+    
+    mean_cons_formatted = [
+        {"region": data["region"], "mean_consommation": data["mean_consommation"]}
+        for data in mean_cons
+    ]
+    
+    mean_cons_dict = {d['region']: d['mean_consommation'] for d in mean_cons_formatted}
+    
+    return mean_cons_dict
+    
+    

@@ -157,3 +157,49 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date,
         line_chart_cons.update_layout(font_color="#FFFFFF")
 
     return line_chart_cons
+
+def build_line_chart_consommation_by_region(starting_date: str = default_start_date, 
+                                            ending_date: str = default_end_date, 
+                                            homepage:bool=False) -> px.line:
+    """Create a line chart.
+    
+    Parameters
+    ----------
+    starting_date : str, optional
+        Starting date, by default default_start_date.
+    ending_date : str, optional
+        Ending date, by default default_end_date.
+    homepage : bool, optional
+        True if the line chart is for the homepage, False otherwise, by default False.
+        
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        Figure containing the line chart.
+    """
+    # Fetching data and converting JSON to DataFrame
+    json_data = dbs.get_data_from_one_date_to_another_date("DonneesRegionales", starting_date, ending_date)
+    data = dbs.transform_data_to_df(json_data)
+    #Order data by datetime
+    data = data.sort_values(by=['date_heure'])
+    data = dbs.remove_nan_from_data(data, "consommation")
+
+    # Check if the necessary columns are in the DataFrame
+    if not {'date_heure', 'consommation', 'libelle_region'}.issubset(data.columns):
+        raise ValueError("One or more required columns are missing in the data")
+
+    # Creating the line chart
+    line_chart_cons = px.line(data, x="date_heure", y="consommation", color="libelle_region", template="plotly_dark")
+    line_chart_cons.update_layout(legend=dict(
+        orientation="h",
+        yanchor="top",
+        xanchor="center",
+        y = 1.2,
+        x = 0.5
+    ))
+
+    if not homepage:
+        line_chart_cons.update_layout(paper_bgcolor=background_color)
+        line_chart_cons.update_layout(font_color="#FFFFFF")
+
+    return line_chart_cons

@@ -2,6 +2,7 @@ import plotly.express as px
 import configparser
 
 import data.geojson_services as gjs
+import data.db_services as dbs
 
 ### Data ###
 # Read the configuration file
@@ -105,3 +106,67 @@ def build_region_map(region: str) -> px.choropleth:
         )
 
     return fig
+
+
+def build_map_colors(starting_date: str, ending_date: str) -> px.choropleth_mapbox:
+    """Create a map with colors.
+
+    Parameters
+    ----------
+    starting_date : str
+        Starting date.
+    ending_date : str
+        Ending date.
+    
+    Returns
+    -------
+    px.choropleth
+        Figure containing the map.
+    
+    """
+    data = gjs.get_map_data()
+    df = gjs.create_df(data)
+    
+    mean_cons = dbs.get_mean_consommation_by_region("DonneesRegionales", starting_date, ending_date)
+    
+    cons_df = gjs.color_df(mean_cons) # Dataframe for the colors
+    
+    df = df.merge(cons_df, left_on='nom', right_on='region')
+    
+    print(df)
+        
+    fig = px.choropleth_mapbox(
+        df,
+        geojson=data,
+        featureidkey="properties.nom",
+        locations="nom",
+        color="mean_consommation",
+        color_continuous_scale="Blues",
+        range_color=(df['mean_consommation'].min(), df['mean_consommation'].max()),
+        mapbox_style="mapbox://styles/tlavandier/clqmy8zxa00qt01o3ax462t6g",
+        zoom=4,
+        center={"lat": 46.2276, "lon": 2.2137}, 
+        opacity=0.5,
+    )
+    
+    # Mise à jour des paramètres de la figure
+    fig.update_layout(margin={"r":0, "t":0, "l":0, "b":0})
+    fig.update_traces(marker_line_width=0, marker_opacity=0.8)
+    fig.update_layout(
+    coloraxis_colorbar=dict(
+        title="Consommation (MW)",
+        thicknessmode="pixels", thickness=15,
+        lenmode="pixels", len=300,
+        yanchor="top", y=1,
+        ticks="outside", ticksuffix=" MW",
+        dtick=5000,
+        bgcolor='rgba(0,0,0,0)',  
+        titlefont=dict(color='white'),  
+        tickfont=dict(color='white'), 
+    ),
+    paper_bgcolor='rgba(0,0,0,0)', 
+    plot_bgcolor='rgba(0,0,0,0)',
+)
+    
+    return fig
+    
