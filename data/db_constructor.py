@@ -221,8 +221,8 @@ def update_data(from_data: str, collection_name: str) -> None:
                 
         current_date += datetime.timedelta(days=1)
         
-        
-def perform_update():
+
+def perform_update(): # Should be called when updating data but its not working with threading
     """Update data in the database
     """   
     update_data("eco2mix-national-tr", "DonneesNationales")

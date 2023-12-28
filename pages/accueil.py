@@ -79,7 +79,9 @@ def layout():
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
         
-def perform_update():   
+def perform_update():   # TODO: Put this function in data, and use it from there (not working for now)
+    """Update data from RTE's API
+    """
     update_data("eco2mix-national-tr", "DonneesNationales")
     update_data("eco2mix-regional-tr", "DonneesRegionales")
 
@@ -101,7 +103,7 @@ def handle_update_and_check_progress(n_clicks, n_intervals):
     trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
     if trigger_id == "update-data-button":
-        update_thread = threading.Thread(target=perform_update)
+        update_thread = threading.Thread(target=perform_update) # Not working when perform_update is imported from data.db_constructor
         update_thread.start()
         return True
     elif trigger_id == "interval-component":
