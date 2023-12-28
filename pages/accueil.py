@@ -8,11 +8,9 @@ from view.datepicker import default_start_date, default_end_date
 import view.figures as figures
 import view.map as map
 import view.pie_chart as pie_chart
-from data.db_constructor import perform_update
+from data.db_constructor import update_data
 
 dash.register_page(__name__, path='/')
-
-update_thread = None # TODO: use a better way to handle this (without global variable)
 
 modal = dbc.Modal(
             dbc.ModalBody(
@@ -80,6 +78,12 @@ def layout():
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
+        
+def perform_update():   
+    update_data("eco2mix-national-tr", "DonneesNationales")
+    update_data("eco2mix-regional-tr", "DonneesRegionales")
+
+update_thread = None
 
 @callback(
     Output("modal-spinner", "is_open"),
@@ -96,7 +100,7 @@ def handle_update_and_check_progress(n_clicks, n_intervals):
 
     trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
-    if trigger_id == "update-data-butto n":
+    if trigger_id == "update-data-button":
         update_thread = threading.Thread(target=perform_update)
         update_thread.start()
         return True
