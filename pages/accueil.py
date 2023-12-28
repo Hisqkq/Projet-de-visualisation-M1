@@ -1,16 +1,40 @@
 import dash
-from dash import html, dcc
+from dash import html, dcc, Output, Input, callback
 import dash_bootstrap_components as dbc
+from dash.exceptions import PreventUpdate
+import threading
 
 from view.datepicker import default_start_date, default_end_date
 import view.figures as figures
 import view.map as map
 import view.pie_chart as pie_chart
+from data.db_constructor import perform_update
 
 dash.register_page(__name__, path='/')
 
+update_thread = None # TODO: use a better way to handle this (without global variable)
+
+modal = dbc.Modal(
+            dbc.ModalBody(
+                html.Div(
+                    [
+                        html.P("Mise à jour des données en cours..."),
+                        html.P("Cette opéraiton peut prendre plusieurs minutes."),
+                        dbc.Spinner(size="lg", color="primary"),
+                    ]
+                ),
+                className="d-flex justify-content-center"
+            ),
+            id="modal-spinner",
+            is_open=False,
+            backdrop="static",
+            keyboard=False, 
+        )
+
 def layout():
     return dbc.Container([
+        modal,
+        dcc.Interval(id='interval-component', interval=500, n_intervals=0),
         dbc.NavbarSimple(brand="L'électricité en France", color="primary", dark=True, className="mb-4"),
         dbc.Container([
             dbc.Row([
@@ -36,18 +60,47 @@ def layout():
                             )
                         ]
                     ), href=dash.page_registry['pages.production']['path']), width=4),
-                dbc.Col(
+                dbc.Col(    
                     dcc.Link(html.Div(
                         children=[
                             html.H1('Consommation'),
                             dcc.Graph(
                                 id="graph_consommation_prediction",
-                                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, homepage=True).update_layout(showlegend=False), # TODO: Fix legend
+                                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, homepage=True).update_layout(showlegend=False),
                                 config={'displayModeBar': False}
                             )
                         ]
                     ), href=dash.page_registry['pages.consommation']['path']), width=4)
-            ], className="mt-3")
+            ], className="mt-3"),
+            dbc.Row([
+                dbc.Button(
+                    "Mettre à jours les données", id="update-data-button", color="primary", className="mb-3"
+                )
+            ]),
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
+
+@callback(
+    Output("modal-spinner", "is_open"),
+    [Input("update-data-button", "n_clicks"),
+     Input("interval-component", "n_intervals")],
+    prevent_initial_call=True
+)
+def handle_update_and_check_progress(n_clicks, n_intervals):
+    global update_thread
+
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        raise PreventUpdate
+
+    trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
+
+    if trigger_id == "update-data-butto n":
+        update_thread = threading.Thread(target=perform_update)
+        update_thread.start()
+        return True
+    elif trigger_id == "interval-component":
+        if update_thread and not update_thread.is_alive():
+            return False
+    raise PreventUpdate

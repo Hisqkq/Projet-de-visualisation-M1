@@ -1,5 +1,5 @@
 import requests
-import mongodb
+import data.mongodb as mongodb
 import datetime
 import time
 import configparser
@@ -198,7 +198,7 @@ def update_data(from_data: str, collection_name: str) -> None:
         delete_data_last_date(collection_name) # delete data from last date in collection to avoid duplicates when updating data
 
     end_date = get_date(from_data, first = False)
-    current_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+    current_date = datetime.datetime.strptime(str(start_date), '%Y-%m-%d')
     end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
     
     while current_date <= end_date:
@@ -220,3 +220,10 @@ def update_data(from_data: str, collection_name: str) -> None:
                 continue
                 
         current_date += datetime.timedelta(days=1)
+        
+        
+def perform_update():
+    """Update data in the database
+    """   
+    update_data("eco2mix-national-tr", "DonneesNationales")
+    update_data("eco2mix-regional-tr", "DonneesRegionales")

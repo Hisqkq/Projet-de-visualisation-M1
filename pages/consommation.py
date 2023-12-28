@@ -72,8 +72,6 @@ def update_line_chart_consommation_by_region(dates):
         ending_date=dates[1]
     )
     
-    
-## Here we update the region map colors ##
 @callback(
     Output('consommation-map', 'figure'),
     Input("date-range-picker", "value"),
