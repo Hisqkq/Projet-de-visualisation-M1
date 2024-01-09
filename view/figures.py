@@ -155,12 +155,12 @@ def build_stacked_area_chart(argument: str = "nucleaire",
                              starting_date: str = default_start_date, 
                              ending_date: str = default_end_date,
                              homepage:bool=False) -> px.area:
-    """Create a stacked area chart.
+    """Create a stacked area chart for one production fiels.
     
     Parameters
     ----------
     argument : str, optional
-        Argument, by default "nucleaire".
+        Argument (production field), by default "nucleaire".
     date : str, optional
         Date, by default datetime.datetime.now().strftime("%Y-%m-%d").
     homepage : bool, optional

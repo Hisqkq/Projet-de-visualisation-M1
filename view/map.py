@@ -52,7 +52,7 @@ def build_map(data: dict, background: bool=False) -> px.choropleth:
     )
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     
-    if not background: # Wondering if it's useful now
+    if not background: 
         fig.update_layout(geo=dict(bgcolor= 'black'), paper_bgcolor= 'rgba(0,0,0,0)')
         fig.update_traces(marker_line_color="#21222b", marker_line_width = 1.5) 
     
@@ -61,7 +61,7 @@ def build_map(data: dict, background: bool=False) -> px.choropleth:
         marker_line_width=1.5, 
         marker_opacity=0.8 
     )
-    fig.update_layout(dragmode=False, # Dragmode doesn't work :/
+    fig.update_layout(dragmode=False, 
                       showlegend=False)
 
     return fig
@@ -147,7 +147,6 @@ def build_map_colors(starting_date: str, ending_date: str) -> px.choropleth_mapb
         opacity=0.5,
     )
     
-    # Mise à jour des paramètres de la figure
     fig.update_layout(margin={"r":0, "t":0, "l":0, "b":0})
     fig.update_traces(marker_line_width=0, marker_opacity=0.8)
     fig.update_layout(

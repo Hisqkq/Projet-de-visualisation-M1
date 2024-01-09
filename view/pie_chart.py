@@ -92,7 +92,7 @@ def build_metropolitan_pie_chart_production_by_field(start_date: str = default_s
     )[0]
     title = ''
     if is_title:
-        title = "Répartition de la Production des Sources d’Énergie en Métropole (hors Corse)"
+        title = "Répartition de la Production des Sources d'Énergie en Métropole (hors Corse)"
     return build_pie_chart_production_by_field(data, title, background)
 
 def build_region_pie_chart_production_by_field(region: str, 
@@ -121,4 +121,4 @@ def build_region_pie_chart_production_by_field(region: str,
         ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"], 
         region
     )[0]
-    return build_pie_chart_production_by_field(data, f"Répartition de la Production des Sources d’Énergie en {region}")
+    return build_pie_chart_production_by_field(data, f"Répartition de la Production des Sources d'Énergie en {region}")

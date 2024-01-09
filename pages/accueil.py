@@ -7,6 +7,7 @@ from dash.exceptions import PreventUpdate
 import view.figures as figures
 import view.map as map
 import view.pie_chart as pie_chart
+import view.story as story
 from data.db_constructor import update_data
 from view.datepicker import default_start_date, default_end_date
 
@@ -73,7 +74,8 @@ def layout():
             dbc.Row([
                 dbc.Button(
                     "Mettre à jours les données", id="update-data-button", color="primary", className="mb-3"
-                )
+                ),
+                story.story_accueil()
             ]),
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
@@ -103,7 +105,7 @@ def handle_update_and_check_progress(n_clicks, n_intervals):
     trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
     if trigger_id == "update-data-button":
-        update_thread = threading.Thread(target=perform_update) # Not working when perform_update is imported from data.db_constructor
+        update_thread = threading.Thread(target=perform_update)
         update_thread.start()
         return True
     elif trigger_id == "interval-component":
