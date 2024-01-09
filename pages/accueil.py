@@ -18,7 +18,7 @@ modal = dbc.Modal(
                 html.Div(
                     [
                         html.P("Mise à jour des données en cours..."),
-                        html.P("Cette opéraiton peut prendre plusieurs minutes."),
+                        html.P("Cette opération peut prendre plusieurs minutes."),
                         dbc.Spinner(size="lg", color="primary"),
                     ]
                 ),
