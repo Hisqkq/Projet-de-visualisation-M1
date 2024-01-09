@@ -1,5 +1,7 @@
 import plotly.express as px
+import plotly.graph_objects as go
 import configparser
+from plotly.subplots import make_subplots
 
 import data.db_services as dbs
 from view.datepicker import default_start_date, default_end_date
@@ -11,6 +13,9 @@ config.read('data/config.ini')
 
 # Create a dictionary containing the colors for each field
 field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
+exchange_colors = {exchange: config['ExchangeColorPalette'][exchange] for exchange in config['ExchangeColorPalette']}
+exchange_colors_bar = {exchange.title(): config['ExchangeColorPaletteBar'][exchange] for exchange in config['ExchangeColorPaletteBar']}
+display_names = {name: config['DisplayNameEch'][name] for name in config['DisplayNameEch']}
 background_color = str(config['Colors']['background'])
 ############
 
@@ -33,6 +38,7 @@ def build_stacked_bar_chart(arguments: list,
     -------
     plotly.graph_objects.Figure
         Figure containing the stacked bar chart."""
+    
     # Fetching data and converting JSON to DataFrame
     json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
     data = dbs.transform_data_to_df(json_data)
@@ -41,16 +47,107 @@ def build_stacked_bar_chart(arguments: list,
     # Check if the necessary columns are in the DataFrame
     if not all(arg in data.columns for arg in arguments):
         raise ValueError("One or more specified arguments are not in the data")
+    
+    data_renamed = data.rename(columns=display_names)
 
-    # Reshaping the data for stacked bar chart
-    data_melted = data.melt(id_vars='date_heure', value_vars=arguments, var_name='category', value_name='value')
+    data_melted = data_renamed.melt(id_vars='date_heure', value_vars=list(display_names.values()), var_name='Pays', value_name='value')
 
-    # Creating the stacked bar chart
-    fig = px.bar(data_melted, x='date_heure', y='value', color='category', barmode='relative', template="plotly_dark")
+    fig = px.bar(data_melted, x='date_heure', y='value', color='Pays', 
+                 color_discrete_map=exchange_colors_bar, barmode='relative', template="plotly_dark",
+                 custom_data=['Pays'])
+
     fig.update_layout(bargroupgap=0.01)
+    fig.update_traces(marker_line_width=0)
     fig.update_layout(paper_bgcolor= background_color)
     fig.update_layout(font_color= "#FFFFFF")
     
+    return fig
+
+def build_boxplot_echanges(starting_date: str = default_start_date, ending_date: str = default_end_date):
+    """Create a boxplot.
+    
+    Parameters
+    ----------
+    starting_date : str, optional
+        Starting date, by default default_start_date.
+    ending_date : str, optional
+        Ending date, by default default_end_date.
+        
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        Figure containing the boxplot."""
+    
+    # Fetching data and converting JSON to DataFrame
+    json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
+    data = dbs.transform_data_to_df(json_data)
+    data = dbs.convert_to_numeric(data, ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse", "ech_comm_allemagne_belgique"])
+    
+    if not all(arg in data.columns for arg in ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse", "ech_comm_allemagne_belgique"]):
+        raise ValueError("One or more specified arguments are not in the data")
+    
+    data_renamed = data.rename(columns=display_names)
+
+    melted_data = data_renamed.melt(value_vars=list(display_names.values()), 
+                                    var_name='Pays', value_name='Exchange')
+
+    fig = px.box(melted_data, y='Exchange', x='Pays', color='Pays',
+                template="plotly_dark", color_discrete_map=exchange_colors_bar)
+
+    fig.update_layout(paper_bgcolor= background_color, font_color="#FFFFFF")
+
+    return fig
+
+def build_donuts_exchanges(starting_date: str = default_start_date, ending_date: str = default_end_date):
+    """Create a donut chart.
+
+    Parameters
+    ----------
+    starting_date : str, optional
+        Starting date, by default default_start_date.
+    ending_date : str, optional
+        Ending date, by default default_end_date.
+
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        Figure containing the donut chart.
+    """
+    json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
+    data = dbs.transform_data_to_df(json_data)
+    data = dbs.convert_to_numeric(data, ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse", "ech_comm_allemagne_belgique"])
+    
+    columns = ['ech_comm_angleterre', 'ech_comm_espagne', 'ech_comm_italie', 'ech_comm_suisse', 'ech_comm_allemagne_belgique']
+    data = data[data.columns.intersection(columns)]
+
+    imports = data[data > 0].fillna(0).sum()
+    exports = -data[data < 0].fillna(0).sum()
+
+    import_labels = [display_names.get(col, col) for col in imports.index]
+    export_labels = [display_names.get(col, col) for col in exports.index]
+
+    fig = make_subplots(rows=1, cols=2, specs=[[{'type':'domain'}, {'type':'domain'}]])
+
+    def hex_to_rgba(hex, alpha=0.7):
+        """Convert hex color to rgba format with specified alpha."""
+        hex = hex.lstrip('#')
+        return f"rgba({int(hex[0:2], 16)}, {int(hex[2:4], 16)}, {int(hex[4:6], 16)}, {alpha})"
+
+    import_colors = [exchange_colors.get(label, '#FFFFFF') for label in imports.index]
+    export_colors = [exchange_colors.get(label, '#FFFFFF') for label in exports.index]
+
+    import_colors_transparent = [hex_to_rgba(c) for c in import_colors]
+    export_colors_transparent = [hex_to_rgba(c) for c in export_colors]
+
+    if not imports.empty:
+        fig.add_trace(go.Pie(labels=import_labels, values=imports, marker=dict(colors=import_colors_transparent, line=dict(color=import_colors, width=2)), name='Imports', hole=.4), 1, 1)
+    if not exports.empty:
+        fig.add_trace(go.Pie(labels=export_labels, values=exports, marker=dict(colors=export_colors_transparent, line=dict(color=export_colors, width=2)), name='Exports', hole=.4), 1, 2)
+
+    fig.update_traces(textinfo='percent+label')
+    fig.update_layout(paper_bgcolor=background_color, font_color="#FFFFFF") 
+    fig.update_layout(annotations=[dict(text='Imports', x=0.17, y=0.5, font_size=20, showarrow=False), dict(text='Exports', x=0.832, y=0.5, font_size=20, showarrow=False)])
+
     return fig
 
 ## Production ##

@@ -132,8 +132,6 @@ def build_map_colors(starting_date: str, ending_date: str) -> px.choropleth_mapb
     cons_df = gjs.color_df(mean_cons) # Dataframe for the colors
     
     df = df.merge(cons_df, left_on='nom', right_on='region')
-    
-    print(df)
         
     fig = px.choropleth_mapbox(
         df,

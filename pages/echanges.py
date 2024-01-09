@@ -22,15 +22,18 @@ def layout():
         ]),
         dbc.Row([
             dbc.Col(dcc.Graph(
-                id='choropleth-map', 
-                figure=map.build_metropolitan_map(),
+                id='donut_chart_echanges',
+                figure=figures.build_donuts_exchanges(default_start_date, default_end_date),
                 config={'displayModeBar': False}
             ), lg=6),
             dbc.Col(dcc.Graph(
                 id="stacked_bar_chart_echanges", 
-                figure=figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse"], default_start_date, default_end_date),
+                figure=figures.build_stacked_bar_chart(["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse", "ech_comm_allemagne_belgique"], default_start_date, default_end_date),
                 config={'displayModeBar': False}
             ), lg=6)
+        ]),
+        dbc.Row([
+            dcc.Graph(id="boxplot_echanges", figure=figures.build_boxplot_echanges(default_start_date, default_end_date), config={'displayModeBar': False})
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
@@ -55,3 +58,24 @@ def update_bar_chart_echanges(dates):
         starting_date=dates[0], 
         ending_date=dates[1]
     )
+
+
+@callback(
+    Output('boxplot_echanges', 'figure'),
+    Input("date-range-picker", "value"),
+)
+def update_boxplot_echanges(dates):
+    """Update the boxplot of the page."""
+    if dates is None:
+        dates = [default_start_date, default_start_date]
+    return figures.build_boxplot_echanges(starting_date=dates[0], ending_date=dates[1])
+
+@callback(
+    Output('donut_chart_echanges', 'figure'),
+    Input("date-range-picker", "value"),
+)
+def update_donut_chart_echanges(dates):
+    """Update the donut chart of the page."""
+    if dates is None:
+        dates = [default_start_date, default_start_date]
+    return figures.build_donuts_exchanges(starting_date=dates[0], ending_date=dates[1])
