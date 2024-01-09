@@ -1,6 +1,6 @@
+import configparser
 import plotly.express as px
 import plotly.graph_objects as go
-import configparser
 from plotly.subplots import make_subplots
 
 import data.db_services as dbs
@@ -140,9 +140,9 @@ def build_donuts_exchanges(starting_date: str = default_start_date, ending_date:
     export_colors_transparent = [hex_to_rgba(c) for c in export_colors]
 
     if not imports.empty:
-        fig.add_trace(go.Pie(labels=import_labels, values=imports, marker=dict(colors=import_colors_transparent, line=dict(color=import_colors, width=2)), name='Imports', hole=.4), 1, 1)
+        fig.add_trace(go.Pie(labels=import_labels, values=imports, marker=dict(colors=import_colors_transparent, line=dict(color=import_colors, width=2)), name='Imports', hole=.4, textfont=dict(color='#FFFFFF')), 1, 1)
     if not exports.empty:
-        fig.add_trace(go.Pie(labels=export_labels, values=exports, marker=dict(colors=export_colors_transparent, line=dict(color=export_colors, width=2)), name='Exports', hole=.4), 1, 2)
+        fig.add_trace(go.Pie(labels=export_labels, values=exports, marker=dict(colors=export_colors_transparent, line=dict(color=export_colors, width=2)), name='Exports', hole=.4, textfont=dict(color='#FFFFFF')), 1, 2)
 
     fig.update_traces(textinfo='percent+label')
     fig.update_layout(paper_bgcolor=background_color, font_color="#FFFFFF") 

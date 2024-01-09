@@ -1,12 +1,12 @@
-from dash import register_page, html, dcc, callback, no_update
-from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
+from dash import register_page, html, dcc, callback, no_update
+from dash.dependencies import Input, Output, State
 
-from view.datepicker import datepicker
 import view.figures as figures
 import view.map as map
 import view.pie_chart as pie_chart
+from view.datepicker import datepicker
 
 register_page(__name__)
 

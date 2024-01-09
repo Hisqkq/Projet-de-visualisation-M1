@@ -1,10 +1,10 @@
-from dash import register_page, html, dcc, callback, Output, Input
 import dash_bootstrap_components as dbc
+from dash import register_page, html, dcc, callback, Output, Input
 
-from view.datepicker import default_start_date, default_end_date
 import view.datepicker as datepicker
 import view.figures as figures
 import view.map as map
+from view.datepicker import default_start_date, default_end_date
 
 register_page(__name__)
 

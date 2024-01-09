@@ -1,8 +1,8 @@
-import requests
+import configparser
 import data.mongodb as mongodb
 import datetime
+import requests
 import time
-import configparser
 
 config = configparser.ConfigParser()
 config.read('data/config.ini')

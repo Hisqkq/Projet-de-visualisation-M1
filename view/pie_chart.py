@@ -1,5 +1,5 @@
-import plotly.graph_objects as go
 import configparser
+import plotly.graph_objects as go
 
 import data.db_services as dbs
 from view.datepicker import default_start_date, default_end_date

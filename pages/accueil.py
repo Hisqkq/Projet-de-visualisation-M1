@@ -1,14 +1,14 @@
 import dash
-from dash import html, dcc, Output, Input, callback
 import dash_bootstrap_components as dbc
-from dash.exceptions import PreventUpdate
 import threading
+from dash import html, dcc, Output, Input, callback
+from dash.exceptions import PreventUpdate
 
-from view.datepicker import default_start_date, default_end_date
 import view.figures as figures
 import view.map as map
 import view.pie_chart as pie_chart
 from data.db_constructor import update_data
+from view.datepicker import default_start_date, default_end_date
 
 dash.register_page(__name__, path='/')
 

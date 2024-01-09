@@ -1,8 +1,8 @@
-import plotly.express as px
 import configparser
+import plotly.express as px
 
-import data.geojson_services as gjs
 import data.db_services as dbs
+import data.geojson_services as gjs
 
 ### Data ###
 # Read the configuration file

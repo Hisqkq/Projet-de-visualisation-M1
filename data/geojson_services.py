@@ -1,6 +1,6 @@
+import configparser
 import json
 import pandas as pd
-import configparser
 from shapely.geometry import shape
 
 config = configparser.ConfigParser()
