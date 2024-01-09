@@ -64,7 +64,7 @@ def build_stacked_bar_chart(arguments: list,
     return fig
 
 def build_boxplot_echanges(starting_date: str = default_start_date, ending_date: str = default_end_date):
-    """Create a boxplot.
+    """Create a boxplot chart for each exchange.
     
     Parameters
     ----------
