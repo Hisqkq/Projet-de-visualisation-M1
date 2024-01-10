@@ -5,4 +5,5 @@ numpy
 shapely
 dash-bootstrap-components
 dash-mantine-components
+dash-iconify
 pymongo[srv]

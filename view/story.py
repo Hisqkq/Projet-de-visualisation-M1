@@ -8,6 +8,7 @@ import data.db_services as dbs
 ## On appellera ces fonctions dans les pages pour afficher le texte
 ## Ne pas hesiter a utiliser des balises html pour mettre en forme le texte et du bootstrap components pour le style ou autre 
 ## (faires des petites cases de texte pour chaque problematique etc...) (bootstrap components: https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/)
+## (ou https://www.dash-mantine-components.com/components/card)
 ## Ne pas hesiter a faire plus de fonctions si besoin
 ## Pourquoi pas ajouter quelques images pour illustrer les propos, pour rendre le site plus vivant
 

@@ -24,9 +24,12 @@ def layout():
             brand="La production d'électricité en France", 
             color="primary", 
             dark=True, 
-            className="mb-4"
+            className="mb-4",
+            children=[
+                dcc.Link(dbc.Button('Accueil', color="light", className="ms-auto"), href='/')
+            ],
+            style={"fontSize": "1.5rem", "fontWeight": "bold"}  
         ),
-        dbc.Col(dcc.Link(html.Button('Accueil', className='btn btn-primary'), href='/'), width=12),
         datepicker,
         dbc.Row([
             dbc.Col([
