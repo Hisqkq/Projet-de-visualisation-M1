@@ -126,7 +126,7 @@ def layout():
             dbc.Col(dbc.Card(card_content_consommation, color="primary", outline=True, style=card_style), width=12, lg=4)
         ], className="mt-3 g-0"),
         dbc.Row([
-            story.story_echanges()
+            story.story_accueil()
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
