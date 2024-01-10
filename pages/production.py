@@ -42,7 +42,7 @@ def layout():
             dbc.Col([
                 dcc.Graph(
                     id="production_pie_chart_by_sector",
-                    figure=pie_chart.build_metropolitan_pie_chart_production_by_field(),
+                    figure=pie_chart.metropolitan_pie_chart_production_by_field(),
                     config={'displayModeBar': False}
                 )
             ], width=8)
@@ -102,8 +102,8 @@ def update_production_pie_chart_by_sector(dates, current_map_state):
         return no_update
 
     if current_map_state == "France":
-        return pie_chart.build_metropolitan_pie_chart_production_by_field(dates[0], dates[1])
-    return pie_chart.build_region_pie_chart_production_by_field(current_map_state, dates[0], dates[1])
+        return pie_chart.metropolitan_pie_chart_production_by_field(dates[0], dates[1])
+    return pie_chart.region_pie_chart_production_by_field(current_map_state, dates[0], dates[1])
 
 @callback(
     Output('graph_production_stacked_area', 'figure'),

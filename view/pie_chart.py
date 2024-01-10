@@ -70,7 +70,7 @@ def build_pie_chart_production_by_field(data: list, title: str, background: bool
     
     return fig
 
-def build_metropolitan_pie_chart_production_by_field(start_date: str = default_start_date,
+def metropolitan_pie_chart_production_by_field(start_date: str = default_start_date,
                                                      end_date: str = default_end_date,
                                                      is_title: bool = True,
                                                      background: bool = False) -> go.Figure:  
@@ -103,7 +103,7 @@ def build_metropolitan_pie_chart_production_by_field(start_date: str = default_s
         title = "Répartition de la Production des Sources d'Énergie en Métropole (hors Corse)"
     return build_pie_chart_production_by_field(data, title, background)
 
-def build_region_pie_chart_production_by_field(region: str, 
+def region_pie_chart_production_by_field(region: str, 
                                                start_date: str = default_start_date, 
                                                end_date: str = default_end_date) -> go.Figure:
     """Create a pie chart for a specific region.
