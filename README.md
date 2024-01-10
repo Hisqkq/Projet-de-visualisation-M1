@@ -38,7 +38,7 @@ Avant de commencer à mettre en place l'application, assurez-vous d'avoir instal
 
 ## 💾  Initialisation de la Base de Données
 
-Une fois MongoDB installé, vous devez initialiser la base de données et la remplir avec les données nécessaires. Pour ce faire, exécutez le script `initialize_db.py` situé dans le dossier `data` (cette étape peut durer plusieurs heures à cause des limitations des APIs...⌛):
+Une fois MongoDB installé, vous devez initialiser la base de données et la remplir avec les données nécessaires. Pour ce faire, exécutez le script `initialize_db.py` (cette étape peut durer plusieurs heures à cause des limitations des APIs...⌛):
 
 ```bash
 python data/initialize_db.py

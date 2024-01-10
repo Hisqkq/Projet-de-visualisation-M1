@@ -1,8 +1,8 @@
-from dash import html
-import datetime
+import configparser
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-import configparser
+import datetime
+from dash import html
 
 from data.db_services import get_last_date_db
 

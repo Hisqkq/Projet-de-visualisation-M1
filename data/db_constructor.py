@@ -1,8 +1,8 @@
-import requests
-import mongodb
-import datetime
-import time
 import configparser
+import data.mongodb as mongodb
+import datetime
+import requests
+import time
 
 config = configparser.ConfigParser()
 config.read('data/config.ini')
@@ -194,11 +194,11 @@ def update_data(from_data: str, collection_name: str) -> None:
         start_date = get_last_date_db(collection_name)
         # Check if start date is greater than today's date (Because in some case API has data for future dates too)
         if datetime.datetime.strptime(start_date, '%Y-%m-%d') >= datetime.datetime.now():
-            start_date = datetime.datetime.now().strptime(start_date, '%Y-%m-%d')
+            start_date = datetime.datetime.now().date()
         delete_data_last_date(collection_name) # delete data from last date in collection to avoid duplicates when updating data
 
     end_date = get_date(from_data, first = False)
-    current_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+    current_date = datetime.datetime.strptime(str(start_date), '%Y-%m-%d')
     end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
     
     while current_date <= end_date:
@@ -220,3 +220,10 @@ def update_data(from_data: str, collection_name: str) -> None:
                 continue
                 
         current_date += datetime.timedelta(days=1)
+        
+
+def perform_update(): # Should be called when updating data but its not working with threading
+    """Update data in the database
+    """   
+    update_data("eco2mix-national-tr", "DonneesNationales")
+    update_data("eco2mix-regional-tr", "DonneesRegionales")

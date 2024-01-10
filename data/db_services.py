@@ -265,6 +265,34 @@ def get_average_values(collection: str, fields: [str]) -> dict:
                     project_conditions=project_conditions)
     return result[0] if result else {}
 
+def get_max_value(collection: str, field: str, columns: [str]) -> dict:
+    """Enable User to get the max value of a field and its corresponding data (columns) from a collection.
+
+    Parameters:
+    ----------
+    collection : str
+        Name of the collection.
+    field : str
+        Field to check.
+    columns : list of str
+        Columns to return.
+
+    Returns:
+    -------
+    dict
+        Dictionary of the max value and its corresponding data.
+    """
+    match_conditions = {f"results.{field}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}}
+    sort_conditions = {f"results.{field}": -1}
+    project_conditions = {"_id": 0, **{f"results.{column}": 1 for column in columns}}
+    result = get_data(collection, 
+                    unwind_field="$results", 
+                    match_conditions=match_conditions, 
+                    sort_conditions=sort_conditions,
+                    project_conditions=project_conditions)
+    return result[0] if result else {}
+
+
 
 def get_sum_values(collection: str, fields: [str]) -> dict:
     """Enable User to get the sum of many fields (when values are not null) from a collection.
@@ -368,3 +396,48 @@ def get_last_date_db() -> str:
     last_regional_date = regional_result[0]['date'] if regional_result else None
 
     return last_national_date if last_national_date < last_regional_date else last_regional_date
+
+def get_mean_consommation_by_region(collection: str, date1: str, date2: str) -> dict:
+    """Enable User to get the mean of consommation by regions from a collection for a specific date range.
+    
+    Parameters:
+    ----------
+    collection : str
+        Name of the collection.
+    date1 : str
+        Start date for the range.
+    date2 : str
+        End date for the range.
+        
+    Returns:
+    -------
+    dict
+        Dictionary of mean values for each region.
+    """
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$match": {"results.date": {"$gte": date1, "$lte": date2}}},
+        {"$group": {
+            "_id": "$results.libelle_region",
+            "mean_consommation": {"$avg": "$results.consommation"}
+        }},
+        {"$project": {
+            "_id": 0,
+            "region": "$_id",
+            "mean_consommation": 1
+        }},
+        {"$sort": {"region": 1}}
+    ]
+
+    mean_cons = list(dbname[collection].aggregate(pipeline))
+    
+    mean_cons_formatted = [
+        {"region": data["region"], "mean_consommation": data["mean_consommation"]}
+        for data in mean_cons
+    ]
+    
+    mean_cons_dict = {d['region']: d['mean_consommation'] for d in mean_cons_formatted}
+    
+    return mean_cons_dict
+    
+    

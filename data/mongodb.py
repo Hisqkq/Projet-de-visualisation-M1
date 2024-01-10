@@ -1,6 +1,6 @@
 ### Permet la connexion avec la base de données
-from pymongo import MongoClient
 import configparser
+from pymongo import MongoClient
 
 config = configparser.ConfigParser()
 config.read('data/config.ini')
