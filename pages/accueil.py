@@ -31,7 +31,7 @@ def layout():
                             html.H1('Production'),
                             dcc.Graph(
                                 id="pie_chart_production_par_filiere",
-                                figure=pie_chart.build_metropolitan_pie_chart_production_by_field(is_title=False, background=True),
+                                figure=pie_chart.metropolitan_pie_chart_production_by_field(is_title=False, background=True),
                                 config={'displayModeBar': False}
                             )
                         ]
