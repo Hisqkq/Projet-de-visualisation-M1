@@ -1,4 +1,8 @@
+import dash_bootstrap_components as dbc
 from dash import html
+
+import data.db_services as dbs
+
 # AJOUTER D'AUTRES IMPORTS SI BESOIN
 
 ## On appellera ces fonctions dans les pages pour afficher le texte
@@ -33,9 +37,10 @@ def story_production():
     ])
 
 def story_echanges():
+
     return html.Div([
         html.P("Cette page présente les échanges d'électricité en France."),
         ## Parler des échanges d'électricité en France
         ## Parler des graphiques de la page (Bar chart, donut chart, boxplot)
-        ## Peut etre rajouter une image de carte qui montre la France et les pays frontaliers pour illustrer les échanges (pour ceux aui sont nuls en geo lol) et ca decore le site aussi
+        ## Peut etre rajouter une image de carte qui montre la France et les pays frontaliers pour illustrer les échanges (pour ceux qui sont nuls en geo lol) et ca decore le site aussi
     ])

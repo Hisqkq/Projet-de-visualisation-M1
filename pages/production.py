@@ -55,7 +55,8 @@ def layout():
                             {'value': 'eolien', 'label': 'Éolien'},
                             {'value': 'hydraulique', 'label': 'Hydraulique'},
                             {'value': 'nucleaire', 'label': 'Nucléaire'},
-                            {'value': 'solaire', 'label': 'Solaire'}
+                            {'value': 'solaire', 'label': 'Solaire'},
+                            {'value': 'thermique', 'label': 'Thermique'},
                         ],
                         value='solaire',  
                         style={"width": "33%", "cebter": "true"}

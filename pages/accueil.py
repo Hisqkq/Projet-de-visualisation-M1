@@ -31,55 +31,106 @@ modal = dbc.Modal(
         )
 
 def layout():
-    return dbc.Container([
-        modal,
-        dcc.Interval(id='interval-component', interval=500, n_intervals=0),
-        dbc.NavbarSimple(brand="L'électricité en France", color="primary", dark=True, className="mb-4"),
-        dbc.Container([
-            dbc.Row([
-                dbc.Col(
-                    dcc.Link(html.Div(
-                        children=[
-                            html.H1('Échanges'),
-                            dcc.Graph(
-                                id='choropleth-map',
-                                figure=map.build_metropolitan_map(background=True),
-                                config={'displayModeBar': False}
-                            ),
-                        ]
-                    ), href=dash.page_registry['pages.echanges']['path']), width=4),
-                dbc.Col(
-                    dcc.Link(html.Div(
-                        children=[
-                            html.H1('Production'),
-                            dcc.Graph(
-                                id="pie_chart_production_par_filiere",
-                                figure=pie_chart.build_metropolitan_pie_chart_production_by_field(is_title=False, background=True),
-                                config={'displayModeBar': False}
-                            )
-                        ]
-                    ), href=dash.page_registry['pages.production']['path']), width=4),
-                dbc.Col(    
-                    dcc.Link(html.Div(
-                        children=[
-                            html.H1('Consommation'),
-                            dcc.Graph(
-                                id="graph_consommation_prediction",
-                                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, homepage=True).update_layout(showlegend=False),
-                                config={'displayModeBar': False}
-                            )
-                        ]
-                    ), href=dash.page_registry['pages.consommation']['path']), width=4)
-            ], className="mt-3"),
-            dbc.Row([
-                dbc.Button(
-                    "Mettre à jours les données", id="update-data-button", color="primary", className="mb-3"
+    navbar = dbc.NavbarSimple(
+        brand="Analyse de l'électricité en France Métropolitaine (Hors Corse)",
+        color="primary",
+        dark=True,
+        className="mb-4",
+        children=[
+            dbc.Button("Mettre à jour les données", id="update-data-button", color="light", className="ms-auto")
+        ],
+        style={"fontSize": "1.5rem", "fontWeight": "bold"}  # Augmentez la taille et le poids de la police pour le titre de la barre de navigation
+    )
+
+    card_style = {
+        "margin": "1rem",  # Ajoutez une marge autour des cartes
+        "boxShadow": "0px 0px 15px rgba(0,0,0,0.2)",  # Ajoutez une ombre pour les séparer du fond
+    }
+
+    card_header_style = {
+        "fontSize": "1.5rem",  # Augmentez la taille de la police pour le titre des cartes
+        "fontWeight": "bold",  # Rendez le texte plus gras
+        "color": "#FFFFFF",  # Changez la couleur pour une teinte plus brillante (or bootstrap par exemple)
+    }
+
+    card_content_echanges = [
+        dbc.CardHeader(
+        [
+            html.Img(src="/assets/echange.svg", style={"height": "2rem", "marginRight": "10px"}),  # Ajustez le chemin et le style selon vos besoins
+            "Échanges"
+        ],
+        className="text-center",
+        style=card_header_style
+        ),
+        dbc.CardBody(
+            dcc.Link(
+                dcc.Graph(
+                    id='choropleth-map',
+                    figure=figures.build_boxplot_echanges(default_start_date, default_end_date).update_layout(showlegend=False),
+                    config={'displayModeBar': False}
                 ),
-                story.story_accueil()
-            ]),
+                href=dash.page_registry['pages.echanges']['path']
+            )
+        )
+    ]
+
+    card_content_production = [
+        dbc.CardHeader(
+        [
+            html.Img(src="/assets/production.svg", style={"height": "2rem", "marginRight": "10px"}),  # Ajustez le chemin et le style selon vos besoins
+            "Production"
+        ],
+        className="text-center",
+        style=card_header_style
+        ),
+        dbc.CardBody(
+            dcc.Link(
+                dcc.Graph(
+                    id="pie_chart_production_par_filiere",
+                    figure=pie_chart.build_metropolitan_pie_chart_production_by_field(is_title=False, background=True),
+                    config={'displayModeBar': False}
+                ),
+                href=dash.page_registry['pages.production']['path']
+            )
+        )
+    ]
+
+    card_content_consommation = [
+        dbc.CardHeader(
+        [
+            html.Img(src="/assets/consommation.svg", style={"height": "2rem", "marginRight": "10px"}),  # Ajustez le chemin et le style selon vos besoins
+            "Consommation"
+        ],
+        className="text-center",
+        style=card_header_style
+        ),
+        dbc.CardBody(
+            dcc.Link(
+                dcc.Graph(
+                    id="graph_consommation_prediction",
+                    figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, homepage=True).update_layout(showlegend=False),
+                    config={'displayModeBar': False}
+                ),
+                href=dash.page_registry['pages.consommation']['path']
+            )
+        )
+    ]
+
+    return dbc.Container([
+        navbar,
+        dbc.Row([
+            dbc.Col(dbc.Card(card_content_echanges, color="primary", outline=True, style=card_style), width=12, lg=4),
+            dbc.Col(dbc.Card(card_content_production, color="primary", outline=True, style=card_style), width=12, lg=4),
+            dbc.Col(dbc.Card(card_content_consommation, color="primary", outline=True, style=card_style), width=12, lg=4)
+        ], className="mt-3 g-0"),
+        dbc.Row([
+            story.story_echanges()
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
+
+
+
         
 def perform_update():   # TODO: Put this function in data, and use it from there (not working for now)
     """Update data from RTE's API

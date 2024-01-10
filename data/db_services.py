@@ -301,6 +301,34 @@ def get_average_values(collection: str, fields: [str]) -> dict:
                     project_conditions=project_conditions)
     return result[0] if result else {}
 
+def get_max_value(collection: str, field: str, columns: [str]) -> dict:
+    """Enable User to get the max value of a field and its corresponding data (columns) from a collection.
+
+    Parameters:
+    ----------
+    collection : str
+        Name of the collection.
+    field : str
+        Field to check.
+    columns : list of str
+        Columns to return.
+
+    Returns:
+    -------
+    dict
+        Dictionary of the max value and its corresponding data.
+    """
+    match_conditions = {f"results.{field}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}}
+    sort_conditions = {f"results.{field}": -1}
+    project_conditions = {"_id": 0, **{f"results.{column}": 1 for column in columns}}
+    result = get_data(collection, 
+                    unwind_field="$results", 
+                    match_conditions=match_conditions, 
+                    sort_conditions=sort_conditions,
+                    project_conditions=project_conditions)
+    return result[0] if result else {}
+
+
 
 def get_sum_values(collection: str, fields: [str]) -> dict:
     """Enable User to get the sum of many fields (when values are not null) from a collection.

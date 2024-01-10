@@ -35,13 +35,21 @@ def build_pie_chart_production_by_field(data: list, title: str, background: bool
     keys = list(data.keys())
     values = list(data.values())
 
+    def hex_to_rgba(hex, alpha=0.6):
+        """Convert hex color to rgba format with specified alpha."""
+        hex = hex.lstrip('#')
+        return f"rgba({int(hex[0:2], 16)}, {int(hex[2:4], 16)}, {int(hex[4:6], 16)}, {alpha})"
+
     slice_colors = [field_colors[key] for key in keys if key in field_colors]
+
+    slice_colors_transparent = [hex_to_rgba(c) for c in slice_colors]
 
     fig = go.Figure(data=[
         go.Pie(
             labels=keys, 
             values=values, 
-            marker=dict(colors=slice_colors)
+            marker=dict(colors=slice_colors_transparent, line=dict(color=slice_colors, width=2)),
+            textfont=dict(color='#FFFFFF')
         )
     ])
     fig.update_traces(
@@ -118,7 +126,7 @@ def build_region_pie_chart_production_by_field(region: str,
     data = dbs.get_mean_for_fields_in_a_region(
         "DonneesRegionales", 
         start_date, end_date, 
-        ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"], 
+        ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies", "thermique"], 
         region
     )[0]
     return build_pie_chart_production_by_field(data, f"Répartition de la Production des Sources d'Énergie en {region}")

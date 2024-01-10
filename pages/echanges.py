@@ -3,6 +3,7 @@ from dash import register_page, html, dcc, callback, Output, Input
 
 import view.datepicker as datepicker
 import view.figures as figures
+import view.story as story
 from view.datepicker import default_start_date, default_end_date
 
 register_page(__name__)
@@ -32,7 +33,8 @@ def layout():
             ), lg=6)
         ]),
         dbc.Row([
-            dcc.Graph(id="boxplot_echanges", figure=figures.build_boxplot_echanges(default_start_date, default_end_date), config={'displayModeBar': False})
+            dcc.Graph(id="boxplot_echanges", figure=figures.build_boxplot_echanges(default_start_date, default_end_date), config={'displayModeBar': False}),
+            story.story_echanges()  
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
