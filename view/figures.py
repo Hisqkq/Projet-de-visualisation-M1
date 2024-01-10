@@ -152,7 +152,24 @@ def build_donuts_exchanges(starting_date: str = default_start_date, ending_date:
 
     fig.update_traces(textinfo='percent+label')
     fig.update_layout(paper_bgcolor=background_color, font_color="#FFFFFF") 
-    fig.update_layout(annotations=[dict(text='Imports', x=0.17, y=0.5, font_size=20, showarrow=False), dict(text='Exports', x=0.832, y=0.5, font_size=20, showarrow=False)])
+    fig.update_layout(
+        annotations=[
+            dict(
+                text='Imports', 
+                x=0.17, y=0.5, 
+                xref="paper", yref="paper",  
+                font=dict(size=15, color='#FFFFFF'),   
+                showarrow=False
+            ),
+            dict(
+                text='Exports', 
+                x=0.832, y=0.5, 
+                xref="paper", yref="paper", 
+                font=dict(size=15, color='#FFFFFF'), 
+                showarrow=False
+            )
+        ]
+    )
 
     return fig
 
@@ -178,6 +195,10 @@ def build_stacked_area_chart(argument: str = "nucleaire",
         Figure containing the stacked area chart."""
     data = dbs.get_data_from_one_date_to_another_date("DonneesRegionales", starting_date, ending_date)
     fig = px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}", template="plotly_dark")
+    fig.update_yaxes(title_text="Production (MW)")
+    fig.update_xaxes(title_text="Date/Heure")
+    fig.update_layout(hovermode="x unified")
+    fig.update_traces(hovertemplate="%{y:.2f} MW<br>Date: %{x|%Y-%m-%d %H:%M}")
     if not homepage:
         fig.update_layout(paper_bgcolor=background_color)
         fig.update_layout(font_color="#FFFFFF") 
