@@ -7,7 +7,7 @@ from dash.exceptions import PreventUpdate
 import view.figures as figures
 import view.pie_chart as pie_chart
 import view.story as story
-from data.db_constructor import update_data
+from initialise_db import perform_update
 from view.datepicker import default_start_date, default_end_date
 
 dash.register_page(__name__, path='/')
@@ -131,11 +131,6 @@ def layout():
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
 
-        
-def perform_update():
-    """Update data from RTE's API."""
-    update_data("eco2mix-national-tr", "DonneesNationales")
-    update_data("eco2mix-regional-tr", "DonneesRegionales")
 
 @callback(
     Output("modal-spinner", "is_open"),
