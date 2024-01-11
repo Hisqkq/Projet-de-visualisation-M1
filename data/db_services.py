@@ -89,20 +89,13 @@ def get_data_between_two_dates(collection: str, date1: str, date2: str, region: 
     """
     if region:
         match_conditions = {"results.date": {"$gte": date1, "$lte": date2}, "results.libelle_region": region}
-        project_conditions = {"_id": 0, "date": "$results.date", "data": "$results.data"}
-        replace_root_conditions = None
-        sort_conditions={"results.date_heure": 1}
     else:
         match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
-        project_conditions = None
-        replace_root_conditions="$results"
-        sort_conditions={"date_heure": 1}
     return get_data(collection, 
                     unwind_sector="$results", 
                     match_conditions=match_conditions, 
-                    project_conditions=project_conditions, 
-                    replace_root_conditions=replace_root_conditions, 
-                    sort_conditions=sort_conditions)
+                    replace_root_conditions="$results",
+                    sort_conditions={"date_heure": 1})
 
 
 def get_mean_for_sectors(collection: str, date1: str, date2: str, mean_sectors: [str], region: str = None) -> list:
