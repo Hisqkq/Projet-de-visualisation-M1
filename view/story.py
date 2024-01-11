@@ -176,12 +176,128 @@ def story_accueil():
 
 
 def story_consommation():
-    return html.Div([
-        html.P("Cette page présente la consommation d'électricité en France."),
-        ## Parler de la consommatin d'électricité en France
-        ## Parler des graphiques de la page (carte, courbe de prédiction, courbe de consommation par région)
-        ## Peut etre faire une "card" avec bootstrap components pour parler de la prédiction de la consommation
-    ])
+    cards_content = [
+        {
+            "title": "La Consommation d'Électricité en France",
+            "text": (
+                "La consommation d'électricité en France est dynamique et influencée par divers facteurs, "
+                "tels que les conditions météorologiques, les habitudes de consommation, l'heure de la journée, et la saison. "
+                "La demande énergétique varie significativement entre l'hiver et l'été, avec des pics souvent observés "
+                "lors des vagues de froid en raison de l'utilisation intensive du chauffage."
+            ),
+            "image": "/assets/consommation.jpg", 
+            "image_credits": "Image credits: Kowit Lanchu/Shutterstock.com",  
+        },
+        {
+            "title": "Les Prédictions de Consommation par RTE",
+            "text": (
+                "RTE, le gestionnaire du réseau de transport d'électricité en France, effectue des prédictions de consommation "
+                "pour les 24 heures à venir. Ces prédictions sont cruciales pour la gestion du réseau électrique et "
+                "permettent d'ajuster la production en conséquence, minimisant ainsi les risques de coupure et optimisant les coûts."
+            ),
+            "image": "/assets/previsions.png", 
+            "image_credits": "Image credits: DALL.E, AI generated picture",  
+        },
+    ]
+
+    cards_consumption_graphs = [
+        {
+            "title": "Carte de la Consommation Régionale",
+            "text": (
+                "La carte interactive de la consommation régionale permet d'observer les variations de la demande en électricité "
+                "à travers le territoire français. Elle offre une visualisation claire de la moyene de l'intensité de la consommation par région sur une période donnée, "
+                "soulignant les disparités et les spécificités locales. "
+                "Par exemple, il est possible de mettre en évidence que la région Ile-de-France est la plus consommatrice d'électricité, "
+                "alors que la région Centre-Val de Loire est l'une des moins consommatrice."
+
+            ),
+        },
+        {
+            "title": "Courbe de Consommation et de prévision",
+            "text": (
+                "Les courbes de consommation et de prédiction de la consommation, basées sur les données de RTE, fournissent une vision prospective "
+                "de la demande énergétique. Les courbes de prévision J et J-1 sont essentielles pour anticiper les besoins en électricité et adapter l'offre d'énergie."
+                "La courbe de consommation permet de comparer la consommation réelle avec les prévisions, et d'identifier les périodes de pic."
+                "Par exemple, il est possible de mettre en évidence que la consommation réelle est plus élevée que la prévision lors des vagues de froid, ou bien a certaines heures de la journée."
+            ),
+        },
+        {
+            "title": "Analyse de la Consommation par Région",
+            "text": (
+                "Les graphiques de consommation par région détaillent la demande en électricité pour chaque région française. "
+                "Ils permettent de comprendre les dynamiques régionales et d'identifier les tendances de consommation spécifiques."
+                "Ce graphique est interactif, vous pouvez double cliquer sur une région du graphique pour afficher la consommation pour cette région. "
+                "Par exemple, il permet d'observer en détail la consommation de la région Ile-de-France, et de mettre en évidence les périodes de pic. "
+            ),
+        },
+    ]
+
+    cards = [
+        dmc.Card(
+            shadow="sm",
+            p="lg",
+            style={
+                "backgroundColor": "#1A1B1E",
+                "color": "white",
+                "marginBottom": 30,
+                "borderRadius": "8px",
+            },
+            children=[
+                dmc.Image(
+                    src=card["image"],
+                    height=180,
+                    fit="cover",
+                    style={"borderTopLeftRadius": "8px", "borderTopRightRadius": "8px"}
+                ),
+                html.Div(
+                    dcc.Markdown(card["image_credits"]),
+                    className="image-credits",
+                    style={
+                        "fontSize": "0.7rem",  
+                        "color": "grey",       
+                        "textAlign": "center", 
+                        "marginTop": "0.5rem", 
+                    }
+                ),
+                dmc.Text(card["title"], weight=500, size="lg", style={"color": "#FFF"}),
+                dmc.Text(card["text"], style={"color": "#DDD"}),
+            ],
+        )
+        for card in cards_content
+    ]
+
+    cards_graphs = [
+        dmc.Card(
+            shadow="sm",
+            p="lg",
+            style={
+                "backgroundColor": "#1A1B1E",
+                "color": "white",
+                "marginBottom": 30,
+                "borderRadius": "8px",
+            },
+            children=[
+                dmc.Text(graph["title"], weight=500, size="lg", style={"color": "#FFF"}),
+                dmc.Text(graph["text"], style={"color": "#DDD"}),
+            ],
+        )
+        for graph in cards_consumption_graphs
+    ]
+
+    return dmc.Container([
+        dmc.Title("La Consommation d'Électricité en France", order=2, style={"color": "#FFF"}),
+        dmc.SimpleGrid(
+            cols=2,
+            spacing="lg",
+            children=cards
+        ),
+        dmc.SimpleGrid(
+            cols=3,
+            spacing="lg",
+            children=cards_graphs
+        ),
+    ], fluid=True, style={"maxWidth": 1200})
+
 
 def story_production():
     cards_content = [

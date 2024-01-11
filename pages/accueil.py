@@ -37,7 +37,7 @@ def layout():
         dark=True,
         className="mb-4",
         children=[
-            dbc.Button("Mettre à jo ur les données", id="update-data-button", color="light", className="ms-auto")
+            dbc.Button("Mettre à jour les données", id="update-data-button", color="light", className="ms-auto")
         ],
         style={"fontSize": "1.5rem", "fontWeight": "bold"}  
     )
@@ -83,7 +83,7 @@ def layout():
         dbc.CardBody(
             dcc.Graph(
                 id="pie_chart_production_par_filiere",
-                figure=pie_chart.metropolitan_pie_chart_production_by_field(is_title=False, background=True),
+                figure=pie_chart.metropolitan_pie_chart_production_by_sector(is_title=False, background=True),
                 config={'displayModeBar': False}
             ),  
         )
