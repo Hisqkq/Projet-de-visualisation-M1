@@ -15,19 +15,19 @@ def story_accueil():
     cards_content = [
         {
             "title": "Échanges d'électricité",
-            "text": "Découvrez les échanges d'électricité avec les pays voisins. La France est un grand exportateur d'électricité, mais importe également de l'électricité. Le graphique en boite à moustaches montre la répartition des échanges par pays pour la date d'aujourd'hui. Pour plus de détails, cliquez sur le graphique pour accéder à la page dédiée aux échanges d'électricité.",
+            "text": "Découvrez les échanges d'électricité avec les pays voisins. La France est un grand exportateur d'électricité, mais importe également de l'électricité. Le graphique en boîte à moustaches montre la répartition des échanges par pays pour la date d'aujourd'hui. Pour plus de détails, cliquez sur le graphique pour accéder à la page dédiée aux échanges d'électricité.",
             "image": "/assets/echanges.jpg",
             "image_credits": "Image credits: Yan Zabolotnyi 123RF"
         },
         {
             "title": "Production d'électricité",
-            "text": "Explorez la répartition de la production d'électricité par filière en France. Le graphique en secteurs visualise la contribution de chaque filière pour la date d'aujourd'hui. La France France possède un parc nucléaire important, mais les énergies renouvelables sont en plein essor. Pour plus de détails sur les production nationales et régionales, cliquez sur le graphique pour accéder à la page dédiée à la production d'électricité.",
+            "text": "Explorez la répartition de la production d'électricité par filière en France. Le graphique en secteurs visualise la contribution de chaque filière pour la date d'aujourd'hui. La France France possède un parc nucléaire important, mais les énergies renouvelables sont en plein essor. Pour plus de détails sur les productions nationales et régionales, cliquez sur le graphique pour accéder à la page dédiée à la production d'électricité.",
             "image": "/assets/production.jpg",
             "image_credits": "Image credits: Getty Images/iStockphoto par gopixa"
         },
         {
             "title": "Consommation d'électricité",
-            "text": "Analysez les modèles de consommation et identifiez les périodes de pic. Le graphique linéaire montre la consommation du jours avec les différentes prédictions. Pour plus de détails sur la consommation nationale et régionale, cliquez sur le graphique pour accéder à la page dédiée à la consommation d'électricité",
+            "text": "Analysez les modèles de consommation et identifiez les périodes de pic. Le graphique linéaire montre la consommation du jour avec les différentes prédictions. Pour plus de détails sur la consommation nationale et régionale, cliquez sur le graphique pour accéder à la page dédiée à la consommation d'électricité.",
             "image": "/assets/consommation.jpeg",
             "image_credits": "Image credits: lovelyday12 - stock.adobe.com"
         },
@@ -137,9 +137,9 @@ def story_accueil():
 
 
     return html.Div([
-        html.H6("Veuillez cliquer sur l'un des trois graphique ci-dessus pour explorer une problématique.", className="text-center mb-4"),
+        html.H6("Veuillez cliquer sur l'un des trois graphiques ci-dessus pour explorer une problématique.", className="text-center mb-4"),
         dmc.Divider(size="md", style={"marginBottom": "2rem"}),
-        html.H5("Les trois grands sujets de l'electricité en France", className="mb-4"),
+        html.H5("Les trois grands sujets de l'électricité en France", className="mb-4"),
         dmc.SimpleGrid(
             cols=3,
             spacing="lg",
@@ -205,7 +205,7 @@ def story_consommation():
             "title": "Carte de la Consommation Régionale",
             "text": (
                 "La carte interactive de la consommation régionale permet d'observer les variations de la demande en électricité "
-                "à travers le territoire français. Elle offre une visualisation claire de la moyene de l'intensité de la consommation par région sur une période donnée, "
+                "à travers le territoire français. Elle offre une visualisation claire de la moyenne de l'intensité de la consommation par région sur une période donnée, "
                 "soulignant les disparités et les spécificités locales. "
                 "Par exemple, il est possible de mettre en évidence que la région Ile-de-France est la plus consommatrice d'électricité, "
                 "alors que la région Centre-Val de Loire est l'une des moins consommatrice."
@@ -216,8 +216,8 @@ def story_consommation():
             "title": "Courbe de Consommation et de prévision",
             "text": (
                 "Les courbes de consommation et de prédiction de la consommation, basées sur les données de RTE, fournissent une vision prospective "
-                "de la demande énergétique. Les courbes de prévision J et J-1 sont essentielles pour anticiper les besoins en électricité et adapter l'offre d'énergie."
-                "La courbe de consommation permet de comparer la consommation réelle avec les prévisions, et d'identifier les périodes de pic."
+                "de la demande énergétique. Les courbes de prévision J et J-1 sont essentielles pour anticiper les besoins en électricité et adapter l'offre d'énergie. "
+                "La courbe de consommation permet de comparer la consommation réelle avec les prévisions, et d'identifier les périodes de pic. "
                 "Par exemple, il est possible de mettre en évidence que la consommation réelle est plus élevée que la prévision lors des vagues de froid, ou bien a certaines heures de la journée."
             ),
         },
@@ -225,7 +225,7 @@ def story_consommation():
             "title": "Analyse de la Consommation par Région",
             "text": (
                 "Les graphiques de consommation par région détaillent la demande en électricité pour chaque région française. "
-                "Ils permettent de comprendre les dynamiques régionales et d'identifier les tendances de consommation spécifiques."
+                "Ils permettent de comprendre les dynamiques régionales et d'identifier les tendances de consommation spécifiques. "
                 "Ce graphique est interactif, vous pouvez double cliquer sur une région du graphique pour afficher la consommation pour cette région. "
                 "Par exemple, il permet d'observer en détail la consommation de la région Ile-de-France, et de mettre en évidence les périodes de pic. "
             ),
@@ -358,11 +358,11 @@ def story_production():
 
     cards_graphs_content = [
         {
-            "title": "Pie Chart de la Production d'Électricité en Métropole et par Region",
+            "title": "Pie Chart de la Production d'Électricité en Métropole et par Région",
             "text": (
                 "Le Pie Chart illustre la répartition de la production d'électricité par filière en Métropole et par région. "
                 "Le graphique est interactif, vous pouvez cliquer sur les différents secteurs pour les mettre en évidence et les comparer. "
-                "Il est possible de cliquer sur une region de la carte interactive pour afficher la répartition de la production pour cette région. "
+                "Il est possible de cliquer sur une région de la carte interactive pour afficher la répartition de la production pour cette région. "
                 "Par exemple, il permet de mettre en évidence que la région Grand-Est produit beaucoup d'électricité nucléaire, "
                 "alors que la région Occitanie produit beaucoup d'électricité solaire."
             ),
@@ -371,9 +371,9 @@ def story_production():
             "title": "Stacked Area chart de la Production d'Électricité par région et par filière",
             "text": (
                 "Le Stacked Area Chart illustre la production d'électricité par région et par filière. "
-                "Le graphique est interactif, vous pouvez selectionner une filière dans le dropdown pour afficher la production par région pour cette filière. "
-                "Il est possible de selectionner une ou plusieurs régions sur le graphique pour afficher les mettres en évidence et les comparer. "
-                "Ce graphique permet de visualiser la production d'électricité par région et par filière en details pour une période donnée. "
+                "Le graphique est interactif, vous pouvez sélectionner une filière dans le dropdown pour afficher la production par région pour cette filière. "
+                "Il est possible de sélectionner une ou plusieurs régions sur le graphique pour les mettre en évidence et les comparer. "
+                "Ce graphique permet de visualiser la production d'électricité par région et par filière en détails pour une période donnée. "
             ),
         },
         {
@@ -427,7 +427,7 @@ def story_echanges():
         dmc.Text(
             "La France est au cœur du réseau électrique européen grâce à ses échanges "
             "transfrontaliers. Cela lui permet d'exporter et d'importer de l'électricité, "
-            "optimisant ainsi l'utilisation de ses ressources et répondant mieux à la demande énergétique."
+            "optimisant ainsi l'utilisation de ses ressources et répondant au mieux à la demande énergétique."
         ),
         dbc.Row([
             dmc.Card(
@@ -436,7 +436,7 @@ def story_echanges():
                     dmc.Text(
                         "La France partage des frontières avec six pays voisins, chacun ayant un profil de production "
                         "d'électricité unique. Les échanges d'électricité avec ces pays sont essentiels pour maintenir "
-                        "l'équilibre entre l'offre et la demande."
+                        "l'équilibre entre l'offre et la demande. "
                         "Voici la liste des pays interconnectés avec la France",
                         style={"color": "#DDD"}
                     ),
@@ -491,7 +491,7 @@ def story_echanges():
                         "les mettre en évidence et les comparer. "
                         "Par exemple, il permet de mettre en évidence que l'Allemagne/Belgique est le "
                         "plus gros importateur d'électricité de la France. "
-                        "Egalement, il permet de mettre en évidence que l'Italie importe très peu d'électricité en France."
+                        "Également, il permet de mettre en évidence que l'Italie importe très peu d'électricité en France."
                     ),
                 ],
                 shadow="sm",
@@ -511,7 +511,7 @@ def story_echanges():
                         "période étendue, révélant les tendances et les points aberrants dans les données pour chaque pays. "
                         "Le graphique est interactif, vous pouvez cliquer sur les différents pays pour les mettre en évidence et les comparer. "
                         "Par exemple, il permet de mettre en évidence que les échanges avec l'Allemagne/Belgique sont très variables, "
-                        "alors que les échanges avec l'Italie sont plus constants. (Les échanges avec l'Italie sont également plus faibles en termes de d'imports.)"
+                        "alors que les échanges avec l'Italie sont plus constants. (Les échanges avec l'Italie sont également plus faibles en termes d'imports.)"
 
                     ),
                 ],
@@ -530,8 +530,8 @@ def story_echanges():
                     dmc.Text(
                         "Le Bar Chart illustre la quantité d'électricité échangée avec chaque pays voisin sur une période donnée. "
                         "Le graphique est interactif, vous pouvez cliquer sur les différents "
-                        "pays pour les mettre en évidence et les comparer."
-                        "Vous pouvez également utiliser le curseur pour afficher les échanges pour une heure donnée."
+                        "pays pour les mettre en évidence et les comparer. "
+                        "Vous pouvez également utiliser le curseur pour afficher les échanges pour une heure donnée. "
                         "Ce graphique est utile pour identifier les périodes de forte demande et les périodes de faible demande."
                         "Il est également précis car il affiche les échanges pour chaque heure de la journée."
                     ),
