@@ -194,7 +194,7 @@ def update_data(from_data: str, collection_name: str) -> None:
         start_date = get_last_date_db(collection_name)
         # Check if start date is greater than today's date (Because in some case API has data for future dates too)
         if datetime.datetime.strptime(start_date, '%Y-%m-%d') >= datetime.datetime.now():
-            start_date = datetime.datetime.now().date()
+            start_date = datetime.datetime.now() - datetime.timedelta(days=2)
         delete_data_last_date(collection_name) # delete data from last date in collection to avoid duplicates when updating data
 
     end_date = get_date(from_data, first = False)

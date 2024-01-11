@@ -261,7 +261,6 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date,
     data = dbs.transform_data_to_df(json_data)
     #Order data by datetime
     data = data.sort_values(by=['date_heure'])
-    data = dbs.remove_nan_from_data(data, "consommation")
 
     # Check if the necessary columns are in the DataFrame
     if not {'date_heure', 'consommation', 'prevision_j', 'prevision_j1'}.issubset(data.columns):
