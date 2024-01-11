@@ -7,3 +7,5 @@
 - Organiser la graphs dans figure.py (les mettres par catégories pour lisibilité du code : production, échanges etc)
 - Production total sous la map (niveau national et régional)
 - attention aux données manquantes qui font planter les visus
+- vérifier le code mort
+- rendre la zone cliquable sur page d'accueil

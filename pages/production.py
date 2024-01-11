@@ -176,7 +176,7 @@ def update_production_pie_chart_by_sector(dates, current_map_state):
 
     if current_map_state == "France":
         return pie_chart.metropolitan_pie_chart_production_by_sector(dates[0], dates[1])
-    return pie_chart.region_pie_chart_production_by_sector(current_map_state, dates[0], dates[1])
+    return pie_chart.regional_pie_chart_production_by_sector(current_map_state, dates[0], dates[1])
 
 @callback(
     Output('graph_production_stacked_area', 'figure'),
