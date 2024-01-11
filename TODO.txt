@@ -6,5 +6,4 @@
 - réduire les temps de chargement dans la navigation (link les visu devrait régler le problème)
 - Organiser la graphs dans figure.py (les mettres par catégories pour lisibilité du code : production, échanges etc)
 - Production total sous la map (niveau national et régional)
-- version des bibliotèques dans requirements
 - attention aux données manquantes qui font planter les visus
