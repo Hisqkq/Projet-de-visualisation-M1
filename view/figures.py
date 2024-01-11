@@ -12,11 +12,14 @@ config = configparser.ConfigParser()
 config.read('data/config.ini')
 
 # Create a dictionary containing the colors for each field
-field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
+field_colors = {field: config['SectorColorPalette'][field] for field in config['SectorColorPalette']}
 exchange_colors = {exchange: config['ExchangeColorPalette'][exchange] for exchange in config['ExchangeColorPalette']}
 exchange_colors_bar = {exchange.title(): config['ExchangeColorPaletteBar'][exchange] for exchange in config['ExchangeColorPaletteBar']}
+
+# Display names for the figures (for the legend)
 display_names = {name: config['DisplayNameEch'][name] for name in config['DisplayNameEch']}
-background_color = str(config['Colors']['background'])
+
+background_color = str(config['Colors']['background']) # Background color
 ############
 
 ## Echanges ##
@@ -42,7 +45,7 @@ def build_stacked_bar_chart(arguments: list,
     # Fetching data and converting JSON to DataFrame
     json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
     data = dbs.transform_data_to_df(json_data)
-    data = dbs.convert_to_numeric(data, arguments)
+    data = dbs.convert_to_numeric(data, arguments) # Convert columns to numeric (because some values are strings)
     
     # Check if the necessary columns are in the DataFrame
     if not all(arg in data.columns for arg in arguments):
@@ -50,16 +53,20 @@ def build_stacked_bar_chart(arguments: list,
     
     data_renamed = data.rename(columns=display_names)
 
-    data_melted = data_renamed.melt(id_vars='date_heure', value_vars=list(display_names.values()), var_name='Pays', value_name='value')
+    data_melted = data_renamed.melt(id_vars='date_heure', value_vars=list(display_names.values()), var_name='Pays', value_name='Echange (MW)') # Melt the DataFrame
 
-    fig = px.bar(data_melted, x='date_heure', y='value', color='Pays', 
+    data_melted = data_melted[data_melted['Echange (MW)'] != 0] # Remove rows with 0 value
+
+    fig = px.bar(data_melted, x='date_heure', y='Echange (MW)', color='Pays', 
                  color_discrete_map=exchange_colors_bar, barmode='relative', template="plotly_dark",
                  custom_data=['Pays'])
 
-    fig.update_layout(bargroupgap=0.01)
+    fig.update_layout(bargroupgap=0.05)
     fig.update_traces(marker_line_width=0)
     fig.update_layout(paper_bgcolor= background_color)
     fig.update_layout(font_color= "#FFFFFF")
+    fig.update_layout(hovermode="x unified")
+    fig.update_traces(hovertemplate="%{y:.2f} MW<br>Date: %{x|%Y-%m-%d %H:%M}")
     
     return fig
 
@@ -89,9 +96,11 @@ def build_boxplot_echanges(starting_date: str = default_start_date, ending_date:
     data_renamed = data.rename(columns=display_names)
 
     melted_data = data_renamed.melt(value_vars=list(display_names.values()), 
-                                    var_name='Pays', value_name='Exchange')
+                                    var_name='Pays', value_name='Echange (MW)')
+    
+    melted_data = melted_data[melted_data['Echange (MW)'] != 0]
 
-    fig = px.box(melted_data, y='Exchange', x='Pays', color='Pays',
+    fig = px.box(melted_data, y='Echange (MW)', x='Pays', color='Pays',
                 template="plotly_dark", color_discrete_map=exchange_colors_bar)
 
     fig.update_layout(paper_bgcolor= background_color, font_color="#FFFFFF")
@@ -146,7 +155,24 @@ def build_donuts_exchanges(starting_date: str = default_start_date, ending_date:
 
     fig.update_traces(textinfo='percent+label')
     fig.update_layout(paper_bgcolor=background_color, font_color="#FFFFFF") 
-    fig.update_layout(annotations=[dict(text='Imports', x=0.17, y=0.5, font_size=20, showarrow=False), dict(text='Exports', x=0.832, y=0.5, font_size=20, showarrow=False)])
+    fig.update_layout(
+        annotations=[
+            dict(
+                text='Imports', 
+                x=0.17, y=0.5, 
+                xref="paper", yref="paper",  
+                font=dict(size=15, color='#FFFFFF'),   
+                showarrow=False
+            ),
+            dict(
+                text='Exports', 
+                x=0.832, y=0.5, 
+                xref="paper", yref="paper", 
+                font=dict(size=15, color='#FFFFFF'), 
+                showarrow=False
+            )
+        ]
+    )
 
     return fig
 
@@ -172,6 +198,10 @@ def build_stacked_area_chart(argument: str = "nucleaire",
         Figure containing the stacked area chart."""
     data = dbs.get_data_from_one_date_to_another_date("DonneesRegionales", starting_date, ending_date)
     fig = px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}", template="plotly_dark")
+    fig.update_yaxes(title_text="Production (MW)")
+    fig.update_xaxes(title_text="Date/Heure")
+    fig.update_layout(hovermode="x unified")
+    fig.update_traces(hovertemplate="%{y:.2f} MW<br>Date: %{x|%Y-%m-%d %H:%M}")
     if not homepage:
         fig.update_layout(paper_bgcolor=background_color)
         fig.update_layout(font_color="#FFFFFF") 
@@ -238,22 +268,29 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date,
         raise ValueError("One or more required columns are missing in the data")
 
     # Creating the line chart
-    line_chart_cons = px.area(data, x="date_heure", y="consommation", template="plotly_dark")
-    line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j"], mode='lines', name='Prediction J')
-    line_chart_cons.add_scatter(x=data["date_heure"], y=data["prevision_j1"], mode='lines', name='Prediction J-1')
-    line_chart_cons.update_layout(legend=dict(
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(x=data["date_heure"], y=data["consommation"], fill='tozeroy', mode='none', name='Consommation'))
+    fig.add_trace(go.Scatter(x=data["date_heure"], y=data["prevision_j"], mode='lines', name='Prediction J'))
+    fig.add_trace(go.Scatter(x=data["date_heure"], y=data["prevision_j1"], mode='lines', name='Prediction J-1'))
+
+    fig.update_layout(legend=dict(
         orientation="h",
         yanchor="top",
         xanchor="center",
         y = 1.2,
         x = 0.5
     ))
+    fig.update_layout(title="Consommation nationale avec prédictions", template="plotly_dark", hovermode="x unified")
+    fig.update_yaxes(title_text="Consommation (MW)")
+    fig.update_xaxes(title_text="Date/Heure")
+    fig.update_traces(hovertemplate="%{y:.2f} MW<br>Date: %{x|%Y-%m-%d %H:%M}")
 
     if not homepage:
-        line_chart_cons.update_layout(paper_bgcolor=background_color)
-        line_chart_cons.update_layout(font_color="#FFFFFF")
+        fig.update_layout(paper_bgcolor=background_color)
+        fig.update_layout(font_color="#FFFFFF")
 
-    return line_chart_cons
+    return fig
 
 def build_line_chart_consommation_by_region(starting_date: str = default_start_date, 
                                             ending_date: str = default_end_date, 
@@ -286,7 +323,7 @@ def build_line_chart_consommation_by_region(starting_date: str = default_start_d
         raise ValueError("One or more required columns are missing in the data")
 
     # Creating the line chart
-    line_chart_cons = px.line(data, x="date_heure", y="consommation", color="libelle_region", template="plotly_dark")
+    line_chart_cons = px.line(data, x="date_heure", y="consommation", color="libelle_region", template="plotly_dark", title="Consommation par région")
     line_chart_cons.update_layout(legend=dict(
         orientation="h",
         yanchor="top",
@@ -298,5 +335,12 @@ def build_line_chart_consommation_by_region(starting_date: str = default_start_d
     if not homepage:
         line_chart_cons.update_layout(paper_bgcolor=background_color)
         line_chart_cons.update_layout(font_color="#FFFFFF")
+    
+    line_chart_cons.update_yaxes(title_text="Consommation (MW)")
+    line_chart_cons.update_xaxes(title_text="Date/Heure")
+    line_chart_cons.update_layout(hovermode="x unified")
+    line_chart_cons.update_traces(hovertemplate="%{y:.2f} MW<br>Date: %{x|%Y-%m-%d %H:%M}")
+
+
 
     return line_chart_cons

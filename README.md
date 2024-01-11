@@ -1,7 +1,8 @@
 # 📊  Projet-de-visualisation-M1
 
 Bienvenue sur notre projet de visualisation analytique CMI ISI.
-Ce projet consiste à créer une application [Dash](https://plotly.com/dash/) en python afin de visualiser les données de l'énergie électrique [RTE](https://www.rte-france.com/) en France Métropolitaine (hors Corse).
+Ce projet consiste à créer une application [Dash](https://plotly.com/dash/) en python afin de visualiser les données de l'énergie électrique [RTE](https://www.rte-france.com/) en France Métropolitaine (hors Corse).  
+Ce projet a été développé sous `Python 3.10.2`.
 
 ## Cloner l'application sur votre machine
 
@@ -23,7 +24,7 @@ Si il y a une erreur après avoir exécuter la commande précédente, essayez ce
 ```bash
 Set-ExecutionPolicy Unrestricted -Scope Process
 ```
-Installer les dépendances:
+Installer les dépendances (versions disponibles):
 ```bash
 pip install -r requirements.txt
 ```
@@ -65,20 +66,32 @@ python app.py
 
 <table>
   <tr>
-    <td align="center">
+    <td align="center" style="padding: 10px;">
       <a href="https://github.com/LouisDelignac">
-        <img src="https://avatars.githubusercontent.com/u/102798850?v=4" width="50" height="50" alt=""/><br />
-      </a>
+        <img src="https://avatars.githubusercontent.com/u/102798850?v=4" width="100" height="100" alt="" style="border-radius:50%;"/><br />
+        <sub><b>Louis Delignac</b></sub>
+      </a><br />
+      <sub>CMI ISI</sub>
     </td>
-    <td align="center">
+    <td align="center" style="padding: 10px;">
       <a href="https://github.com/HamadTria">
-        <img src="https://avatars.githubusercontent.com/u/102798449?v=4" width="50" height="50" alt=""/><br />
-      </a>
+        <img src="https://avatars.githubusercontent.com/u/102798449?v=4" width="100" height="100" alt="" style="border-radius:50%;"/><br />
+        <sub><b>Hamad Tria</b></sub>
+      </a><br />
+      <sub>CMI ISI</sub>
     </td>
-    <td align="center">
+    <td align="center" style="padding: 10px;">
       <a href="https://github.com/Hisqkq">
-        <img src="https://avatars.githubusercontent.com/u/120734251?v=4" width="50" height="50" alt=""/><br />
-      </a>
+        <img src="https://avatars.githubusercontent.com/u/120734251?v=4" width="100" height="100" alt="" style="border-radius:50%;"/><br />
+        <sub><b>Theo Lavandier</b></sub>
+      </a><br />
+      <sub>CMI ISI</sub>
     </td>
   </tr>
 </table>
+
+
+<div align="center" style="padding: px; margin-top: 40px; background-color: #f0f0f0; border-top: 1px solid #e1e4e8;">
+  <p style="font-size: 19px; color: #333;">CMI ISI - PVA</p>
+</div>
+

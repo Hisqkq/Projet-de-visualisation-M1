@@ -7,6 +7,7 @@ from dash_iconify import DashIconify
 import view.datepicker as datepicker
 import view.figures as figures
 import view.map as map
+import view.story as story
 from view.datepicker import default_start_date, default_end_date
 
 register_page(__name__)
@@ -55,6 +56,7 @@ def layout():
                 )
             ], width=12),
         ]),
+        story.story_consommation(),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
 

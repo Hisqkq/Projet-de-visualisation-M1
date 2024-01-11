@@ -7,7 +7,7 @@ from dash.exceptions import PreventUpdate
 import view.figures as figures
 import view.pie_chart as pie_chart
 import view.story as story
-from data.db_constructor import update_data
+from initialise_db import perform_update
 from view.datepicker import default_start_date, default_end_date
 
 dash.register_page(__name__, path='/')
@@ -63,14 +63,11 @@ def layout():
         style=card_header_style
         ),
         dbc.CardBody(
-            dcc.Link(
-                dcc.Graph(
-                    id='choropleth-map',
-                    figure=figures.build_boxplot_echanges(default_start_date, default_end_date).update_layout(showlegend=False),
-                    config={'displayModeBar': False}
-                ),
-                href=dash.page_registry['pages.echanges']['path']
-            )
+            dcc.Graph(
+                id='choropleth-map',
+                figure=figures.build_boxplot_echanges(default_start_date, default_end_date).update_layout(showlegend=False),
+                config={'displayModeBar': False}
+            ),  
         )
     ]
 
@@ -84,14 +81,11 @@ def layout():
         style=card_header_style
         ),
         dbc.CardBody(
-            dcc.Link(
-                dcc.Graph(
-                    id="pie_chart_production_par_filiere",
-                    figure=pie_chart.build_metropolitan_pie_chart_production_by_field(is_title=False, background=True),
-                    config={'displayModeBar': False}
-                ),
-                href=dash.page_registry['pages.production']['path']
-            )
+            dcc.Graph(
+                id="pie_chart_production_par_filiere",
+                figure=pie_chart.metropolitan_pie_chart_production_by_sector(is_title=False, background=True),
+                config={'displayModeBar': False}
+            ),  
         )
     ]
 
@@ -105,15 +99,12 @@ def layout():
         style=card_header_style
         ),
         dbc.CardBody(
-            dcc.Link(
-                dcc.Graph(
-                    id="graph_consommation_prediction",
-                    figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, homepage=True).update_layout(showlegend=False),
-                    config={'displayModeBar': False}
-                ),
-                href=dash.page_registry['pages.consommation']['path']
-            )
-        )
+            dcc.Graph(
+                id="graph_consommation_prediction",
+                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, homepage=True).update_layout(showlegend=False),
+                config={'displayModeBar': False}
+            ),
+        )  
     ]
 
     return dbc.Container([
@@ -121,21 +112,16 @@ def layout():
         navbar,
         dcc.Interval(id='interval-component', interval=500, n_intervals=0),
         dbc.Row([
-            dbc.Col(dbc.Card(card_content_echanges, color="primary", outline=True, style=card_style), width=12, lg=4),
-            dbc.Col(dbc.Card(card_content_production, color="primary", outline=True, style=card_style), width=12, lg=4),
-            dbc.Col(dbc.Card(card_content_consommation, color="primary", outline=True, style=card_style), width=12, lg=4)
+            dbc.Col(dcc.Link(dbc.Card(card_content_echanges, color="primary", outline=True, style=card_style), href=dash.page_registry['pages.echanges']['path']), width=12, lg=4),
+            dbc.Col(dcc.Link(dbc.Card(card_content_production, color="primary", outline=True, style=card_style), href=dash.page_registry['pages.production']['path']), width=12, lg=4),
+            dbc.Col(dcc.Link(dbc.Card(card_content_consommation, color="primary", outline=True, style=card_style), href=dash.page_registry['pages.consommation']['path']), width=12, lg=4),
         ], className="mt-3 g-0"),
         dbc.Row([
-            story.story_echanges()
+            story.story_accueil()
         ]),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
 
-        
-def perform_update():
-    """Update data from RTE's API."""
-    update_data("eco2mix-national-tr", "DonneesNationales")
-    update_data("eco2mix-regional-tr", "DonneesRegionales")
 
 @callback(
     Output("modal-spinner", "is_open"),

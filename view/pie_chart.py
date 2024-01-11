@@ -9,12 +9,12 @@ from view.datepicker import default_start_date, default_end_date
 config = configparser.ConfigParser()
 config.read('data/config.ini')
 
-# Create a dictionary containing the colors for each field
-field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
+# Create a dictionary containing the colors for each sector
+sector_colors = {sector: config['SectorColorPalette'][sector] for sector in config['SectorColorPalette']}
 background_color = str(config['Colors']['background'])
 ############
 
-def build_pie_chart_production_by_field(data: list, title: str, background: bool = False) -> go.Figure:
+def build_pie_chart_production_by_sector(data: list, title: str, background: bool = False) -> go.Figure:
     """Create a pie chart.
 
     Parameters
@@ -40,7 +40,7 @@ def build_pie_chart_production_by_field(data: list, title: str, background: bool
         hex = hex.lstrip('#')
         return f"rgba({int(hex[0:2], 16)}, {int(hex[2:4], 16)}, {int(hex[4:6], 16)}, {alpha})"
 
-    slice_colors = [field_colors[key] for key in keys if key in field_colors]
+    slice_colors = [sector_colors[key] for key in keys if key in sector_colors]
 
     slice_colors_transparent = [hex_to_rgba(c) for c in slice_colors]
 
@@ -70,7 +70,7 @@ def build_pie_chart_production_by_field(data: list, title: str, background: bool
     
     return fig
 
-def build_metropolitan_pie_chart_production_by_field(start_date: str = default_start_date,
+def metropolitan_pie_chart_production_by_sector(start_date: str = default_start_date,
                                                      end_date: str = default_end_date,
                                                      is_title: bool = True,
                                                      background: bool = False) -> go.Figure:  
@@ -93,7 +93,7 @@ def build_metropolitan_pie_chart_production_by_field(start_date: str = default_s
         Figure containing the pie chart.
     
     """
-    data = dbs.get_mean_for_fields(
+    data = dbs.get_mean_for_sectors(
         "DonneesNationales", 
         start_date, end_date, 
         ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"]
@@ -101,9 +101,9 @@ def build_metropolitan_pie_chart_production_by_field(start_date: str = default_s
     title = ''
     if is_title:
         title = "Répartition de la Production des Sources d'Énergie en Métropole (hors Corse)"
-    return build_pie_chart_production_by_field(data, title, background)
+    return build_pie_chart_production_by_sector(data, title, background)
 
-def build_region_pie_chart_production_by_field(region: str, 
+def region_pie_chart_production_by_sector(region: str, 
                                                start_date: str = default_start_date, 
                                                end_date: str = default_end_date) -> go.Figure:
     """Create a pie chart for a specific region.
@@ -123,10 +123,10 @@ def build_region_pie_chart_production_by_field(region: str,
         Figure containing the pie chart.
     
     """
-    data = dbs.get_mean_for_fields_in_a_region(
+    data = dbs.get_mean_for_sectors_in_a_region(
         "DonneesRegionales", 
         start_date, end_date, 
         ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies", "thermique"], 
         region
     )[0]
-    return build_pie_chart_production_by_field(data, f"Répartition de la Production des Sources d'Énergie en {region}")
+    return build_pie_chart_production_by_sector(data, f"Répartition de la Production des Sources d'Énergie en {region}")

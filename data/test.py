@@ -18,7 +18,7 @@ time_start = time.time()
 regionales_df = dbs.transform_data_to_df(dbs.get_data("DonneesRegionales",
                                                       replace_root_conditions="$results", 
                                                       project_conditions=project_conditions,
-                                                      unwind_field="$results"))
+                                                      unwind_sector="$results"))
 
 time_end = time.time()
 
@@ -32,7 +32,7 @@ time_start = time.time()
 nationales_df = dbs.transform_data_to_df(dbs.get_data("DonneesNationales", 
                                               replace_root_conditions="$results", 
                                               project_conditions=project_conditions,
-                                              unwind_field="$results")) 
+                                              unwind_sector="$results")) 
 
 time_end = time.time()
 
