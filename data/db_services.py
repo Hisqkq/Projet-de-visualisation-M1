@@ -25,11 +25,11 @@ def execute_aggregation(collection: str, pipeline: list) -> list:
         return []
 
 
-def build_pipeline(unwind_field=None, match_conditions=None, group_conditions=None, sort_conditions=None, project_conditions=None, replace_root_conditions=None) -> list:
+def build_pipeline(unwind_sector=None, match_conditions=None, group_conditions=None, sort_conditions=None, project_conditions=None, replace_root_conditions=None) -> list:
     """Build a MongoDB aggregation pipeline with optional stages."""
     pipeline = []
 
-    if unwind_field: pipeline.append({"$unwind": unwind_field})
+    if unwind_sector: pipeline.append({"$unwind": unwind_sector})
     if match_conditions: pipeline.append({"$match": match_conditions})
     if group_conditions: pipeline.append({"$group": group_conditions})
     if sort_conditions: pipeline.append({"$sort": sort_conditions})
@@ -38,15 +38,15 @@ def build_pipeline(unwind_field=None, match_conditions=None, group_conditions=No
 
     return pipeline
 
-def get_data(collection: str, unwind_field=None, match_conditions=None, group_conditions=None, sort_conditions=None, project_conditions=None, replace_root_conditions=None) -> list:
+def get_data(collection: str, unwind_sector=None, match_conditions=None, group_conditions=None, sort_conditions=None, project_conditions=None, replace_root_conditions=None) -> list:
     """Get data from a collection using a flexible aggregation pipeline.
 
     Parameters:
     ----------
     collection : str
         Name of the collection.
-    unwind_field : str (optional)
-        Field to unwind.
+    unwind_sector : str (optional)
+        Sector to unwind.
     match_conditions : dict (optional)
         Conditions for the match stage.
     group_conditions : dict (optional)
@@ -63,21 +63,21 @@ def get_data(collection: str, unwind_field=None, match_conditions=None, group_co
     list
         List of documents resulting from the aggregation.
     """
-    pipeline = build_pipeline(unwind_field, match_conditions, group_conditions, sort_conditions, project_conditions, replace_root_conditions)
+    pipeline = build_pipeline(unwind_sector, match_conditions, group_conditions, sort_conditions, project_conditions, replace_root_conditions)
     return execute_aggregation(collection, pipeline)
 
 
-def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], order: int) -> list:
-    """Enable User to get the sum of fields from a collection, grouped by a specific field.
+def get_data_group_by_sum(collection: str, group_sector: str, sum_sectors: [str], order: int) -> list:
+    """Enable User to get the sum of sectors from a collection, grouped by a specific sector.
     
     Parameters:
     ----------
     collection : str
         Name of the collection.
-    group_field : str
-        Field to group by.
-    sum_fields : list of str
-        Fields to sum.
+    group_sector : str
+        Sector to group by.
+    sum_sectors : list of str
+        Sectors to sum.
     order : int
         Sorting order (1 for ascending, -1 for descending).
 
@@ -87,12 +87,12 @@ def get_data_group_by_sum(collection: str, group_field: str, sum_fields: [str], 
         List of aggregated documents.
     """
     group_conditions = {
-        "_id": f"$results.{group_field}",
-        **{field: {"$sum": f"$results.{field}"} for field in sum_fields}
+        "_id": f"$results.{group_sector}",
+        **{sector: {"$sum": f"$results.{sector}"} for sector in sum_sectors}
     }
     sort_conditions = {"_id": order}
     return get_data(collection, 
-                    unwind_field="$results", 
+                    unwind_sector="$results", 
                     group_conditions=group_conditions, 
                     sort_conditions=sort_conditions)
 
@@ -114,7 +114,7 @@ def get_data_from_one_date(collection: str, date: str) -> list:
     """
     match_conditions = {"results.date": date}
     return get_data(collection, 
-                    unwind_field="$results", 
+                    unwind_sector="$results", 
                     match_conditions=match_conditions, 
                     replace_root_conditions="$results", 
                     sort_conditions={"date_heure": 1})
@@ -140,7 +140,7 @@ def get_data_from_one_date_and_one_region(collection: str, date: str, region: st
     match_conditions = {"results.date": date, "results.libelle_region": region}
     project_conditions = {"_id": 0, "date": "$results.date", "data": "$results.data"}
     return get_data(collection, 
-                    unwind_field="$results", 
+                    unwind_sector="$results", 
                     match_conditions=match_conditions, 
                     project_conditions=project_conditions, 
                     sort_conditions={"results.date_heure": 1})
@@ -166,7 +166,7 @@ def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: s
     """
     match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
     return get_data(collection, 
-                    unwind_field="$results", 
+                    unwind_sector="$results", 
                     match_conditions=match_conditions, 
                     replace_root_conditions="$results", 
                     sort_conditions={"date_heure": 1})
@@ -197,14 +197,14 @@ def get_data_from_one_date_to_another_date_and_one_region(collection: str, date1
     }
     project_conditions = {"_id": 0, "date": "$results.date", "data": "$results.data"}
     return get_data(collection, 
-                    unwind_field="$results", 
+                    unwind_sector="$results", 
                     match_conditions=match_conditions, 
                     project_conditions=project_conditions, 
                     sort_conditions={"results.date_heure": 1})
 
 
-def get_mean_for_fields(collection: str, date1: str, date2: str, mean_fields: [str]) -> list:
-    """Enable User to get the mean of fields from a collection for a specific date range.
+def get_mean_for_sectors(collection: str, date1: str, date2: str, mean_sectors: [str]) -> list:
+    """Enable User to get the mean of sectors from a collection for a specific date range.
     
     Parameters:
     ----------
@@ -214,29 +214,29 @@ def get_mean_for_fields(collection: str, date1: str, date2: str, mean_fields: [s
         Start date for the range.
     date2 : str
         End date for the range.
-    mean_fields : list of str
-        Fields for which to calculate the average.
+    mean_sectors : list of str
+        Sectors for which to calculate the average.
     
     Returns:
     -------
     list
-        List of documents with average values for the specified fields.
+        List of documents with average values for the specified sectors.
     """
     match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
     group_conditions = {
         "_id": "$date",
-        **{f"{field}": {"$avg": f"$results.{field}"} for field in mean_fields}
+        **{f"{sector}": {"$avg": f"$results.{sector}"} for sector in mean_sectors}
     }
-    project_conditions = {"_id": 0, **{f"{field}": 1 for field in mean_fields}}
+    project_conditions = {"_id": 0, **{f"{sector}": 1 for sector in mean_sectors}}
     return get_data(collection, 
-                    unwind_field="$results", 
+                    unwind_sector="$results", 
                     match_conditions=match_conditions, 
                     group_conditions=group_conditions, 
                     project_conditions=project_conditions,
                     sort_conditions={"_id": 1})
 
-def get_mean_for_fields_in_a_region(collection: str, date1: str, date2: str, mean_fields: [str], region: str) -> list:
-    """Enable User to get the mean of fields from a collection for a specific date range and a specific region.
+def get_mean_for_sectors_in_a_region(collection: str, date1: str, date2: str, mean_sectors: [str], region: str) -> list:
+    """Enable User to get the mean of sectors from a collection for a specific date range and a specific region.
     
     Parameters:
     ----------
@@ -246,15 +246,15 @@ def get_mean_for_fields_in_a_region(collection: str, date1: str, date2: str, mea
         Start date for the range.
     date2 : str
         End date for the range.
-    mean_fields : list of str
-        Fields for which to calculate the average.
+    mean_sectors : list of str
+        Sectors for which to calculate the average.
     region : str
         Specific region.
     
     Returns:
     -------
     list
-        List of documents with average values for the specified fields and region.
+        List of documents with average values for the specified sectors and region.
     """
     match_conditions = {
         "results.date": {"$gte": date1, "$lte": date2},
@@ -262,54 +262,54 @@ def get_mean_for_fields_in_a_region(collection: str, date1: str, date2: str, mea
     }
     group_conditions = {
         "_id": "$date",
-        **{f"{field}": {"$avg": f"$results.{field}"} for field in mean_fields}
+        **{f"{sector}": {"$avg": f"$results.{sector}"} for sector in mean_sectors}
     }
-    project_conditions = {"_id": 0, **{f"{field}": 1 for field in mean_fields}}
+    project_conditions = {"_id": 0, **{f"{sector}": 1 for sector in mean_sectors}}
     return get_data(collection, 
-                    unwind_field="$results", 
+                    unwind_sector="$results", 
                     match_conditions=match_conditions, 
                     group_conditions=group_conditions, 
                     project_conditions=project_conditions,
                     sort_conditions={"_id": 1})
 
 
-def get_average_values(collection: str, fields: [str]) -> dict:
-    """Enable User to get the averages of many fields (when values are not null) from a collection.
+def get_average_values(collection: str, sectors: [str]) -> dict:
+    """Enable User to get the averages of many sectors (when values are not null) from a collection.
     
     Parameters:
     ----------
     collection : str
         Name of the collection.
-    fields : list of str
-        Fields to calculate the average.
+    sectors : list of str
+        Sectors to calculate the average.
         
     Returns:
     -------
     dict
-        Dictionary of averages for each field.
+        Dictionary of averages for each sector.
     """
-    match_conditions = {"$and": [{f"results.{field}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}} for field in fields]}
+    match_conditions = {"$and": [{f"results.{sector}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}} for sector in sectors]}
     group_conditions = {
         "_id": None, 
-        **{f"avg_{field}": {"$avg": f"$results.{field}"} for field in fields}
+        **{f"avg_{sector}": {"$avg": f"$results.{sector}"} for sector in sectors}
     }
-    project_conditions = {"_id": 0, **{f"avg_{field}": 1 for field in fields}}
+    project_conditions = {"_id": 0, **{f"avg_{sector}": 1 for sector in sectors}}
     result = get_data(collection, 
-                    unwind_field="$results", 
+                    unwind_sector="$results", 
                     match_conditions=match_conditions, 
                     group_conditions=group_conditions,
                     project_conditions=project_conditions)
     return result[0] if result else {}
 
-def get_max_value(collection: str, field: str, columns: [str]) -> dict:
-    """Enable User to get the max value of a field and its corresponding data (columns) from a collection.
+def get_max_value(collection: str, sector: str, columns: [str]) -> dict:
+    """Enable User to get the max value of a sector and its corresponding data (columns) from a collection.
 
     Parameters:
     ----------
     collection : str
         Name of the collection.
-    field : str
-        Field to check.
+    sector : str
+        Sector to check.
     columns : list of str
         Columns to return.
 
@@ -318,11 +318,11 @@ def get_max_value(collection: str, field: str, columns: [str]) -> dict:
     dict
         Dictionary of the max value and its corresponding data.
     """
-    match_conditions = {f"results.{field}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}}
-    sort_conditions = {f"results.{field}": -1}
+    match_conditions = {f"results.{sector}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}}
+    sort_conditions = {f"results.{sector}": -1}
     project_conditions = {"_id": 0, **{f"results.{column}": 1 for column in columns}}
     result = get_data(collection, 
-                    unwind_field="$results", 
+                    unwind_sector="$results", 
                     match_conditions=match_conditions, 
                     sort_conditions=sort_conditions,
                     project_conditions=project_conditions)
@@ -330,29 +330,29 @@ def get_max_value(collection: str, field: str, columns: [str]) -> dict:
 
 
 
-def get_sum_values(collection: str, fields: [str]) -> dict:
-    """Enable User to get the sum of many fields (when values are not null) from a collection.
+def get_sum_values(collection: str, sectors: [str]) -> dict:
+    """Enable User to get the sum of many sectors (when values are not null) from a collection.
     
     Parameters:
     ----------
     collection : str
         Name of the collection.
-    fields : list of str
-        Fields to calculate the sum.
+    sectors : list of str
+        Sectors to calculate the sum.
         
     Returns:
     -------
     dict
-        Dictionary of sums for each field.
+        Dictionary of sums for each sector.
     """
-    match_conditions = {"$and": [{f"results.{field}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}} for field in fields]}
+    match_conditions = {"$and": [{f"results.{sector}": {"$ne": None, "$exists": True, "$type": ["double", "int", "long", "decimal"]}} for sector in sectors]}
     group_conditions = {
         "_id": None, 
-        **{f"sum_{field}": {"$sum": f"$results.{field}"} for field in fields}
+        **{f"sum_{sector}": {"$sum": f"$results.{sector}"} for sector in sectors}
     }
-    project_conditions = {"_id": 0, **{f"sum_{field}": 1 for field in fields}}
+    project_conditions = {"_id": 0, **{f"sum_{sector}": 1 for sector in sectors}}
     result = get_data(collection, 
-                    unwind_field="$results", 
+                    unwind_sector="$results", 
                     match_conditions=match_conditions, 
                     group_conditions=group_conditions,
                     project_conditions=project_conditions)

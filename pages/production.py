@@ -43,7 +43,7 @@ def layout():
             dbc.Col([
                 dcc.Graph(
                     id="production_pie_chart_by_sector",
-                    figure=pie_chart.metropolitan_pie_chart_production_by_field(),
+                    figure=pie_chart.metropolitan_pie_chart_production_by_sector(),
                     config={'displayModeBar': False}
                 )
             ], width=8)
@@ -53,7 +53,7 @@ def layout():
                 [
                     html.H4("Production régionale par type d'énergie", className="text-center mb-3"),
                     dmc.Select(
-                        placeholder="Choose a production field",
+                        placeholder="Choose a production sector",
                         id="select-energy-type",
                         data=[
                             {'value': 'eolien', 'label': 'Éolien'},
@@ -173,8 +173,8 @@ def update_production_pie_chart_by_sector(dates, current_map_state):
         return no_update
 
     if current_map_state == "France":
-        return pie_chart.metropolitan_pie_chart_production_by_field(dates[0], dates[1])
-    return pie_chart.region_pie_chart_production_by_field(current_map_state, dates[0], dates[1])
+        return pie_chart.metropolitan_pie_chart_production_by_sector(dates[0], dates[1])
+    return pie_chart.region_pie_chart_production_by_sector(current_map_state, dates[0], dates[1])
 
 @callback(
     Output('graph_production_stacked_area', 'figure'),

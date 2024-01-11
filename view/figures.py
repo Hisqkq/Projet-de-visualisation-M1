@@ -12,7 +12,7 @@ config = configparser.ConfigParser()
 config.read('data/config.ini')
 
 # Create a dictionary containing the colors for each field
-field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
+field_colors = {field: config['SectorColorPalette'][field] for field in config['SectorColorPalette']}
 exchange_colors = {exchange: config['ExchangeColorPalette'][exchange] for exchange in config['ExchangeColorPalette']}
 exchange_colors_bar = {exchange.title(): config['ExchangeColorPaletteBar'][exchange] for exchange in config['ExchangeColorPaletteBar']}
 display_names = {name: config['DisplayNameEch'][name] for name in config['DisplayNameEch']}

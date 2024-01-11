@@ -32,14 +32,14 @@ def layout(region1, region2):
             dbc.Col([
                 dcc.Graph(
                     id="production_pie_chart_by_sector",
-                    figure=pie_chart.region_pie_chart_production_by_field(region1),
+                    figure=pie_chart.region_pie_chart_production_by_sector(region1),
                     config={'displayModeBar': False}
                 )
             ], width=6),
             dbc.Col([
                 dcc.Graph(
                     id="production_pie_chart_by_sector",
-                    figure=pie_chart.region_pie_chart_production_by_field(region2),
+                    figure=pie_chart.region_pie_chart_production_by_sector(region2),
                     config={'displayModeBar': False}
                 )
             ], width=6)
