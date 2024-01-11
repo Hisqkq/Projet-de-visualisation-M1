@@ -6,6 +6,7 @@ from dash.dependencies import Input, Output, State
 import view.figures as figures
 import view.map as map
 import view.pie_chart as pie_chart
+import view.story as story
 from view.datepicker import datepicker
 
 register_page(__name__)
@@ -71,6 +72,7 @@ def layout():
                 config={'displayModeBar': False}
             )
         ]),
+        story.story_production(),
             
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)

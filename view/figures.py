@@ -11,12 +11,15 @@ from view.datepicker import default_start_date, default_end_date
 config = configparser.ConfigParser()
 config.read('data/config.ini')
 
-# Create a dictionary containing the colors for each field
+# Colors for the figures (hex format)
 field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
 exchange_colors = {exchange: config['ExchangeColorPalette'][exchange] for exchange in config['ExchangeColorPalette']}
 exchange_colors_bar = {exchange.title(): config['ExchangeColorPaletteBar'][exchange] for exchange in config['ExchangeColorPaletteBar']}
+
+# Display names for the figures (for the legend)
 display_names = {name: config['DisplayNameEch'][name] for name in config['DisplayNameEch']}
-background_color = str(config['Colors']['background'])
+
+background_color = str(config['Colors']['background']) # Background color
 ############
 
 ## Echanges ##
