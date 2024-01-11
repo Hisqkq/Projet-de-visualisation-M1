@@ -38,6 +38,7 @@ def build_pipeline(unwind_sector=None, match_conditions=None, group_conditions=N
 
     return pipeline
 
+
 def get_data(collection: str, unwind_sector=None, match_conditions=None, group_conditions=None, sort_conditions=None, project_conditions=None, replace_root_conditions=None) -> list:
     """Get data from a collection using a flexible aggregation pipeline.
 
@@ -97,7 +98,7 @@ def get_data_group_by_sum(collection: str, group_sector: str, sum_sectors: [str]
                     sort_conditions=sort_conditions)
 
 
-def get_data_from_one_date(collection: str, date: str) -> list:
+def get_data_from_one_date(collection: str, date: str, region: str = None) -> list:
     """Enable User to get the data from a collection for a specific date.
     
     Parameters:
@@ -106,48 +107,33 @@ def get_data_from_one_date(collection: str, date: str) -> list:
         Name of the collection.
     date : str
         Date for which to get the data.
+    region : str (optional)
+        Region for which to get the data.
         
     Returns:
     -------
     list
         List of documents for the specified date.
     """
-    match_conditions = {"results.date": date}
-    return get_data(collection, 
-                    unwind_sector="$results", 
-                    match_conditions=match_conditions, 
-                    replace_root_conditions="$results", 
-                    sort_conditions={"date_heure": 1})
-
-
-def get_data_from_one_date_and_one_region(collection: str, date: str, region: str) -> list:
-    """Enable User to get the data from a collection for a specific date and a specific region.
-    
-    Parameters:
-    ----------
-    collection : str
-        Name of the collection.
-    date : str
-        Specific date.
-    region : str
-        Specific region.
-        
-    Returns:
-    -------
-    list
-        List of documents for the specified date and region.
-    """
-    match_conditions = {"results.date": date, "results.libelle_region": region}
-    project_conditions = {"_id": 0, "date": "$results.date", "data": "$results.data"}
+    if region:
+        match_conditions = {"results.date": date, "results.libelle_region": region}
+        project_conditions = {"_id": 0, "date": "$results.date", "data": "$results.data"}
+        replace_root_conditions = None
+        sort_conditions={"results.date_heure": 1}
+    else:
+        match_conditions = {"results.date": date}
+        project_conditions = None
+        replace_root_conditions = "$results"
+        sort_conditions={"date_heure": 1}
     return get_data(collection, 
                     unwind_sector="$results", 
                     match_conditions=match_conditions, 
                     project_conditions=project_conditions, 
-                    sort_conditions={"results.date_heure": 1})
+                    replace_root_conditions=replace_root_conditions, 
+                    sort_conditions=sort_conditions)
 
 
-
-def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: str) -> list:
+def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: str, region: str = None) -> list:
     """Get data from a collection for a specific date range using the modular get_data function.
     
     Parameters:
@@ -158,52 +144,33 @@ def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: s
         Start date for the range.
     date2 : str
         End date for the range.
+    region : str (optional)
+        Region for which to get the data.
 
     Returns:
     -------
     list
         List of documents in the specified date range.
     """
-    match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
-    return get_data(collection, 
-                    unwind_sector="$results", 
-                    match_conditions=match_conditions, 
-                    replace_root_conditions="$results", 
-                    sort_conditions={"date_heure": 1})
-
-
-def get_data_from_one_date_to_another_date_and_one_region(collection: str, date1: str, date2: str, region: str) -> list:
-    """Enable User to get the data from a collection for a specific date range and a specific region.
-    
-    Parameters:
-    ----------
-    collection : str
-        Name of the collection.
-    date1 : str
-        Start date for the range.
-    date2 : str
-        End date for the range.
-    region : str
-        Specific region.
-        
-    Returns:
-    -------
-    list
-        List of documents for the specified date range and region.
-    """
-    match_conditions = {
-        "results.date": {"$gte": date1, "$lte": date2},
-        "results.libelle_region": region
-    }
-    project_conditions = {"_id": 0, "date": "$results.date", "data": "$results.data"}
+    if region:
+        match_conditions = {"results.date": {"$gte": date1, "$lte": date2}, "results.libelle_region": region}
+        project_conditions = {"_id": 0, "date": "$results.date", "data": "$results.data"}
+        replace_root_conditions = None
+        sort_conditions={"results.date_heure": 1}
+    else:
+        match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
+        project_conditions = None
+        replace_root_conditions="$results"
+        sort_conditions={"date_heure": 1}
     return get_data(collection, 
                     unwind_sector="$results", 
                     match_conditions=match_conditions, 
                     project_conditions=project_conditions, 
-                    sort_conditions={"results.date_heure": 1})
+                    replace_root_conditions=replace_root_conditions, 
+                    sort_conditions=sort_conditions)
 
 
-def get_mean_for_sectors(collection: str, date1: str, date2: str, mean_sectors: [str]) -> list:
+def get_mean_for_sectors(collection: str, date1: str, date2: str, mean_sectors: [str], region: str = None) -> list:
     """Enable User to get the mean of sectors from a collection for a specific date range.
     
     Parameters:
@@ -216,55 +183,24 @@ def get_mean_for_sectors(collection: str, date1: str, date2: str, mean_sectors: 
         End date for the range.
     mean_sectors : list of str
         Sectors for which to calculate the average.
+    region : str (optional)
+        Region for which to get the data.
     
     Returns:
     -------
     list
         List of documents with average values for the specified sectors.
     """
-    match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
-    group_conditions = {
-        "_id": "$date",
-        **{f"{sector}": {"$avg": f"$results.{sector}"} for sector in mean_sectors}
+    group_conditions = {"_id": "$date",
+                        **{f"{sector}": {"$avg": f"$results.{sector}"} for sector in mean_sectors}
     }
     project_conditions = {"_id": 0, **{f"{sector}": 1 for sector in mean_sectors}}
-    return get_data(collection, 
-                    unwind_sector="$results", 
-                    match_conditions=match_conditions, 
-                    group_conditions=group_conditions, 
-                    project_conditions=project_conditions,
-                    sort_conditions={"_id": 1})
-
-def get_mean_for_sectors_in_a_region(collection: str, date1: str, date2: str, mean_sectors: [str], region: str) -> list:
-    """Enable User to get the mean of sectors from a collection for a specific date range and a specific region.
-    
-    Parameters:
-    ----------
-    collection : str
-        Name of the collection.
-    date1 : str
-        Start date for the range.
-    date2 : str
-        End date for the range.
-    mean_sectors : list of str
-        Sectors for which to calculate the average.
-    region : str
-        Specific region.
-    
-    Returns:
-    -------
-    list
-        List of documents with average values for the specified sectors and region.
-    """
-    match_conditions = {
-        "results.date": {"$gte": date1, "$lte": date2},
-        "results.libelle_region": region
-    }
-    group_conditions = {
-        "_id": "$date",
-        **{f"{sector}": {"$avg": f"$results.{sector}"} for sector in mean_sectors}
-    }
-    project_conditions = {"_id": 0, **{f"{sector}": 1 for sector in mean_sectors}}
+    if region:
+        match_conditions = {
+            "results.date": {"$gte": date1, "$lte": date2},
+            "results.libelle_region": region}
+    else:
+        match_conditions = {"results.date": {"$gte": date1, "$lte": date2}}
     return get_data(collection, 
                     unwind_sector="$results", 
                     match_conditions=match_conditions, 
@@ -301,6 +237,7 @@ def get_average_values(collection: str, sectors: [str]) -> dict:
                     project_conditions=project_conditions)
     return result[0] if result else {}
 
+
 def get_max_value(collection: str, sector: str, columns: [str]) -> dict:
     """Enable User to get the max value of a sector and its corresponding data (columns) from a collection.
 
@@ -327,7 +264,6 @@ def get_max_value(collection: str, sector: str, columns: [str]) -> dict:
                     sort_conditions=sort_conditions,
                     project_conditions=project_conditions)
     return result[0] if result else {}
-
 
 
 def get_sum_values(collection: str, sectors: [str]) -> dict:
@@ -358,6 +294,7 @@ def get_sum_values(collection: str, sectors: [str]) -> dict:
                     project_conditions=project_conditions)
     return result[0] if result else {}
 
+
 def transform_data_to_df(data: list) -> pd.DataFrame:
     """Transform a list of documents to a DataFrame.
     
@@ -372,6 +309,7 @@ def transform_data_to_df(data: list) -> pd.DataFrame:
         DataFrame containing the data.
     """
     return pd.DataFrame(data)
+
 
 def convert_to_numeric(df: pd.DataFrame, columns: [str]) -> pd.DataFrame:
     """Convert columns to numeric values.
@@ -393,6 +331,7 @@ def convert_to_numeric(df: pd.DataFrame, columns: [str]) -> pd.DataFrame:
         df[column] = df[column].astype(int)
     return df
 
+
 def remove_nan_from_data(data: pd.DataFrame, column: str) -> pd.DataFrame:
     """Remove NaN values from a column.
 
@@ -410,6 +349,7 @@ def remove_nan_from_data(data: pd.DataFrame, column: str) -> pd.DataFrame:
     """
 
     return data[data[column].notna()]
+
 
 def get_last_date_db() -> str:
     """Get the last date in the database. Take the earliest date between the national and regional data.
@@ -432,6 +372,7 @@ def get_last_date_db() -> str:
     last_regional_date = regional_result[0]['date'] if regional_result else None
 
     return last_national_date if last_national_date < last_regional_date else last_regional_date
+
 
 def get_mean_consommation_by_region(collection: str, date1: str, date2: str) -> dict:
     """Enable User to get the mean of consommation by regions from a collection for a specific date range.

@@ -123,7 +123,7 @@ def region_pie_chart_production_by_sector(region: str,
         Figure containing the pie chart.
     
     """
-    data = dbs.get_mean_for_sectors_in_a_region(
+    data = dbs.get_mean_for_sectors(
         "DonneesRegionales", 
         start_date, end_date, 
         ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies", "thermique"], 
