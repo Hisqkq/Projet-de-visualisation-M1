@@ -43,7 +43,7 @@ def build_stacked_bar_chart(arguments: list,
         Figure containing the stacked bar chart."""
     
     # Fetching data and converting JSON to DataFrame
-    json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
+    json_data = dbs.get_data_between_two_dates("DonneesNationales", starting_date, ending_date)
     data = dbs.transform_data_to_df(json_data)
     data = dbs.convert_to_numeric(data, arguments) # Convert columns to numeric (because some values are strings)
     
@@ -86,7 +86,7 @@ def build_boxplot_echanges(starting_date: str = default_start_date, ending_date:
         Figure containing the boxplot."""
     
     # Fetching data and converting JSON to DataFrame
-    json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
+    json_data = dbs.get_data_between_two_dates("DonneesNationales", starting_date, ending_date)
     data = dbs.transform_data_to_df(json_data)
     data = dbs.convert_to_numeric(data, ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse", "ech_comm_allemagne_belgique"])
     
@@ -122,7 +122,7 @@ def build_donuts_exchanges(starting_date: str = default_start_date, ending_date:
     plotly.graph_objects.Figure
         Figure containing the donut chart.
     """
-    json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
+    json_data = dbs.get_data_between_two_dates("DonneesNationales", starting_date, ending_date)
     data = dbs.transform_data_to_df(json_data)
     data = dbs.convert_to_numeric(data, ["ech_comm_angleterre", "ech_comm_espagne", "ech_comm_italie", "ech_comm_suisse", "ech_comm_allemagne_belgique"])
     
@@ -196,7 +196,7 @@ def build_stacked_area_chart(argument: str = "nucleaire",
     -------
     plotly.graph_objects.Figure
         Figure containing the stacked area chart."""
-    data = dbs.get_data_from_one_date_to_another_date("DonneesRegionales", starting_date, ending_date)
+    data = dbs.get_data_between_two_dates("DonneesRegionales", starting_date, ending_date)
     fig = px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}", template="plotly_dark")
     fig.update_yaxes(title_text="Production (MW)")
     fig.update_xaxes(title_text="Date/Heure")
@@ -222,7 +222,7 @@ def build_stacked_area_by_production(starting_date: str = default_start_date,
     -------
     plotly.graph_objects.Figure
         Figure containing the stacked area chart."""
-    data = dbs.transform_data_to_df(dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date))
+    data = dbs.transform_data_to_df(dbs.get_data_between_two_dates("DonneesNationales", starting_date, ending_date))
     data = data.sort_values(by=['date_heure'])
     data = dbs.remove_nan_from_data(data, "consommation")
     
@@ -257,7 +257,7 @@ def build_line_chart_with_prediction(starting_date: str = default_start_date,
         Figure containing the line chart.
     """
     # Fetching data and converting JSON to DataFrame
-    json_data = dbs.get_data_from_one_date_to_another_date("DonneesNationales", starting_date, ending_date)
+    json_data = dbs.get_data_between_two_dates("DonneesNationales", starting_date, ending_date)
     data = dbs.transform_data_to_df(json_data)
     #Order data by datetime
     data = data.sort_values(by=['date_heure'])
@@ -311,7 +311,7 @@ def build_line_chart_consommation_by_region(starting_date: str = default_start_d
         Figure containing the line chart.
     """
     # Fetching data and converting JSON to DataFrame
-    json_data = dbs.get_data_from_one_date_to_another_date("DonneesRegionales", starting_date, ending_date)
+    json_data = dbs.get_data_between_two_dates("DonneesRegionales", starting_date, ending_date)
     data = dbs.transform_data_to_df(json_data)
     #Order data by datetime
     data = data.sort_values(by=['date_heure'])

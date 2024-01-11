@@ -43,7 +43,7 @@ print(f"Temps DonneesNationales : {time_end - time_start}s") # 17.67886829376220
 
 time_start = time.time()
 
-regionales_df_date_to_date = dbs.get_data_from_one_date_to_another_date("DonneesRegionales", "2020-01-01", "2020-01-02")
+regionales_df_date_to_date = dbs.get_data_between_two_dates("DonneesRegionales", "2020-01-01", "2020-01-02")
 
 time_end = time.time()
 
@@ -65,7 +65,7 @@ print(f"Temps DonneesRegionales date to date using pd : {time_end - time_start}s
 
 time_start = time.time()
 
-nationales_df_date_to_date = dbs.get_data_from_one_date_to_another_date("DonneesNationales", "2020-01-01", "2020-01-02")
+nationales_df_date_to_date = dbs.get_data_between_two_dates("DonneesNationales", "2020-01-01", "2020-01-02")
 
 time_end = time.time()
 

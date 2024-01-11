@@ -68,7 +68,7 @@ def get_data(collection: str, unwind_sector=None, match_conditions=None, group_c
     return execute_aggregation(collection, pipeline)
 
 
-def get_data_from_one_date_to_another_date(collection: str, date1: str, date2: str, region: str = None) -> list:
+def get_data_between_two_dates(collection: str, date1: str, date2: str, region: str = None) -> list:
     """Get data from a collection for a specific date range using the modular get_data function.
     
     Parameters:
