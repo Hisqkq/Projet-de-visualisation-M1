@@ -174,7 +174,8 @@ def delete_data_last_date(collection: str) -> None:
     collection : str
         Name of the collection.
     """
-    dbname.get_collection(collection).delete_many({"results.date": {"$gte": datetime.datetime.now().strftime('%Y-%m-%d')}})
+    start_date = datetime.datetime.now() - datetime.timedelta(days=2)
+    dbname.get_collection(collection).delete_many({"results.date": {"$gte": start_date.strftime('%Y-%m-%d')}})
     
 def update_data(from_data: str, collection_name: str) -> None:
     """Update data in a collection
