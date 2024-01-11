@@ -50,30 +50,6 @@ def layout():
             ], width=8)
         ]),
         dbc.Row([
-            html.Div(
-                [
-                    html.H4("Production régionale par type d'énergie", className="text-center mb-3"),
-                    dmc.Select(
-                        placeholder="Choose a production sector",
-                        id="select-energy-type",
-                        data=[
-                            {'value': 'eolien', 'label': 'Éolien'},
-                            {'value': 'hydraulique', 'label': 'Hydraulique'},
-                            {'value': 'nucleaire', 'label': 'Nucléaire'},
-                            {'value': 'solaire', 'label': 'Solaire'},
-                            {'value': 'thermique', 'label': 'Thermique'},
-                        ],
-                        value='solaire',  
-                        style={"width": "33%", "cebter": "true"}
-                    ),],
-                ),
-                dcc.Graph(
-                id="graph_production_stacked_area",
-                figure=figures.build_stacked_area_chart(argument="solaire"),
-                config={'displayModeBar': False}
-            )
-        ]), 
-        dbc.Row([
             dmc.Select(
                 placeholder="Choissez une région à comparer",
                 id="select-region-to-compare1",
@@ -125,6 +101,30 @@ def layout():
                 style={"width": "25%"}
             )
         ]),
+        dbc.Row([
+            html.Div(
+                [
+                    html.H4("Production régionale par type d'énergie", className="text-center mb-3"),
+                    dmc.Select(
+                        placeholder="Choose a production sector",
+                        id="select-energy-type",
+                        data=[
+                            {'value': 'eolien', 'label': 'Éolien'},
+                            {'value': 'hydraulique', 'label': 'Hydraulique'},
+                            {'value': 'nucleaire', 'label': 'Nucléaire'},
+                            {'value': 'solaire', 'label': 'Solaire'},
+                            {'value': 'thermique', 'label': 'Thermique'},
+                        ],
+                        value='solaire',  
+                        style={"width": "33%", "cebter": "true"}
+                    ),],
+                ),
+                dcc.Graph(
+                id="graph_production_stacked_area",
+                figure=figures.build_stacked_area_chart(argument="solaire"),
+                config={'displayModeBar': False}
+            )
+        ]), 
         story.story_production(),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)

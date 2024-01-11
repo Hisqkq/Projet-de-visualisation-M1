@@ -358,28 +358,28 @@ def story_production():
 
     cards_graphs_content = [
         {
-            "title": "Pie Chart de la Production d'Électricité en Métropole et par Région",
+            "title": "Graphique circulaire de la Production d'Électricité en Métropole et par Région",
             "text": (
-                "Le Pie Chart illustre la répartition de la production d'électricité par filière en Métropole et par région. "
+                "Le graphique circulaire illustre la répartition de la production d'électricité par filière en Métropole et par région. "
                 "Le graphique est interactif, vous pouvez cliquer sur les différents secteurs pour les mettre en évidence et les comparer. "
                 "Il est possible de cliquer sur une région de la carte interactive pour afficher la répartition de la production pour cette région. "
-                "Par exemple, il permet de mettre en évidence que la région Grand-Est produit beaucoup d'électricité nucléaire, "
+                "Par exemple, il permet de mettre en évidence que la région Grand Est produit beaucoup d'électricité nucléaire, "
                 "alors que la région Occitanie produit beaucoup d'électricité solaire."
             ),
         },
         {
-            "title": "Stacked Area chart de la Production d'Électricité par région et par filière",
+            "title": "Graphique en aires de la Production d'Électricité par région et par filière",
             "text": (
-                "Le Stacked Area Chart illustre la production d'électricité par région et par filière. "
-                "Le graphique est interactif, vous pouvez sélectionner une filière dans le dropdown pour afficher la production par région pour cette filière. "
+                "Le graphique en aires illustre la production d'électricité par région et par filière. "
+                "Le graphique est interactif, vous pouvez sélectionner une filière dans le menu déroulant pour afficher la production par région pour cette filière. "
                 "Il est possible de sélectionner une ou plusieurs régions sur le graphique pour les mettre en évidence et les comparer. "
                 "Ce graphique permet de visualiser la production d'électricité par région et par filière en détails pour une période donnée. "
             ),
         },
         {
-            "title": "Troisieme graphique de la production d'électricité",
+            "title": "Troisième graphique de la production d'électricité",
             "text": (
-                "Description du troisieme graphique de la production d'électricité"
+                "Description du troisième graphique de la production d'électricité"
             ),
         }
     ]
