@@ -11,8 +11,8 @@ from view.datepicker import default_start_date, default_end_date
 config = configparser.ConfigParser()
 config.read('data/config.ini')
 
-# Colors for the figures (hex format)
-field_colors = {field: config['FieldColorPalette'][field] for field in config['FieldColorPalette']}
+# Create a dictionary containing the colors for each field
+field_colors = {field: config['SectorColorPalette'][field] for field in config['SectorColorPalette']}
 exchange_colors = {exchange: config['ExchangeColorPalette'][exchange] for exchange in config['ExchangeColorPalette']}
 exchange_colors_bar = {exchange.title(): config['ExchangeColorPaletteBar'][exchange] for exchange in config['ExchangeColorPaletteBar']}
 

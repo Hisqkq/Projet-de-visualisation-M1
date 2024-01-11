@@ -50,7 +50,10 @@ def build_map(data: dict, background: bool=False) -> px.choropleth:
         center={"lat": center_lat, "lon": center_lon},
         opacity=0.8,
     )
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    fig.update_layout(
+        margin={"r":0,"t":0,"l":0,"b":0},
+        showlegend=False
+    )
     
     if not background: 
         fig.update_layout(geo=dict(bgcolor= 'black'), paper_bgcolor= 'rgba(0,0,0,0)')
@@ -61,8 +64,6 @@ def build_map(data: dict, background: bool=False) -> px.choropleth:
         marker_line_width=1.5, 
         marker_opacity=0.8 
     )
-    fig.update_layout(dragmode=False, 
-                      showlegend=False)
 
     return fig
 
@@ -150,20 +151,20 @@ def build_map_colors(starting_date: str, ending_date: str) -> px.choropleth_mapb
     fig.update_layout(margin={"r":0, "t":0, "l":0, "b":0})
     fig.update_traces(marker_line_width=0, marker_opacity=0.8)
     fig.update_layout(
-    coloraxis_colorbar=dict(
-        title="Consommation (MW)",
-        thicknessmode="pixels", thickness=15,
-        lenmode="pixels", len=300,
-        yanchor="top", y=1,
-        ticks="outside", ticksuffix=" MW",
-        dtick=5000,
-        bgcolor='rgba(0,0,0,0)',  
-        titlefont=dict(color='white'),  
-        tickfont=dict(color='white'), 
-    ),
-    paper_bgcolor='rgba(0,0,0,0)', 
-    plot_bgcolor='rgba(0,0,0,0)',
-)
-    
+        coloraxis_colorbar=dict(
+            title="Consommation (MW)",
+            thicknessmode="pixels", thickness=15,
+            lenmode="pixels", len=300,
+            yanchor="top", y=1,
+            ticks="outside", ticksuffix=" MW",
+            dtick=5000,
+            bgcolor='rgba(0,0,0,0)',  
+            titlefont=dict(color='white'),  
+            tickfont=dict(color='white'), 
+        ),
+        paper_bgcolor='rgba(0,0,0,0)', 
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+
     return fig
     
