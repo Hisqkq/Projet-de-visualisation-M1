@@ -153,8 +153,7 @@ def story_accueil():
         ),
         dmc.Divider(size="md", style={"marginBottom": "2rem"}),
         html.H5("À propos de ce dashboard", className="mb-4"),
-        html.P("Pour revenir à cette page, cliquez sur le bouton 'Accueil' dans la barre de navigation."),
-        html.P("Pour des données à jour, utilisez le bouton 'Mettre à jour les données'. Cela peut prendre plusieurs minutes, soyez patient."),
+        html.P("Ce dashboard a été réalisé dans le cadre de l'Unité d'Enseignement Projet de Visualisation Analytique du CMI ISI. Il a été développé par Louis Delignac, Théo Lavandier et Hamad Tria. Le code source est disponible sur Github."),
         dmc.Divider(size="md", style={"marginBottom": "2rem"}),
         dmc.Blockquote(
             "Un sourire coûte moins cher que l'électricité, mais donne autant de lumière.",
