@@ -124,7 +124,14 @@ def layout():
                 figure=figures.build_stacked_area_chart(argument="solaire"),
                 config={'displayModeBar': False}
             )
-        ]), 
+        ]),
+        dbc.Row([
+            dcc.Graph(
+                id="map_renewable_production_animation",
+                figure=map.build_map_animation(),
+                config={'displayModeBar': False}
+            )
+        ]),
         story.story_production(),
         html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
     ], fluid=True)
@@ -183,7 +190,7 @@ def update_production_pie_chart_by_sector(dates, current_map_state):
     [Input('select-energy-type', 'value'),
      Input('date-range-picker', 'value'),]
 )
-def update_graph_production_stacked_area(value, dates): # TODO: sync avec la map
+def update_graph_production_stacked_area(value, dates):
     """Update the stacked area chart."""
     if value is None or dates is None:
         return no_update
