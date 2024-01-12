@@ -106,7 +106,7 @@ def layout():
             dmc.Divider(size="md", style={"marginBottom": "2rem", "marginTop": "2rem"}),
             html.Div(
                 [
-                    html.H4("Production régionale par type d'énergie", className="text-center mb-3"),
+                    html.H4("Production régionale par source d'énergie", className="text-center mb-3"),
                     dmc.Select(
                         placeholder="Choose a production sector",
                         id="select-energy-type",
@@ -129,6 +129,8 @@ def layout():
             )
         ]),
         dbc.Row([
+            dmc.Divider(size="md", style={"marginBottom": "2rem", "marginTop": "2rem"}),
+            html.H4("Évolution de la production moyenne d'énergie renouvelable par an", className="text-center mb-3"),
             dcc.Graph(
                 id="map_renewable_production_animation",
                 figure=map.build_map_animation(),
