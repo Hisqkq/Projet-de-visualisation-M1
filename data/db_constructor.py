@@ -5,19 +5,19 @@ import requests
 import time
 
 config = configparser.ConfigParser()
-config.read('data/config.ini')
+config.read("data/config.ini")
 
 ## CONNECT TO DB
 dbname = mongodb.get_database()
 
 ###### API ######
 
-URL = config.get('API', 'url')
+URL = config.get("API", "url")
 
 
 def fetch_data_by_date(data: str, start: int, rows: int, date: str) -> dict:
     """Fetch data from a dataset by date and offset
-    
+
     Parameters
     ----------
     data : str
@@ -32,7 +32,7 @@ def fetch_data_by_date(data: str, start: int, rows: int, date: str) -> dict:
     Returns
     -------
     dict
-        Dictionary containing the data. 
+        Dictionary containing the data.
     """
     url = f"{URL}{data}" + "/records"
     params = {"offset": start, "rows": rows, "where": f"date='{date}'"}
@@ -56,7 +56,7 @@ def get_date(data: str, first: bool = True) -> str:
         Name of the dataset.
     first : bool, optional
         If True, get the minimum date, else get the maximum date. The default is True.
-    
+
     Returns
     -------
     str
@@ -75,7 +75,7 @@ def get_date(data: str, first: bool = True) -> str:
     data = [{}]
     if response.status_code == 200:
         data = response.json()
-        return data.get('results')[0]['date']
+        return data.get("results")[0]["date"]
     else:
         print(f"Échec de la requête: {response.status_code}")
         print(response.text)
@@ -103,7 +103,7 @@ def get_length_per_date(data: str, date: str) -> int:
     data = [{}]
     if response.status_code == 200:
         data = response.json()
-        return data.get('total_count')
+        return data.get("total_count")
     else:
         print(f"Échec de la requête: {response.status_code}")
         print(response.text)
@@ -121,7 +121,7 @@ def create_collection(name: str) -> None:
     name : str
         Name of the collection.
     """
-    if (not (name in dbname.list_collection_names())):
+    if not (name in dbname.list_collection_names()):
         dbname.create_collection(name)
 
 
@@ -144,7 +144,7 @@ def insert_in_coll(table_name: str, data: dict) -> None:
 
 def get_last_date_db(collection: str) -> str:
     """Get the last date in a collection
-    
+
     Parameters
     ----------
     collection : str
@@ -155,27 +155,32 @@ def get_last_date_db(collection: str) -> str:
     str
         Date.
     """
-    pipeline = [{
-        "$unwind": "$results"
-    }, {
-        "$sort": {
-            "results.date": -1
-        }
-    }, {
-        "$limit": 1
-    }, {
-        "$project": {
-            "_id": 0,
-            "date": "$results.date"
-        }
-    }]
+    pipeline = [
+        {
+            "$unwind": "$results"
+        },
+        {
+            "$sort": {
+                "results.date": -1
+            }
+        },
+        {
+            "$limit": 1
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "date": "$results.date"
+            }
+        },
+    ]
     result = list(dbname.get_collection(collection).aggregate(pipeline))
-    return result[0]['date'] if result else None
+    return result[0]["date"] if result else None
 
 
 def delete_data_last_date(collection: str) -> None:
     """Delete today's data in a collection
-    
+
     Parameters
     ----------
     collection : str
@@ -184,7 +189,7 @@ def delete_data_last_date(collection: str) -> None:
     start_date = datetime.datetime.now() - datetime.timedelta(days=3)
     dbname.get_collection(collection).delete_many(
         {"results.date": {
-            "$gte": start_date.strftime('%Y-%m-%d')
+            "$gte": start_date.strftime("%Y-%m-%d")
         }})
 
 
@@ -205,20 +210,20 @@ def update_data(from_data: str, collection_name: str) -> None:
     else:
         start_date = get_last_date_db(collection_name)
         # Check if start date is greater than today's date (Because in some case API has data for future dates too)
-        if datetime.datetime.strptime(start_date,
-                                      '%Y-%m-%d') >= datetime.datetime.now():
+        if (datetime.datetime.strptime(start_date, "%Y-%m-%d")
+                >= datetime.datetime.now()):
             start_date = datetime.datetime.now() - datetime.timedelta(days=3)
-            start_date = start_date.strftime('%Y-%m-%d')
+            start_date = start_date.strftime("%Y-%m-%d")
         delete_data_last_date(
             collection_name
         )  # delete data from last date in collection to avoid duplicates when updating data
 
     end_date = get_date(from_data, first=False)
-    current_date = datetime.datetime.strptime(str(start_date), '%Y-%m-%d')
-    end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+    current_date = datetime.datetime.strptime(str(start_date), "%Y-%m-%d")
+    end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
 
     while current_date <= end_date:
-        formatted_date = str(current_date.strftime('%Y-%m-%d'))
+        formatted_date = str(current_date.strftime("%Y-%m-%d"))
         lines_per_date = get_length_per_date(from_data, str(formatted_date))
         print(formatted_date)
 
@@ -243,7 +248,6 @@ def update_data(from_data: str, collection_name: str) -> None:
 
 def perform_update(
 ):  # Should be called when updating data but its not working with threading
-    """Update data in the database
-    """
+    """Update data in the database"""
     update_data("eco2mix-national-tr", "DonneesNationales")
     update_data("eco2mix-regional-tr", "DonneesRegionales")

@@ -40,15 +40,20 @@ def build_map(data: dict, background: bool = False) -> px.choropleth:
 
     # Create a choropleth map
     fig = px.choropleth_mapbox(
-        df,  
-        geojson=data, # Geojson data
-        featureidkey="properties.nom", # Key to match the data
-        locations="nom", # Column containing the names of the regions
-        color="code", # Column containing the color of the regions
-        color_discrete_sequence=["#ADD8E6"], # Color of the regions (light blue)
-        mapbox_style="mapbox://styles/tlavandier/clqmy8zxa00qt01o3ax462t6g", # Without background
-        zoom=4, 
-        center={"lat": center_lat, "lon": center_lon},
+        df,
+        geojson=data,  # Geojson data
+        featureidkey="properties.nom",  # Key to match the data
+        locations="nom",  # Column containing the names of the regions
+        color="code",  # Column containing the color of the regions
+        color_discrete_sequence=["#ADD8E6"
+                                 ],  # Color of the regions (light blue)
+        mapbox_style=
+        "mapbox://styles/tlavandier/clqmy8zxa00qt01o3ax462t6g",  # Without background
+        zoom=4,
+        center={
+            "lat": center_lat,
+            "lon": center_lon
+        },
         opacity=0.8,
     )
     fig.update_layout(margin={
@@ -133,11 +138,11 @@ def build_map_colors(starting_date: str,
     """
     data = gjs.get_map_data()
     df = gjs.create_df(data)
-    
+
     mean_cons = dbs.get_mean_consommation_by_region(starting_date, ending_date)
-    
-    cons_df = gjs.color_df(mean_cons) # Dataframe for the colors
-    
+
+    cons_df = gjs.color_df(mean_cons)  # Dataframe for the colors
+
     df = df.merge(cons_df, left_on='nom', right_on='region')
 
     fig = px.choropleth_mapbox(
@@ -179,7 +184,8 @@ def build_map_colors(starting_date: str,
                       plot_bgcolor='rgba(0,0,0,0)')
 
     return fig
-    
+
+
 def build_map_animation() -> px.choropleth_mapbox:
     """Create a map animation for the renewable energy production.
 
@@ -198,11 +204,11 @@ def build_map_animation() -> px.choropleth_mapbox:
     """
     data = gjs.get_map_data()
     df = gjs.create_df(data)
-    
+
     mean_renewable_prod = dbs.get_mean_renewable_production_by_year()
-        
+
     df = df.merge(mean_renewable_prod, left_on='nom', right_on='region')
-    
+
     fig = px.choropleth_mapbox(
         df,
         geojson=data,
@@ -210,31 +216,37 @@ def build_map_animation() -> px.choropleth_mapbox:
         locations="nom",
         color="moyenne_renouvelable",
         color_continuous_scale="Greens",
-        range_color=(df['moyenne_renouvelable'].min(), df['moyenne_renouvelable'].max()),
+        range_color=(df['moyenne_renouvelable'].min(),
+                     df['moyenne_renouvelable'].max()),
         mapbox_style="mapbox://styles/tlavandier/clqmy8zxa00qt01o3ax462t6g",
         zoom=3.8,
-        center={"lat": 46.2276, "lon": 2.2137}, 
+        center={
+            "lat": 46.2276,
+            "lon": 2.2137
+        },
         opacity=0.5,
         animation_frame="annee",
         animation_group="region",
     )
 
-    fig.update_layout(margin={"r":0, "t":0, "l":0, "b":0})
+    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
     fig.update_traces(marker_line_width=0, marker_opacity=0.8)
-    fig.update_layout(
-        coloraxis_colorbar=dict(
-            title="Production moyenne (MW)",
-            thicknessmode="pixels", thickness=15,
-            lenmode="pixels", len=300,
-            yanchor="top", y=1,
-            ticks="outside", ticksuffix=" MW",
-            dtick=5000,
-            bgcolor='rgba(0,0,0,0)',  
-            titlefont=dict(color='white'),  
-            tickfont=dict(color='white'), 
-        ),
-        paper_bgcolor='rgba(0,0,0,0)', 
-        plot_bgcolor='rgba(0,0,0,0)'
-    )
+    fig.update_layout(coloraxis_colorbar=dict(
+        title="Production moyenne (MW)",
+        thicknessmode="pixels",
+        thickness=15,
+        lenmode="pixels",
+        len=300,
+        yanchor="top",
+        y=1,
+        ticks="outside",
+        ticksuffix=" MW",
+        dtick=5000,
+        bgcolor='rgba(0,0,0,0)',
+        titlefont=dict(color='white'),
+        tickfont=dict(color='white'),
+    ),
+                      paper_bgcolor='rgba(0,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)')
 
     return fig
