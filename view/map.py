@@ -133,11 +133,11 @@ def build_map_colors(starting_date: str,
     """
     data = gjs.get_map_data()
     df = gjs.create_df(data)
-
+    
     mean_cons = dbs.get_mean_consommation_by_region(starting_date, ending_date)
-
-    cons_df = gjs.color_df(mean_cons)  # Dataframe for the colors
-
+    
+    cons_df = gjs.color_df(mean_cons) # Dataframe for the colors
+    
     df = df.merge(cons_df, left_on='nom', right_on='region')
 
     fig = px.choropleth_mapbox(
