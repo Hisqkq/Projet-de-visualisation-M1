@@ -216,13 +216,11 @@ def get_last_date_db() -> str:
     return last_national_date if last_national_date < last_regional_date else last_regional_date
 
 
-def get_mean_consommation_by_region(collection: str, date1: str, date2: str) -> dict:
-    """Enable User to get the mean of consommation by regions from a collection for a specific date range.
+def get_mean_consommation_by_region(date1: str, date2: str) -> dict:
+    """Enable User to get the mean of consommation by regions from the regional collection for a specific date range.
     
     Parameters:
     ----------
-    collection : str
-        Name of the collection.
     date1 : str
         Start date for the range.
     date2 : str
@@ -232,6 +230,7 @@ def get_mean_consommation_by_region(collection: str, date1: str, date2: str) -> 
     -------
     dict
         Dictionary of mean values for each region.
+    
     """
     pipeline = [
         {"$unwind": "$results"},
@@ -248,7 +247,7 @@ def get_mean_consommation_by_region(collection: str, date1: str, date2: str) -> 
         {"$sort": {"region": 1}}
     ]
 
-    mean_cons = list(dbname[collection].aggregate(pipeline))
+    mean_cons = list(dbname["DonneesRegionales"].aggregate(pipeline))
     
     mean_cons_formatted = [
         {"region": data["region"], "mean_consommation": data["mean_consommation"]}
@@ -258,3 +257,36 @@ def get_mean_consommation_by_region(collection: str, date1: str, date2: str) -> 
     mean_cons_dict = {d['region']: d['mean_consommation'] for d in mean_cons_formatted}
     
     return mean_cons_dict
+
+def get_mean_renewable_production_by_year() -> dict:
+    """Get the mean renewable production by year for each region.
+    
+    Returns
+    -------
+    dict
+        Dictionary of mean values for each region.
+    
+    """
+    pipeline = [
+        {"$unwind": "$results"},
+        {"$group": {
+            "_id": {"date": "$results.date", "region": "$results.libelle_region"},
+            "moyenne_renouvelable": {"$avg": {"$sum": ["$results.bioenergies", "$results.eolien", "$results.hydraulique", "$results.solaire", "$results.thermique"]}},
+        }},
+        {"$project": {
+            "_id": 0,
+            "date": "$_id.date",
+            "region": "$_id.region",
+            "moyenne_renouvelable": 1
+        }},
+        {"$sort": {"date": 1, "_id.region": 1}}
+    ]
+
+    mean_renewable = list(dbname["DonneesRegionales"].aggregate(pipeline))
+
+    mean_renewable = transform_data_to_df(mean_renewable)
+    mean_renewable['annee'] = pd.DatetimeIndex(mean_renewable['date']).year
+    mean_renewable = mean_renewable.groupby(['annee', 'region']).mean(numeric_only=True).reset_index()
+    mean_renewable = mean_renewable.drop(mean_renewable[mean_renewable['annee'] == 2024].index).reset_index(drop=True)
+
+    return mean_renewable

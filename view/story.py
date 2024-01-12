@@ -368,9 +368,11 @@ def story_production():
             ),
         },
         {
-            "title": "Troisième graphique de la production d'électricité",
+            "title": "Carte animée de la Production d'Électricité des énergies renouvelables",
             "text": (
-                "Description du troisième graphique de la production d'électricité"
+                "La carte animée permet de visualiser la production moyenne annuelle d'électricité des énergies renouvelables. ",
+                "Cette animation nous permet de voir l'évolution de la production d'électricité des énergies renouvelables au cours des dernières années. "
+                "Cela met en évidence l'investissement de la France pour développer les énergies renouvelables face à l'urgence climatique. "
             ),
         }
     ]
