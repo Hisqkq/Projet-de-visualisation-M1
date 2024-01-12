@@ -1,8 +1,9 @@
 # 📊  Projet-de-visualisation-M1
 
 Bienvenue sur notre projet de visualisation analytique CMI ISI.
-Ce projet consiste à créer une application [Dash](https://plotly.com/dash/) en python afin de visualiser les données de l'énergie électrique [RTE](https://www.rte-france.com/) en France Métropolitaine (hors Corse).  
-Ce projet a été développé sous `Python 3.10.2`.
+Ce projet consiste à créer une application [Dash](https://plotly.com/dash/) en python afin de visualiser les données de l'énergie électrique [RTE](https://www.rte-france.com/) en France Métropolitaine (hors Corse).   
+Ce projet a été développé sous `Python 3.10.2`.  
+[YAPF](https://pypi.org/project/yapf/0.3.1/) a été utilisé pour formater le code.  
 
 ## Cloner l'application sur votre machine
 

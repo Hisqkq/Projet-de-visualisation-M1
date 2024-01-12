@@ -10,11 +10,18 @@ config = configparser.ConfigParser()
 config.read('data/config.ini')
 
 # Create a dictionary containing the colors for each sector
-sector_colors = {sector: config['SectorColorPalette'][sector] for sector in config['SectorColorPalette']}
+sector_colors = {
+    sector: config['SectorColorPalette'][sector]
+    for sector in config['SectorColorPalette']
+}
 background_color = str(config['Colors']['background'])
 ############
 
-def build_pie_chart_production_by_sector(data: list, title: str, background: bool = False) -> go.Figure:
+
+def build_pie_chart_production_by_sector(data: list,
+                                         title: str,
+                                         background: bool = False
+                                         ) -> go.Figure:
     """Create a pie chart.
 
     Parameters
@@ -45,37 +52,36 @@ def build_pie_chart_production_by_sector(data: list, title: str, background: boo
     slice_colors_transparent = [hex_to_rgba(c) for c in slice_colors]
 
     fig = go.Figure(data=[
-        go.Pie(
-            labels=keys, 
-            values=values, 
-            marker=dict(colors=slice_colors_transparent, line=dict(color=slice_colors, width=2)),
-            textfont=dict(color='#FFFFFF')
-        )
+        go.Pie(labels=keys,
+               values=values,
+               marker=dict(colors=slice_colors_transparent,
+                           line=dict(color=slice_colors, width=2)),
+               textfont=dict(color='#FFFFFF'))
     ])
     fig.update_traces(
         textposition='inside',
         textinfo='percent+label',
         hoverinfo='label+percent',
     )
-    fig.update_layout(
-        showlegend=False,
-        title_text=title,
-        title_font_size=14,
-        title_font_color="#FFFFFF",
-        title_x=0.5,
-        paper_bgcolor=background_color,
-        font_color="#FFFFFF"
-    )
+    fig.update_layout(showlegend=False,
+                      title_text=title,
+                      title_font_size=14,
+                      title_font_color="#FFFFFF",
+                      title_x=0.5,
+                      paper_bgcolor=background_color,
+                      font_color="#FFFFFF")
     if not background:
         fig.update_layout(paper_bgcolor=background_color)
         fig.update_layout(font_color="#FFFFFF")
-    
+
     return fig
 
-def metropolitan_pie_chart_production_by_sector(start_date: str = default_start_date,
-                                                end_date: str = default_end_date,
-                                                is_title: bool = True,
-                                                background: bool = False) -> go.Figure:  
+
+def metropolitan_pie_chart_production_by_sector(
+        start_date: str = default_start_date,
+        end_date: str = default_end_date,
+        is_title: bool = True,
+        background: bool = False) -> go.Figure:
     """Create a metropolitan pie chart (without overseas and Corsica).
     
     Parameters
@@ -96,18 +102,20 @@ def metropolitan_pie_chart_production_by_sector(start_date: str = default_start_
     
     """
     data = dbs.get_mean_for_sectors(
-        "DonneesNationales", 
-        start_date, end_date, 
-        ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies"]
-    )[0]
+        "DonneesNationales", start_date, end_date, [
+            "eolien", "hydraulique", "nucleaire", "solaire", "fioul",
+            "charbon", "gaz", "bioenergies"
+        ])[0]
     title = ''
     if is_title:
         title = "Mix énergétique en Métropole (hors Corse)"
     return build_pie_chart_production_by_sector(data, title, background)
 
-def regional_pie_chart_production_by_sector(region: str, 
-                                            start_date: str = default_start_date, 
-                                            end_date: str = default_end_date) -> go.Figure:
+
+def regional_pie_chart_production_by_sector(
+        region: str,
+        start_date: str = default_start_date,
+        end_date: str = default_end_date) -> go.Figure:
     """Create a pie chart for a specific region.
 
     Parameters
@@ -126,9 +134,9 @@ def regional_pie_chart_production_by_sector(region: str,
     
     """
     data = dbs.get_mean_for_sectors(
-        "DonneesRegionales", 
-        start_date, end_date, 
-        ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies", "thermique"], 
-        region
-    )[0]
-    return build_pie_chart_production_by_sector(data, f"Mix énergétique en {region}")
+        "DonneesRegionales", start_date, end_date, [
+            "eolien", "hydraulique", "nucleaire", "solaire", "fioul",
+            "charbon", "gaz", "bioenergies", "thermique"
+        ], region)[0]
+    return build_pie_chart_production_by_sector(
+        data, f"Mix énergétique en {region}")

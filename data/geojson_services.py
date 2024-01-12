@@ -8,6 +8,7 @@ config.read('data/config.ini')
 
 JSON = config.get('GeoJSON', 'path')
 
+
 def get_json(path: str = JSON) -> dict:
     """Load a JSON file.
 
@@ -25,6 +26,7 @@ def get_json(path: str = JSON) -> dict:
     with open(path) as JSON_file:
         return json.load(JSON_file)
 
+
 def exclude_overseas_and_corsica(data: dict) -> dict:
     """Exclude the overseas and Corsica from the data.
 
@@ -40,8 +42,11 @@ def exclude_overseas_and_corsica(data: dict) -> dict:
     
     """
     codes_out = ["01", "02", "03", "04", "06", "94"]
-    data['features'] = [f for f in data['features'] if f['properties']['code'] not in codes_out]
+    data['features'] = [
+        f for f in data['features'] if f['properties']['code'] not in codes_out
+    ]
     return data
+
 
 def get_map_data() -> dict:
     """Get the data for the map.
@@ -55,6 +60,7 @@ def get_map_data() -> dict:
     data = get_json()
     data = exclude_overseas_and_corsica(data)
     return data
+
 
 def get_region_map_data(region: str) -> dict:
     """Get the data for the map of a specific region.
@@ -74,6 +80,7 @@ def get_region_map_data(region: str) -> dict:
     data = [f for f in data['features'] if f['properties']['nom'] == region][0]
     return data
 
+
 def create_df(data: dict) -> pd.DataFrame:
     """Create a DataFrame from the data to use it in a choropleth map (Plotly).
 
@@ -88,8 +95,12 @@ def create_df(data: dict) -> pd.DataFrame:
         DataFrame containing the data.
     
     """
-    if 'features' not in data: # If the data is for a specific region
-        return pd.DataFrame({'code': data['properties']['code'], 'nom': data['properties']['nom'], 'geometry': data['geometry']})
+    if 'features' not in data:  # If the data is for a specific region
+        return pd.DataFrame({
+            'code': data['properties']['code'],
+            'nom': data['properties']['nom'],
+            'geometry': data['geometry']
+        })
 
     tab = {'code': [], 'nom': [], 'geometry': []}
     for f in data['features']:
@@ -97,6 +108,7 @@ def create_df(data: dict) -> pd.DataFrame:
         tab['nom'].append(f['properties']['nom'])
         tab['geometry'].append(f['geometry'])
     return pd.DataFrame(tab)
+
 
 def color_df(data: dict):
     """Transform a dictionary into a DataFrame to use it in a choropleth map (Plotly).
@@ -134,5 +146,5 @@ def calculate_centroid(geojson_data):
     if 'features' not in geojson_data:
         polygon = shape(geojson_data['geometry'])
         centroid = polygon.centroid
-        return centroid.y, centroid.x # Region's centroid
-    return 46.2276, 2.2137 # France's centroid
+        return centroid.y, centroid.x  # Region's centroid
+    return 46.2276, 2.2137  # France's centroid

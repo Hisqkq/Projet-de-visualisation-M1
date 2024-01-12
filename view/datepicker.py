@@ -16,10 +16,15 @@ default_end_date = config.get('DatepickerDate', 'default_end_date')
 if config.get('DatepickerDate', 'default_date_mode') == "dynamic":
     default_start_date = get_last_date_db()
     default_end_date = get_last_date_db()
-default_min_date_allowed = config.get('DatepickerDate', 'default_min_date_allowed')
+default_min_date_allowed = config.get('DatepickerDate',
+                                      'default_min_date_allowed')
 
 # YearDropdown
-year_options = [{'label': i, 'value': i} for i in range(2013, datetime.datetime.now().year + 1)]
+year_options = [{
+    'label': i,
+    'value': i
+} for i in range(2013,
+                 datetime.datetime.now().year + 1)]
 ##################
 
 ### Datepicker ###
@@ -32,11 +37,10 @@ datepicker = html.Div([
                 maxDate=datetime.datetime.now().strftime('%Y-%m-%d'),
                 minDate=default_min_date_allowed,
                 inputFormat="DD-MM-YYYY",
-                weekendDays = [None],
+                weekendDays=[None],
                 value=[default_start_date, default_end_date],
                 amountOfMonths=1,
                 style={"width": 230},
-                opacity="1"),
-        ),
+                opacity="1"), ),
     ]),
 ])
