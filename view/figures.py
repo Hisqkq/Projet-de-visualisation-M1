@@ -104,7 +104,7 @@ def build_boxplot_echanges(starting_date: str = default_start_date, ending_date:
 
     fig = px.box(melted_data, y='Echange (MW)', x='Pays', color='Pays',
                 template="plotly_dark", color_discrete_map=exchange_colors_bar,
-                title="Boxplot des échanges d'électricité avec les pays voisins")
+                title="Boîte à moustaches des échanges d'électricité avec les pays voisins de la France")
 
     fig.update_layout(paper_bgcolor= background_color, font_color="#FFFFFF")
 
@@ -263,7 +263,15 @@ def build_stacked_area_two_regions(region1: str, region2: str, starting_date: st
     # Create the total production column
     data["total_production"] = data[production_fields].sum(axis=1)
 
-    fig = px.area(data, x="date_heure", y="total_production", color="libelle_region", title=f"Production totale des régions {region1} et {region2}", template="plotly_dark")
+    fig = px.area(
+        data, 
+        x="date_heure", 
+        y="total_production", 
+        color="libelle_region", 
+        title=f"Production des régions {region1} et {region2}", 
+        template="plotly_dark"
+    )
+
     fig.update_yaxes(title_text="Production totale (MW)")
     fig.update_xaxes(title_text="Date/Heure")
     fig.update_layout(paper_bgcolor=background_color)
@@ -360,7 +368,15 @@ def build_line_chart_consommation_by_region(starting_date: str = default_start_d
         raise ValueError("One or more required columns are missing in the data")
 
     # Creating the line chart
-    line_chart_cons = px.line(data, x="date_heure", y="consommation", color="libelle_region", template="plotly_dark", title="Consommation par région")
+    line_chart_cons = px.line(
+        data, 
+        x="date_heure", 
+        y="consommation", 
+        color="libelle_region", 
+        template="plotly_dark", 
+        title="Consommation par région"
+    )
+
     line_chart_cons.update_layout(legend=dict(
         orientation="h",
         yanchor="top",
@@ -377,7 +393,5 @@ def build_line_chart_consommation_by_region(starting_date: str = default_start_d
     line_chart_cons.update_xaxes(title_text="Date/Heure")
     line_chart_cons.update_layout(hovermode="x unified")
     line_chart_cons.update_traces(hovertemplate="%{y:.2f} MW<br>Date: %{x|%Y-%m-%d %H:%M}")
-
-
 
     return line_chart_cons
