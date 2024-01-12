@@ -127,7 +127,7 @@ def build_map_colors(starting_date: str, ending_date: str) -> px.choropleth_mapb
     data = gjs.get_map_data()
     df = gjs.create_df(data)
     
-    mean_cons = dbs.get_mean_consommation_by_region("DonneesRegionales", starting_date, ending_date)
+    mean_cons = dbs.get_mean_consommation_by_region(starting_date, ending_date)
     
     cons_df = gjs.color_df(mean_cons) # Dataframe for the colors
     
