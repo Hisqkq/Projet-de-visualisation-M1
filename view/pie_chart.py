@@ -63,9 +63,9 @@ def build_pie_chart_production_by_sector(data: list, title: str, background: boo
         title_font_size=14,
         title_font_color="#FFFFFF",
         title_x=0.5,
+        paper_bgcolor=background_color,
+        font_color="#FFFFFF"
     )
-    fig.update_layout(paper_bgcolor=background_color)
-    fig.update_layout(font_color="#FFFFFF")
     if not background:
         fig.update_layout(paper_bgcolor=background_color)
         fig.update_layout(font_color="#FFFFFF")
