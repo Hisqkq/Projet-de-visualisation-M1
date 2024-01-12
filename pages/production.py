@@ -17,176 +17,277 @@ register_page(__name__)
 france_map = map.build_metropolitan_map()
 ############
 
+
 def layout():
     return dbc.Container([
-        dcc.Store(
-            id='memory-output',
-            data="France"
-        ),
-        dbc.NavbarSimple(
-            brand="La production d'électricité en France", 
-            color="primary", 
-            dark=True, 
-            className="mb-4",
-            children=[
-                dcc.Link(dbc.Button('Accueil', color="light", className="ms-auto"), href='/')
+        dcc.Store(id='memory-output', data="France"),
+        dbc.NavbarSimple(brand="La production d'électricité en France",
+                         color="primary",
+                         dark=True,
+                         className="mb-4",
+                         children=[
+                             dcc.Link(dbc.Button('Accueil',
+                                                 color="light",
+                                                 className="ms-auto"),
+                                      href='/')
+                         ],
+                         style={
+                             "fontSize": "1.5rem",
+                             "fontWeight": "bold"
+                         }), datepicker,
+        dbc.Row([
+            dbc.Col([
+                dcc.Graph(id='choropleth_map_production',
+                          figure=france_map,
+                          config={'displayModeBar': False})
             ],
-            style={"fontSize": "1.5rem", "fontWeight": "bold"}  
-        ),
-        datepicker,
-        dbc.Row([
+                    width=4),
             dbc.Col([
-                dcc.Graph(
-                    id='choropleth_map_production',
-                    figure=france_map,
-                    config={'displayModeBar': False}
-                )
-            ], width=4),
-            dbc.Col([
-                dcc.Graph(
-                    id="production_pie_chart_by_sector",
-                    figure=pie_chart.metropolitan_pie_chart_production_by_sector(),
-                    config={'displayModeBar': False}
-                )
-            ], width=8)
+                dcc.Graph(id="production_pie_chart_by_sector",
+                          figure=pie_chart.
+                          metropolitan_pie_chart_production_by_sector(),
+                          config={'displayModeBar': False})
+            ],
+                    width=8)
         ]),
         dbc.Row([
-            dmc.Select(
-                placeholder="Choissez une région à comparer",
-                id="select-region-to-compare1",
-                data=[
-                    {'value': 'Auvergne-Rhône-Alpes', 'label': 'Auvergne-Rhône-Alpes'},
-                    {'value': 'Bourgogne-Franche-Comté', 'label': 'Bourgogne-Franche-Comté'},
-                    {'value': 'Bretagne', 'label': 'Bretagne'},
-                    {'value': 'Centre-Val de Loire', 'label': 'Centre-Val de Loire'},
-                    {'value': 'Corse', 'label': 'Corse'},
-                    {'value': 'Grand Est', 'label': 'Grand Est'},
-                    {'value': 'Hauts-de-France', 'label': 'Hauts-de-France'},
-                    {'value': 'Île-de-France', 'label': 'Île-de-France'},
-                    {'value': 'Normandie', 'label': 'Normandie'},
-                    {'value': 'Nouvelle-Aquitaine', 'label': 'Nouvelle-Aquitaine'},
-                    {'value': 'Occitanie', 'label': 'Occitanie'},
-                    {'value': 'Pays de la Loire', 'label': 'Pays de la Loire'},
-                    {'value': 'Provence-Alpes-Côte d\'Azur', 'label': 'Provence-Alpes-Côte d\'Azur'},
-                ], 
-                value='Nouvelle-Aquitaine',
-                style={"width": "25%"}
-            ),
-            dmc.Select(
-                placeholder="Choissez une région à comparer",
-                id="select-region-to-compare2",
-                data=[
-                    {'value': 'Auvergne-Rhône-Alpes', 'label': 'Auvergne-Rhône-Alpes'},
-                    {'value': 'Bourgogne-Franche-Comté', 'label': 'Bourgogne-Franche-Comté'},
-                    {'value': 'Bretagne', 'label': 'Bretagne'},
-                    {'value': 'Centre-Val de Loire', 'label': 'Centre-Val de Loire'},
-                    {'value': 'Corse', 'label': 'Corse'},
-                    {'value': 'Grand Est', 'label': 'Grand Est'},
-                    {'value': 'Hauts-de-France', 'label': 'Hauts-de-France'},
-                    {'value': 'Île-de-France', 'label': 'Île-de-France'},
-                    {'value': 'Normandie', 'label': 'Normandie'},
-                    {'value': 'Nouvelle-Aquitaine', 'label': 'Nouvelle-Aquitaine'},
-                    {'value': 'Occitanie', 'label': 'Occitanie'},
-                    {'value': 'Pays de la Loire', 'label': 'Pays de la Loire'},
-                    {'value': 'Provence-Alpes-Côte d\'Azur', 'label': 'Provence-Alpes-Côte d\'Azur'},
-                ], 
-                value='Occitanie',
-                style={"width": "25%"}
-            ),
-            dcc.Link(
-                id="comparer-button", 
-                children=[
-                    dbc.Button('Comparer', color="light", className="ms-auto"),
-                ],
-                href='/comparer/Nouvelle-Aquitaine-Alpes&Occitanie',
-                style={"width": "25%"}
-            ),
+            dmc.Select(placeholder="Choissez une région à comparer",
+                       id="select-region-to-compare1",
+                       data=[
+                           {
+                               'value': 'Auvergne-Rhône-Alpes',
+                               'label': 'Auvergne-Rhône-Alpes'
+                           },
+                           {
+                               'value': 'Bourgogne-Franche-Comté',
+                               'label': 'Bourgogne-Franche-Comté'
+                           },
+                           {
+                               'value': 'Bretagne',
+                               'label': 'Bretagne'
+                           },
+                           {
+                               'value': 'Centre-Val de Loire',
+                               'label': 'Centre-Val de Loire'
+                           },
+                           {
+                               'value': 'Corse',
+                               'label': 'Corse'
+                           },
+                           {
+                               'value': 'Grand Est',
+                               'label': 'Grand Est'
+                           },
+                           {
+                               'value': 'Hauts-de-France',
+                               'label': 'Hauts-de-France'
+                           },
+                           {
+                               'value': 'Île-de-France',
+                               'label': 'Île-de-France'
+                           },
+                           {
+                               'value': 'Normandie',
+                               'label': 'Normandie'
+                           },
+                           {
+                               'value': 'Nouvelle-Aquitaine',
+                               'label': 'Nouvelle-Aquitaine'
+                           },
+                           {
+                               'value': 'Occitanie',
+                               'label': 'Occitanie'
+                           },
+                           {
+                               'value': 'Pays de la Loire',
+                               'label': 'Pays de la Loire'
+                           },
+                           {
+                               'value': 'Provence-Alpes-Côte d\'Azur',
+                               'label': 'Provence-Alpes-Côte d\'Azur'
+                           },
+                       ],
+                       value='Nouvelle-Aquitaine',
+                       style={"width": "25%"}),
+            dmc.Select(placeholder="Choissez une région à comparer",
+                       id="select-region-to-compare2",
+                       data=[
+                           {
+                               'value': 'Auvergne-Rhône-Alpes',
+                               'label': 'Auvergne-Rhône-Alpes'
+                           },
+                           {
+                               'value': 'Bourgogne-Franche-Comté',
+                               'label': 'Bourgogne-Franche-Comté'
+                           },
+                           {
+                               'value': 'Bretagne',
+                               'label': 'Bretagne'
+                           },
+                           {
+                               'value': 'Centre-Val de Loire',
+                               'label': 'Centre-Val de Loire'
+                           },
+                           {
+                               'value': 'Corse',
+                               'label': 'Corse'
+                           },
+                           {
+                               'value': 'Grand Est',
+                               'label': 'Grand Est'
+                           },
+                           {
+                               'value': 'Hauts-de-France',
+                               'label': 'Hauts-de-France'
+                           },
+                           {
+                               'value': 'Île-de-France',
+                               'label': 'Île-de-France'
+                           },
+                           {
+                               'value': 'Normandie',
+                               'label': 'Normandie'
+                           },
+                           {
+                               'value': 'Nouvelle-Aquitaine',
+                               'label': 'Nouvelle-Aquitaine'
+                           },
+                           {
+                               'value': 'Occitanie',
+                               'label': 'Occitanie'
+                           },
+                           {
+                               'value': 'Pays de la Loire',
+                               'label': 'Pays de la Loire'
+                           },
+                           {
+                               'value': 'Provence-Alpes-Côte d\'Azur',
+                               'label': 'Provence-Alpes-Côte d\'Azur'
+                           },
+                       ],
+                       value='Occitanie',
+                       style={"width": "25%"}),
+            dcc.Link(id="comparer-button",
+                     children=[
+                         dbc.Button(
+                             'Comparer', color="light", className="ms-auto"),
+                     ],
+                     href='/comparer/Nouvelle-Aquitaine-Alpes&Occitanie',
+                     style={"width": "25%"}),
         ]),
         dbc.Row([
-            dmc.Divider(size="md", style={"marginBottom": "2rem", "marginTop": "2rem"}),
-            html.Div(
-                [
-                    html.H4("Production régionale par type d'énergie", className="text-center mb-3"),
-                    dmc.Select(
-                        placeholder="Choose a production sector",
-                        id="select-energy-type",
-                        data=[
-                            {'value': 'eolien', 'label': 'Éolien'},
-                            {'value': 'hydraulique', 'label': 'Hydraulique'},
-                            {'value': 'nucleaire', 'label': 'Nucléaire'},
-                            {'value': 'solaire', 'label': 'Solaire'},
-                            {'value': 'thermique', 'label': 'Thermique'},
-                        ],
-                        value='solaire',  
-                        style={"width": "15%", "cebter": "true", "margin": "auto"},
-                        icon=DashIconify(icon="icon-park-outline:energy-socket"),
-                    ),],
+            dmc.Divider(size="md",
+                        style={
+                            "marginBottom": "2rem",
+                            "marginTop": "2rem"
+                        }),
+            html.Div([
+                html.H4("Production régionale par type d'énergie",
+                        className="text-center mb-3"),
+                dmc.Select(
+                    placeholder="Choose a production sector",
+                    id="select-energy-type",
+                    data=[
+                        {
+                            'value': 'eolien',
+                            'label': 'Éolien'
+                        },
+                        {
+                            'value': 'hydraulique',
+                            'label': 'Hydraulique'
+                        },
+                        {
+                            'value': 'nucleaire',
+                            'label': 'Nucléaire'
+                        },
+                        {
+                            'value': 'solaire',
+                            'label': 'Solaire'
+                        },
+                        {
+                            'value': 'thermique',
+                            'label': 'Thermique'
+                        },
+                    ],
+                    value='solaire',
+                    style={
+                        "width": "15%",
+                        "cebter": "true",
+                        "margin": "auto"
+                    },
+                    icon=DashIconify(icon="icon-park-outline:energy-socket"),
                 ),
-                dcc.Graph(
+            ], ),
+            dcc.Graph(
                 id="graph_production_stacked_area",
                 figure=figures.build_stacked_area_chart(argument="solaire"),
-                config={'displayModeBar': False}
-            )
-        ]), 
+                config={'displayModeBar': False})
+        ]),
         story.story_production(),
-        html.Footer(html.P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023", className="text-center"))
-    ], fluid=True)
+        html.Footer(
+            html.
+            P("PVA - Louis Delignac & Théo Lavandier & Hamad Tria - CMI ISI - 2023",
+              className="text-center"))
+    ],
+                         fluid=True)
 
-@callback(
-    Output('choropleth_map_production', 'figure'),
-    Output('memory-output', 'data'),
-    [Input('choropleth_map_production', 'clickData'),
-     State('memory-output', 'data')]
-)
+
+@callback(Output('choropleth_map_production', 'figure'),
+          Output('memory-output', 'data'), [
+              Input('choropleth_map_production', 'clickData'),
+              State('memory-output', 'data')
+          ])
 def update_map(selected_data, data):
     """Update the map when a region is selected."""
     if selected_data is None:
         return no_update
-    
+
     if data == "France":
         fig = map.build_region_map(selected_data['points'][0]['location'])
         return fig, selected_data['points'][0]['location']
     return france_map, "France"
 
-@callback(
-    Output('select-region-to-compare1', 'value'),
-    [Input('memory-output', 'data')]
-)
+
+@callback(Output('select-region-to-compare1', 'value'),
+          [Input('memory-output', 'data')])
 def update_select_region_to_compare1(data):
     """Update the first select region to compare."""
     if data == "France":
         return no_update
     return data
 
-@callback(
-    Output('comparer-button', 'href'),
-    [Input('select-region-to-compare1', 'value'),
-     Input('select-region-to-compare2', 'value')]
-)
+
+@callback(Output('comparer-button', 'href'), [
+    Input('select-region-to-compare1', 'value'),
+    Input('select-region-to-compare2', 'value')
+])
 def update_comparer_button(region1, region2):
     """Update the comparer button."""
     return f'/comparer/{urllib.parse.quote(region1)}&{urllib.parse.quote(region2)}'
 
-@callback(
-    Output('production_pie_chart_by_sector', 'figure'),
-    [Input('date-range-picker', 'value'),
-     Input('memory-output', 'data'),]
-)
+
+@callback(Output('production_pie_chart_by_sector', 'figure'), [
+    Input('date-range-picker', 'value'),
+    Input('memory-output', 'data'),
+])
 def update_production_pie_chart_by_sector(dates, current_map_state):
     """Update the pie chart."""
     if dates is None:
         return no_update
 
     if current_map_state == "France":
-        return pie_chart.metropolitan_pie_chart_production_by_sector(dates[0], dates[1])
-    return pie_chart.regional_pie_chart_production_by_sector(current_map_state, dates[0], dates[1])
+        return pie_chart.metropolitan_pie_chart_production_by_sector(
+            dates[0], dates[1])
+    return pie_chart.regional_pie_chart_production_by_sector(
+        current_map_state, dates[0], dates[1])
 
-@callback(
-    Output('graph_production_stacked_area', 'figure'),
-    [Input('select-energy-type', 'value'),
-     Input('date-range-picker', 'value'),]
-)
-def update_graph_production_stacked_area(value, dates): # TODO: sync avec la map
+
+@callback(Output('graph_production_stacked_area', 'figure'), [
+    Input('select-energy-type', 'value'),
+    Input('date-range-picker', 'value'),
+])
+def update_graph_production_stacked_area(value,
+                                         dates):  # TODO: sync avec la map
     """Update the stacked area chart."""
     if value is None or dates is None:
         return no_update
