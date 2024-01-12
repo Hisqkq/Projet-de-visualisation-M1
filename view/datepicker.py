@@ -19,13 +19,6 @@ if config.get('DatepickerDate', 'default_date_mode') == "dynamic":
 default_min_date_allowed = config.get('DatepickerDate',
                                       'default_min_date_allowed')
 
-# YearDropdown
-year_options = [{
-    'label': i,
-    'value': i
-} for i in range(2013,
-                 datetime.datetime.now().year + 1)]
-##################
 
 ### Datepicker ###
 datepicker = html.Div([
