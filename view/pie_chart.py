@@ -58,9 +58,11 @@ def build_pie_chart_production_by_sector(data: list, title: str, background: boo
         hoverinfo='label+percent',
     )
     fig.update_layout(
-        showlegend=False, # Hide the legend
+        showlegend=False,
         title_text=title,
-        title_font_size=24
+        title_font_size=14,
+        title_font_color="#FFFFFF",
+        title_x=0.5,
     )
     fig.update_layout(paper_bgcolor=background_color)
     fig.update_layout(font_color="#FFFFFF")

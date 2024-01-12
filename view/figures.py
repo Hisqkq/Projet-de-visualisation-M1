@@ -207,9 +207,8 @@ def build_stacked_area_chart(argument: str = "nucleaire",
         fig.update_layout(font_color="#FFFFFF") 
     return fig
 
-def build_stacked_area_by_production(starting_date: str = default_start_date, 
-                                     ending_date: str = default_end_date,):
-    """Create a stacked area chart for each production field.
+def build_stacked_area_by_production_region(region: str, starting_date: str = default_start_date, ending_date: str = default_end_date) -> px.area:
+    """Create a stacked area chart for each production field for one region.
     
     Parameters
     ----------
@@ -222,11 +221,11 @@ def build_stacked_area_by_production(starting_date: str = default_start_date,
     -------
     plotly.graph_objects.Figure
         Figure containing the stacked area chart."""
-    data = dbs.transform_data_to_df(dbs.get_data_between_two_dates("DonneesNationales", starting_date, ending_date))
+    data = dbs.transform_data_to_df(dbs.get_data_between_two_dates("DonneesRegionales", starting_date, ending_date, region=region))
     data = data.sort_values(by=['date_heure'])
     data = dbs.remove_nan_from_data(data, "consommation")
     
-    production_fields = ["eolien", "hydraulique", "nucleaire", "solaire", "bioenergies", "gaz", "fioul", "charbon"]
+    production_fields = ["eolien", "hydraulique", "nucleaire", "solaire", "thermique"]
     if not set(production_fields).issubset(data.columns):
         missing_fields = list(set(production_fields) - set(data.columns))
         raise ValueError(f"Les colonnes suivantes sont manquantes dans le DataFrame: {missing_fields}")
@@ -235,6 +234,42 @@ def build_stacked_area_by_production(starting_date: str = default_start_date,
     fig.update_layout(paper_bgcolor=background_color)
     fig.update_layout(font_color="#FFFFFF") 
     return fig
+
+def build_stacked_area_two_regions(region1: str, region2: str, starting_date: str = default_start_date, ending_date: str = default_end_date) -> px.area:
+    """Create a stacked area chart for each production field for two regions.
+    
+    Parameters
+    ----------
+    starting_date : str
+        Starting date.
+    end_date : str
+        Ending date.
+        
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        Figure containing the stacked area chart."""
+    data = dbs.transform_data_to_df(dbs.get_data_between_two_dates("DonneesRegionales", starting_date, ending_date))
+    data = data.sort_values(by=['date_heure'])
+    data = dbs.remove_nan_from_data(data, "consommation")
+    data = data[data["libelle_region"].isin([region1, region2])] # Keep only the two regions
+
+    production_fields = ["eolien", "hydraulique", "nucleaire", "solaire", "thermique"]
+    # Sum the production fields for each region by date_heure to make one total production column for each region
+    data = data.groupby(["date_heure", "libelle_region"])[production_fields].sum().reset_index()
+    # Create the total production column
+    data["total_production"] = data[production_fields].sum(axis=1)
+
+    fig = px.area(data, x="date_heure", y="total_production", color="libelle_region", title=f"Production totale des régions {region1} et {region2}", template="plotly_dark")
+    fig.update_yaxes(title_text="Production totale (MW)")
+    fig.update_xaxes(title_text="Date/Heure")
+    fig.update_layout(paper_bgcolor=background_color)
+    fig.update_layout(font_color="#FFFFFF")
+    fig.update_layout(hovermode="x unified")
+    fig.update_traces(hovertemplate="%{y:.2f} MW<br>Date: %{x|%Y-%m-%d %H:%M}")
+
+    return fig
+
 
 ## Consommation ##
 def build_line_chart_with_prediction(starting_date: str = default_start_date, 
