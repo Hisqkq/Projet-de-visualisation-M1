@@ -140,14 +140,9 @@ def build_boxplot_echanges(starting_date: str = default_start_date,
 
     melted_data = melted_data[melted_data['Echange (MW)'] != 0]
 
-    fig = px.box(
-        melted_data,
-        y='Echange (MW)',
-        x='Pays',
-        color='Pays',
-        template="plotly_dark",
-        color_discrete_map=exchange_colors_bar,
-        title="Boxplot des échanges d'électricité avec les pays voisins")
+    fig = px.box(melted_data, y='Echange (MW)', x='Pays', color='Pays',
+                template="plotly_dark", color_discrete_map=exchange_colors_bar,
+                title="Boîte à moustaches des échanges d'électricité avec les pays voisins de la France")
 
     fig.update_layout(paper_bgcolor=background_color, font_color="#FFFFFF")
 
@@ -373,12 +368,14 @@ def build_stacked_area_two_regions(
     data["total_production"] = data[production_fields].sum(axis=1)
 
     fig = px.area(
-        data,
-        x="date_heure",
-        y="total_production",
-        color="libelle_region",
-        title=f"Production totale des régions {region1} et {region2}",
-        template="plotly_dark")
+        data, 
+        x="date_heure", 
+        y="total_production", 
+        color="libelle_region", 
+        title=f"Production des régions {region1} et {region2}", 
+        template="plotly_dark"
+    )
+
     fig.update_yaxes(title_text="Production totale (MW)")
     fig.update_xaxes(title_text="Date/Heure")
     fig.update_layout(paper_bgcolor=background_color)
@@ -493,12 +490,15 @@ def build_line_chart_consommation_by_region(
             "One or more required columns are missing in the data")
 
     # Creating the line chart
-    line_chart_cons = px.line(data,
-                              x="date_heure",
-                              y="consommation",
-                              color="libelle_region",
-                              template="plotly_dark",
-                              title="Consommation par région")
+    line_chart_cons = px.line(
+        data, 
+        x="date_heure", 
+        y="consommation", 
+        color="libelle_region", 
+        template="plotly_dark", 
+        title="Consommation par région"
+    )
+
     line_chart_cons.update_layout(legend=dict(
         orientation="h", yanchor="top", xanchor="center", y=1.2, x=0.5))
 

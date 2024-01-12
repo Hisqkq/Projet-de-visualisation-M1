@@ -201,7 +201,6 @@ def build_map_animation() -> px.choropleth_mapbox:
     df = gjs.create_df(data)
     
     mean_renewable_prod = dbs.get_mean_renewable_production_by_year()
-    print(mean_renewable_prod)
         
     df = df.merge(mean_renewable_prod, left_on='nom', right_on='region')
     
@@ -214,12 +213,11 @@ def build_map_animation() -> px.choropleth_mapbox:
         color_continuous_scale="Greens",
         range_color=(df['moyenne_renouvelable'].min(), df['moyenne_renouvelable'].max()),
         mapbox_style="mapbox://styles/tlavandier/clqmy8zxa00qt01o3ax462t6g",
-        zoom=3.5,
+        zoom=3.8,
         center={"lat": 46.2276, "lon": 2.2137}, 
         opacity=0.5,
         animation_frame="annee",
         animation_group="region",
-        title="Évolution de la production moyenne d'énergie renouvelable par an"
     )
 
     fig.update_layout(margin={"r":0, "t":0, "l":0, "b":0})

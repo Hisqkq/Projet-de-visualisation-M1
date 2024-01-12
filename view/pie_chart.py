@@ -69,9 +69,9 @@ def build_pie_chart_production_by_sector(data: list,
         title_font_size=14,
         title_font_color="#FFFFFF",
         title_x=0.5,
+        paper_bgcolor=background_color,
+        font_color="#FFFFFF"
     )
-    fig.update_layout(paper_bgcolor=background_color)
-    fig.update_layout(font_color="#FFFFFF")
     if not background:
         fig.update_layout(paper_bgcolor=background_color)
         fig.update_layout(font_color="#FFFFFF")
@@ -110,7 +110,7 @@ def metropolitan_pie_chart_production_by_sector(
         ])[0]
     title = ''
     if is_title:
-        title = "Répartition de la Production des Sources d'Énergie en Métropole (hors Corse)"
+        title = "Mix énergétique en Métropole (hors Corse)"
     return build_pie_chart_production_by_sector(data, title, background)
 
 
@@ -136,10 +136,9 @@ def regional_pie_chart_production_by_sector(
     
     """
     data = dbs.get_mean_for_sectors(
-        "DonneesRegionales", start_date, end_date, [
-            "eolien", "hydraulique", "nucleaire", "solaire", "fioul",
-            "charbon", "gaz", "bioenergies", "thermique"
-        ], region)[0]
-    return build_pie_chart_production_by_sector(
-        data,
-        f"Répartition de la Production des Sources d'Énergie en {region}")
+        "DonneesRegionales", 
+        start_date, end_date, 
+        ["eolien", "hydraulique", "nucleaire", "solaire", "fioul", "charbon", "gaz", "bioenergies", "thermique"], 
+        region
+    )[0]
+    return build_pie_chart_production_by_sector(data, f"Mix énergétique en {region}")
