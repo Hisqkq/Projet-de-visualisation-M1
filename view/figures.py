@@ -59,7 +59,7 @@ def build_stacked_bar_chart(arguments: list,
 
     fig = px.bar(data_melted, x='date_heure', y='Echange (MW)', color='Pays', 
                  color_discrete_map=exchange_colors_bar, barmode='relative', template="plotly_dark",
-                 custom_data=['Pays'])
+                 custom_data=['Pays'], title="Echanges d'électricité avec les pays voisins")
 
     fig.update_layout(bargroupgap=0.05)
     fig.update_traces(marker_line_width=0)
@@ -67,6 +67,8 @@ def build_stacked_bar_chart(arguments: list,
     fig.update_layout(font_color= "#FFFFFF")
     fig.update_layout(hovermode="x unified")
     fig.update_traces(hovertemplate="%{y:.2f} MW<br>Date: %{x|%Y-%m-%d %H:%M}")
+
+    fig.update_xaxes(title_text="Date/Heure")
     
     return fig
 
@@ -101,7 +103,8 @@ def build_boxplot_echanges(starting_date: str = default_start_date, ending_date:
     melted_data = melted_data[melted_data['Echange (MW)'] != 0]
 
     fig = px.box(melted_data, y='Echange (MW)', x='Pays', color='Pays',
-                template="plotly_dark", color_discrete_map=exchange_colors_bar)
+                template="plotly_dark", color_discrete_map=exchange_colors_bar,
+                title="Boxplot des échanges d'électricité avec les pays voisins")
 
     fig.update_layout(paper_bgcolor= background_color, font_color="#FFFFFF")
 
@@ -197,7 +200,7 @@ def build_stacked_area_chart(argument: str = "nucleaire",
     plotly.graph_objects.Figure
         Figure containing the stacked area chart."""
     data = dbs.get_data_between_two_dates("DonneesRegionales", starting_date, ending_date)
-    fig = px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Production {argument}", template="plotly_dark")
+    fig = px.area(data, x="date_heure", y=str(argument), color="libelle_region", title=f"Evolution de la production {argument} par région", template="plotly_dark")
     fig.update_yaxes(title_text="Production (MW)")
     fig.update_xaxes(title_text="Date/Heure")
     fig.update_layout(hovermode="x unified")

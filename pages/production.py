@@ -3,6 +3,7 @@ import dash_mantine_components as dmc
 import urllib.parse
 from dash import register_page, html, dcc, callback, no_update
 from dash.dependencies import Input, Output, State
+from dash_iconify import DashIconify
 
 import view.figures as figures
 import view.map as map
@@ -99,9 +100,10 @@ def layout():
                 ],
                 href='/comparer/Nouvelle-Aquitaine-Alpes&Occitanie',
                 style={"width": "25%"}
-            )
+            ),
         ]),
         dbc.Row([
+            dmc.Divider(size="md", style={"marginBottom": "2rem", "marginTop": "2rem"}),
             html.Div(
                 [
                     html.H4("Production régionale par type d'énergie", className="text-center mb-3"),
@@ -116,7 +118,8 @@ def layout():
                             {'value': 'thermique', 'label': 'Thermique'},
                         ],
                         value='solaire',  
-                        style={"width": "33%", "cebter": "true"}
+                        style={"width": "15%", "cebter": "true", "margin": "auto"},
+                        icon=DashIconify(icon="icon-park-outline:energy-socket"),
                     ),],
                 ),
                 dcc.Graph(

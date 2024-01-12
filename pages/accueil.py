@@ -65,7 +65,7 @@ def layout():
         dbc.CardBody(
             dcc.Graph(
                 id='choropleth-map',
-                figure=figures.build_boxplot_echanges(default_start_date, default_end_date).update_layout(showlegend=False),
+                figure=figures.build_boxplot_echanges(default_start_date, default_end_date).update_layout(showlegend=False, title=""),
                 config={'displayModeBar': False}
             ),  
         )
@@ -101,7 +101,7 @@ def layout():
         dbc.CardBody(
             dcc.Graph(
                 id="graph_consommation_prediction",
-                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, homepage=True).update_layout(showlegend=False),
+                figure=figures.build_line_chart_with_prediction(default_start_date, default_end_date, homepage=True).update_layout(showlegend=False, title=""),
                 config={'displayModeBar': False}
             ),
         )  
