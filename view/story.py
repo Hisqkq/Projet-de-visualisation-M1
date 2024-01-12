@@ -411,31 +411,35 @@ def story_production():
         ) for card in cards_content
     ]
 
-    cards_graphs_content = [{
-        "title":
-        "Graphique circulaire de la Production d'Électricité en Métropole et par Région",
-        "text":
-        ("Le graphique circulaire illustre la répartition de la production d'électricité par filière en Métropole et par région. "
-         "Le graphique est interactif, vous pouvez cliquer sur les différents secteurs pour les mettre en évidence et les comparer. "
-         "Il est possible de cliquer sur une région de la carte interactive pour afficher la répartition de la production pour cette région. "
-         "Par exemple, il permet de mettre en évidence que la région Grand Est produit beaucoup d'électricité nucléaire, "
-         "alors que la région Occitanie produit beaucoup d'électricité solaire."
-         ),
-    }, {
-        "title":
-        "Graphique en aires de la Production d'Électricité par région et par filière",
-        "text":
-        ("Le graphique en aires illustre la production d'électricité par région et par filière. "
-         "Le graphique est interactif, vous pouvez sélectionner une filière dans le menu déroulant pour afficher la production par région pour cette filière. "
-         "Il est possible de sélectionner une ou plusieurs régions sur le graphique pour les mettre en évidence et les comparer. "
-         "Ce graphique permet de visualiser la production d'électricité par région et par filière en détails pour une période donnée. "
-         ),
-    }, {
-        "title":
-        "Troisième graphique de la production d'électricité",
-        "text":
-        ("Description du troisième graphique de la production d'électricité"),
-    }]
+    cards_graphs_content = [
+        {
+            "title": "Graphique circulaire de la Production d'Électricité en Métropole et par Région",
+            "text": (
+                "Le graphique circulaire illustre la répartition de la production d'électricité par filière en Métropole et par région. "
+                "Le graphique est interactif, vous pouvez cliquer sur les différents secteurs pour les mettre en évidence et les comparer. "
+                "Il est possible de cliquer sur une région de la carte interactive pour afficher la répartition de la production pour cette région. "
+                "Par exemple, il permet de mettre en évidence que la région Grand Est produit beaucoup d'électricité nucléaire, "
+                "alors que la région Occitanie produit beaucoup d'électricité solaire."
+            ),
+        },
+        {
+            "title": "Graphique en aires de la Production d'Électricité par région et par filière",
+            "text": (
+                "Le graphique en aires illustre la production d'électricité par région et par filière. "
+                "Le graphique est interactif, vous pouvez sélectionner une filière dans le menu déroulant pour afficher la production par région pour cette filière. "
+                "Il est possible de sélectionner une ou plusieurs régions sur le graphique pour les mettre en évidence et les comparer. "
+                "Ce graphique permet de visualiser la production d'électricité par région et par filière en détails pour une période donnée. "
+            ),
+        },
+        {
+            "title": "Carte animée de la Production d'Électricité des énergies renouvelables",
+            "text": (
+                "La carte animée permet de visualiser la production moyenne annuelle d'électricité des énergies renouvelables. ",
+                "Cette animation nous permet de voir l'évolution de la production d'électricité des énergies renouvelables au cours des dernières années. "
+                "Cela met en évidence l'investissement de la France pour développer les énergies renouvelables face à l'urgence climatique. "
+            ),
+        }
+    ]
 
     cards_graphs = [
         dmc.Card(
