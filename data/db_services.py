@@ -370,7 +370,7 @@ def get_mean_renewable_production_by_year() -> dict:
         }
     }]
 
-    mean_renewable = list(dbname["DonneesRegionales"].aggregate(pipeline))
+    mean_renewable = execute_aggregation("DonneesRegionales", pipeline)
 
     mean_renewable = transform_data_to_df(mean_renewable)
     mean_renewable['annee'] = pd.DatetimeIndex(mean_renewable['date']).year
