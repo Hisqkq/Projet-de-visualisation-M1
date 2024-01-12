@@ -2,15 +2,6 @@ import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import html, dcc
 
-# AJOUTER D'AUTRES IMPORTS SI BESOIN
-
-## On appellera ces fonctions dans les pages pour afficher le texte
-## Ne pas hesiter a utiliser des balises html pour mettre en forme le texte et du bootstrap components pour le style ou autre 
-## (faires des petites cases de texte pour chaque problematique etc...) (bootstrap components: https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/)
-## (ou https://www.dash-mantine-components.com/components/card)
-## Ne pas hesiter a faire plus de fonctions si besoin
-## Pourquoi pas ajouter quelques images pour illustrer les propos, pour rendre le site plus vivant
-
 def story_accueil():
     cards_content = [
         {
@@ -437,21 +428,28 @@ def story_echanges():
                         "La France partage des frontières avec six pays voisins, chacun ayant un profil de production "
                         "d'électricité unique. Les échanges d'électricité avec ces pays sont essentiels pour maintenir "
                         "l'équilibre entre l'offre et la demande. "
-                        "Voici la liste des pays interconnectés avec la France",
+                        "Voici la liste des pays interconnectés avec la France:",
                         style={"color": "#DDD"}
                     ),
-                    dmc.List(
-                        [
-                            dmc.ListItem("Allemagne"),
-                            dmc.ListItem("Belgique"),
-                            dmc.ListItem("Espagne"),
-                            dmc.ListItem("Italie"),
-                            dmc.ListItem("Angleterre"),
-                            dmc.ListItem("Suisse"),
-                        ],
+                    html.Div( 
+                        dmc.List(
+                            [
+                                dmc.ListItem("Allemagne"),
+                                dmc.ListItem("Belgique"),
+                                dmc.ListItem("Espagne"),
+                                dmc.ListItem("Italie"),
+                                dmc.ListItem("Angleterre"),
+                                dmc.ListItem("Suisse"),
+                            ],
+                            style={
+                                "marginTop": "20px",
+                                "marginBottom": "20px",
+                                "color": "#DDD"
+                            }
+                        ),
                         style={
-                            "marginBottom": "20px",
-                            "color": "#DDD"  
+                            "display": "flex",
+                            "justifyContent": "center"
                         }
                     ),
                     dmc.Text(

@@ -133,7 +133,7 @@ def build_map_colors(starting_date: str, ending_date: str) -> px.choropleth_mapb
     cons_df = gjs.color_df(mean_cons) # Dataframe for the colors
     
     df = df.merge(cons_df, left_on='nom', right_on='region')
-        
+    
     fig = px.choropleth_mapbox(
         df,
         geojson=data,
@@ -152,7 +152,7 @@ def build_map_colors(starting_date: str, ending_date: str) -> px.choropleth_mapb
     fig.update_traces(marker_line_width=0, marker_opacity=0.8)
     fig.update_layout(
         coloraxis_colorbar=dict(
-            title="Consommation (MW)",
+            title="Consommation Moyenne (MW)",
             thicknessmode="pixels", thickness=15,
             lenmode="pixels", len=300,
             yanchor="top", y=1,
