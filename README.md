@@ -56,16 +56,16 @@ python app.py
 ## Screenshots
 
 ### Page d'Accueil
-![Accueil Screenshot](assets/page_accueil)
+![Accueil Screenshot](assets/page_accueil.png)
 
 ### Page Échanges
-![Echanges Screenshot](assets/page_echanges)
+![Echanges Screenshot](assets/page_echanges.png)
 
 ### Page Production
-![Production Screenshot](assets/page_production)
+![Production Screenshot](assets/page_production.png)
 
 ### Page Consomation
-![Consomation Screenshot](assets/page_consomation)
+![Consomation Screenshot](assets/page_consomation.png)
 
 ## 📃  Ressources externes
 
