@@ -53,6 +53,14 @@ Lancer l'app localement
 python app.py
 ```
 
+## 📃  Ressources externes
+
+ Liste des API que nous avons utilisé pour récupérer nos données:
+- Données nationales en temps réel :  https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-national-tr
+- Données nationales consolidées :    https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-national-cons-def
+- Données régionales en temps réel :  https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-regional-tr
+- Données régionales consolidées :    https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-regional-cons-def
+
 ## Screenshots
 
 ### Page d'Accueil
@@ -66,15 +74,6 @@ python app.py
 
 ### Page Consomation
 ![Consomation Screenshot](assets/page_consomation.png)
-
-## 📃  Ressources externes
-
- Liste des API que nous avons utilisé pour récupérer nos données:
-- Données nationales en temps réel :  https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-national-tr
-- Données nationales consolidées :    https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-national-cons-def
-- Données régionales en temps réel :  https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-regional-tr
-- Données régionales consolidées :    https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-regional-cons-def
-
 
 ## ⭐  Contributeurs 
 
