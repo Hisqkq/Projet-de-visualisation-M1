@@ -53,6 +53,19 @@ Lancer l'app localement
 python app.py
 ```
 
+## Screenshots
+
+### Page d'Accueil
+![Accueil Screenshot](assets/page_accueil)
+
+### Page Échanges
+![Echanges Screenshot](assets/page_echanges)
+
+### Page Production
+![Production Screenshot](assets/page_production)
+
+### Page Consomation
+![Consomation Screenshot](assets/page_consomation)
 
 ## 📃  Ressources externes
 
