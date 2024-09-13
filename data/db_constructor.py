@@ -3,6 +3,9 @@ import data.mongodb as mongodb
 import datetime
 import requests
 import time
+import concurrent.futures
+import calendar
+from pymongo import ASCENDING
 
 config = configparser.ConfigParser()
 config.read("data/config.ini")
@@ -193,8 +196,42 @@ def delete_data_last_date(collection: str) -> None:
         }})
 
 
+def update_data_for_month(from_data: str, collection_name: str, year: int, month: int) -> None:
+    """Update data in a collection for a specific month
+
+    Parameters
+    ----------
+    from_data : str
+        Name of the dataset.
+    collection_name : str
+        Name of the collection.
+    year : int
+        Year to update.
+    month : int
+        Month to update.
+    """
+    step = 100
+    _, days_in_month = calendar.monthrange(year, month)
+    
+    for day in range(1, days_in_month + 1):
+        current_date = datetime.date(year, month, day)
+        formatted_date = current_date.strftime("%Y-%m-%d")
+        lines_per_date = get_length_per_date(from_data, formatted_date)
+
+        for i in range(0, lines_per_date, step):
+            rows = min(step, lines_per_date - i)
+            try:
+                data = fetch_data_by_date(from_data, i, rows, formatted_date)
+                insert_in_coll(collection_name, data)
+            except Exception as e:
+                print(f"Erreur lors de l'insertion des données pour la date {formatted_date}, offset {i}: {e}")
+                print("Réessai dans 5 secondes...")
+                time.sleep(5)
+                i -= step
+                continue
+
 def update_data(from_data: str, collection_name: str) -> None:
-    """Update data in a collection
+    """Update data in a collection using multithreading
 
     Parameters
     ----------
@@ -203,51 +240,56 @@ def update_data(from_data: str, collection_name: str) -> None:
     collection_name : str
         Name of the collection.
     """
-    step = 100
-
     if not list(dbname[collection_name].find()):
-        start_date = get_date(from_data)
+        start_date = datetime.datetime.strptime(get_date(from_data), "%Y-%m-%d")
     else:
-        start_date = get_last_date_db(collection_name)
-        # Check if start date is greater than today's date (Because in some case API has data for future dates too)
-        if (datetime.datetime.strptime(start_date, "%Y-%m-%d")
-                >= datetime.datetime.now()):
+        start_date = datetime.datetime.strptime(get_last_date_db(collection_name), "%Y-%m-%d")
+        if start_date >= datetime.datetime.now():
             start_date = datetime.datetime.now() - datetime.timedelta(days=3)
-            start_date = start_date.strftime("%Y-%m-%d")
-        delete_data_last_date(
-            collection_name
-        )  # delete data from last date in collection to avoid duplicates when updating data
+        delete_data_last_date(collection_name)
 
-    end_date = get_date(from_data, first=False)
-    current_date = datetime.datetime.strptime(str(start_date), "%Y-%m-%d")
-    end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+    end_date = datetime.datetime.strptime(get_date(from_data, first=False), "%Y-%m-%d")
 
+    months_to_process = []
+    current_date = start_date.replace(day=1)
     while current_date <= end_date:
-        formatted_date = str(current_date.strftime("%Y-%m-%d"))
-        lines_per_date = get_length_per_date(from_data, str(formatted_date))
-        print(formatted_date)
+        months_to_process.append((current_date.year, current_date.month))
+        current_date += datetime.timedelta(days=32)
+        current_date = current_date.replace(day=1)
 
-        for i in range(0, lines_per_date, step):
-            rows = min(step, lines_per_date - i)
-            try:
-                data = fetch_data_by_date(from_data, i, rows,
-                                          str(formatted_date))
-                insert_in_coll(collection_name, data)
+    # Use multithreading to update data
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1000) as executor:
+        futures = [executor.submit(update_data_for_month, from_data, collection_name, year, month) 
+                   for year, month in months_to_process]
+        concurrent.futures.wait(futures)
 
-            except Exception as e:
-                print(
-                    f"Erreur lors de l'insertion des données pour la date {formatted_date}, offset {i}: {e}"
-                )
-                print("Réessai dans 5 secondes...")
-                time.sleep(5)
-                i -= step
-                continue
+def create_indexes() -> None:
+    """Create indexes for the collections to optimize query performance"""
+    
+    # Index for DonneesNationales
+    national_collection = dbname["DonneesNationales"]
+    national_collection.create_index([("results.date", ASCENDING)], background=True)
+    print("Index created for DonneesNationales on date")
 
-        current_date += datetime.timedelta(days=1)
+    # Index for DonneesRegionales
+    regional_collection = dbname["DonneesRegionales"]
+    regional_collection.create_index([("results.date", ASCENDING)], background=True)
+    regional_collection.create_index([("results.region", ASCENDING)], background=True)
+    regional_collection.create_index([
+        ("results.date", ASCENDING),
+        ("results.region", ASCENDING)
+    ], background=True)
+    print("Indexes created for DonneesRegionales on date and region")
 
-
-def perform_update(
-):  # Should be called when updating data but its not working with threading
-    """Update data in the database"""
-    update_data("eco2mix-national-tr", "DonneesNationales")
-    update_data("eco2mix-regional-tr", "DonneesRegionales")
+def perform_update():
+    """Update data in the database using multithreading and create indexes"""
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+        futures = [
+            executor.submit(update_data, "eco2mix-national-cons-def", "DonneesNationales"),
+            executor.submit(update_data, "eco2mix-regional-cons-def", "DonneesNationales"),
+            executor.submit(update_data, "eco2mix-national-tr", "DonneesNationales"),
+            executor.submit(update_data, "eco2mix-regional-tr", "DonneesRegionales")
+        ]
+        concurrent.futures.wait(futures)
+    
+    create_indexes()
