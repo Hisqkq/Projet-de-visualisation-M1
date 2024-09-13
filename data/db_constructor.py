@@ -213,6 +213,7 @@ def update_data_for_month(from_data: str, collection_name: str, year: int, month
     step = 100
     _, days_in_month = calendar.monthrange(year, month)
     
+    print(f"Updating data for {year}-{month:02d}...")
     for day in range(1, days_in_month + 1):
         current_date = datetime.date(year, month, day)
         formatted_date = current_date.strftime("%Y-%m-%d")
@@ -258,7 +259,7 @@ def update_data(from_data: str, collection_name: str) -> None:
         current_date = current_date.replace(day=1)
 
     # Use multithreading to update data
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1000) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
         futures = [executor.submit(update_data_for_month, from_data, collection_name, year, month) 
                    for year, month in months_to_process]
         concurrent.futures.wait(futures)
@@ -283,7 +284,7 @@ def create_indexes() -> None:
 
 def perform_update():
     """Update data in the database using multithreading and create indexes"""
-    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         futures = [
             executor.submit(update_data, "eco2mix-national-cons-def", "DonneesNationales"),
             executor.submit(update_data, "eco2mix-regional-cons-def", "DonneesNationales"),
