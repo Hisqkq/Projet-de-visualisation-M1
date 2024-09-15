@@ -231,7 +231,7 @@ def update_data_for_month(from_data: str, collection_name: str, year: int, month
                 i -= step
                 continue
 
-def update_data(from_data: str, collection_name: str) -> None:
+def update_data(from_data: str, collection_name: str, demo: bool = False) -> None:
     """Update data in a collection using multithreading
 
     Parameters
@@ -259,7 +259,9 @@ def update_data(from_data: str, collection_name: str) -> None:
         current_date = current_date.replace(day=1)
 
     # Use multithreading to update data
-    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
+    max_workers = 6 
+    if demo: max_workers = 20
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = [executor.submit(update_data_for_month, from_data, collection_name, year, month) 
                    for year, month in months_to_process]
         concurrent.futures.wait(futures)
@@ -282,15 +284,30 @@ def create_indexes() -> None:
     ], background=True)
     print("Indexes created for DonneesRegionales on date and region")
 
-def perform_update():
-    """Update data in the database using multithreading and create indexes"""
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-        futures = [
-            executor.submit(update_data, "eco2mix-national-cons-def", "DonneesNationales"),
-            executor.submit(update_data, "eco2mix-regional-cons-def", "DonneesNationales"),
-            executor.submit(update_data, "eco2mix-national-tr", "DonneesNationales"),
-            executor.submit(update_data, "eco2mix-regional-tr", "DonneesRegionales")
-        ]
-        concurrent.futures.wait(futures)
+def perform_update(demo=False) -> None:
+    """Update data in the database using multithreading and create indexes
+    
+    Parameters
+    ----------
+    demo : bool, optional
+        If True, only update the national and regional transmission data. The default is False.
+    """
+    if demo:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            futures = [
+                executor.submit(update_data, "eco2mix-national-tr", "DonneesNationales"),
+                executor.submit(update_data, "eco2mix-regional-tr", "DonneesRegionales")
+            ]
+            concurrent.futures.wait(futures)
+        return
+    else:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            futures = [
+                executor.submit(update_data, "eco2mix-national-cons-def", "DonneesNationales"),
+                executor.submit(update_data, "eco2mix-regional-cons-def", "DonneesNationales"),
+                executor.submit(update_data, "eco2mix-national-tr", "DonneesNationales"),
+                executor.submit(update_data, "eco2mix-regional-tr", "DonneesRegionales")
+            ]
+            concurrent.futures.wait(futures)
     
     create_indexes()
