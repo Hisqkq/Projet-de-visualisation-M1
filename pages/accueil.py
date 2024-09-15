@@ -7,7 +7,7 @@ from dash.exceptions import PreventUpdate
 import view.figures as figures
 import view.pie_chart as pie_chart
 import view.story as story
-from initialise_db import perform_update
+from data.db_constructor import perform_update
 from view.datepicker import default_start_date, default_end_date
 
 dash.register_page(__name__, path='/')

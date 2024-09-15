@@ -125,7 +125,7 @@ def get_data_between_two_dates(collection: str,
 def get_mean_for_sectors(collection: str,
                          date1: str,
                          date2: str,
-                         mean_sectors: [str],
+                         mean_sectors: list[str],
                          region: str = None) -> list:
     """Enable User to get the mean of sectors from a collection for a specific date range.
     
@@ -197,7 +197,7 @@ def transform_data_to_df(data: list) -> pd.DataFrame:
     return pd.DataFrame(data)
 
 
-def convert_to_numeric(df: pd.DataFrame, columns: [str]) -> pd.DataFrame:
+def convert_to_numeric(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
     """Convert columns to numeric values.
     
     Parameters
